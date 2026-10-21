@@ -416,7 +416,7 @@ public abstract class PostTaskRunner(string threadName, IFramePacer pacer, ILogg
             var cts = CancellationTokenSource.CreateLinkedTokenSource(ct);
             _linkedTokenSource = cts;
 
-            _thread = new Thread(() => RunLoop(cts.Token))
+            _thread = new Thread(() => RunLoop(cts))
             {
                 IsBackground = true,
                 Name = ThreadName
@@ -435,8 +435,9 @@ public abstract class PostTaskRunner(string threadName, IFramePacer pacer, ILogg
             targetThread = _thread;
             _thread = null;
             _isRunning = false;
+            // 破棄は専用スレッドが終了時に行う(ReleaseTokenSource)。ここで破棄すると、まだRunLoopの中にいる
+            // スレッドが破棄済みのトークンに触れてObjectDisposedExceptionを投げる。
             _linkedTokenSource?.Cancel();
-            _linkedTokenSource?.Dispose();
             _linkedTokenSource = null;
         }
 
@@ -478,8 +479,9 @@ public abstract class PostTaskRunner(string threadName, IFramePacer pacer, ILogg
         }
     }
 
-    private void RunLoop(CancellationToken ct)
+    private void RunLoop(CancellationTokenSource cts)
     {
+        var ct = cts.Token;
         try
         {
             OnStart(ct);
@@ -504,8 +506,30 @@ public abstract class PostTaskRunner(string threadName, IFramePacer pacer, ILogg
         }
         finally
         {
-            OnStop();
-            _isRunning = false;
+            try
+            {
+                OnStop();
+            }
+            finally
+            {
+                _isRunning = false;
+                ReleaseTokenSource(cts);
+            }
+        }
+    }
+
+    /// <summary>
+    /// 終了した専用スレッドのキャンセルトークンを破棄する。トークンを最後に使うのはこのスレッドなので、
+    /// ここで破棄すれば破棄後に触れられることはない。<see cref="Stop"/> の Cancel と同じロックで行い、
+    /// 破棄済みのトークンへの Cancel を防ぐ。終了待機がタイムアウトした後に再開始されていれば、
+    /// フィールドは新しいスレッドのトークンを指しているため、それには触れない。
+    /// </summary>
+    private void ReleaseTokenSource(CancellationTokenSource cts)
+    {
+        lock (this)
+        {
+            if (ReferenceEquals(_linkedTokenSource, cts)) _linkedTokenSource = null;
+            cts.Dispose();
         }
     }
 
