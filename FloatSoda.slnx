@@ -14,6 +14,7 @@
     <Folder Name="/samples/">
         <Project Path="samples/FloatSoda.Samples.Align/FloatSoda.Samples.Align.csproj" />
         <Project Path="samples/FloatSoda.Samples.AspectRatio/FloatSoda.Samples.AspectRatio.csproj" />
+        <Project Path="samples/FloatSoda.Samples.ChromeView/FloatSoda.Samples.ChromeView.csproj" />
         <Project Path="samples/FloatSoda.Samples.Clip/FloatSoda.Samples.Clip.csproj" />
         <Project Path="samples/FloatSoda.Samples.ColoredBox/FloatSoda.Samples.ColoredBox.csproj" />
         <Project Path="samples/FloatSoda.Samples.Container/FloatSoda.Samples.Container.csproj" />
