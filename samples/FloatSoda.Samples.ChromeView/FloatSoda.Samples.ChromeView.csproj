@@ -21,4 +21,10 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <!-- SteamVR 自動起動の登録に使うアプリケーション マニフェスト。exe と同じ場所に配置する。 -->
+    <None Include="chromeview.vrmanifest" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="chromeview_icon.png" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
 </Project>

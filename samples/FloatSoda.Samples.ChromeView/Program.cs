@@ -13,7 +13,8 @@ using SkiaSharp;
 //
 // 使い方:
 //   --desktop            SteamVRの代わりにデスクトップウィンドウで表示(HMDが不要な目視確認用)
-//   --world              SteamVR Home などのワールド空間に直接浮かべて表示
+//   --dashboard          SteamVR ダッシュボード上のオーバーレイに表示(--world はこの別名)
+//                        引数なし(SteamVR 自動起動時を含む)の既定はワールド空間への直接表示
 //   --pos "x,y,z"        --world 時の初期配置座標(プレイエリア中央原点。既定は 0,1,-1)
 //   --yaw <度>           --world 時の初期水平回転(度)。既定は 0(正面を向く)
 //   --list-windows       候補ウィンドウの一覧を出して終了する
@@ -34,7 +35,8 @@ using SkiaSharp;
 //   右 グリップ+スティック押し込み 0.3秒長押し  キャプチャ対象を次の候補ウィンドウへ切替(--switch で変更可)
 
 var useDesktop = args.Contains("--desktop");
-var useWorld = args.Contains("--world");
+var useDashboard = args.Contains("--dashboard") || args.Contains("--world");
+// 引数なし(SteamVR 自動起動時を含む)ではワールド表示を既定にする(--dashboard/--desktop で例外)。
 
 // --pos "x,y,z" / --yaw <度> でワールド配置を調整できる(既定はプレイエリア中央から前方1m・高さ1m)。
 var posIndex = Array.IndexOf(args, "--pos");
@@ -93,7 +95,9 @@ if (saveIndex >= 0)
 var builder = Host.CreateApplicationBuilder(args);
 builder.Services.AddFloatSoda(new FloatSodaOptions
 {
-    AppKey = new AppKey("FloatSoda.Samples.ChromeView"),
+    // SteamVR vrmanifest(chromeview.vrmanifest)の app_key と一致させ、IdentifyApplication /
+    // 自動起動連携が正しく機能するようにする。
+    AppKey = new AppKey(SteamVrAutoLaunch.AppKey),
 });
 
 using var host = builder.Build();
@@ -111,12 +115,14 @@ var widget = new ChromeViewWidget
 };
 
 // SteamVRが起動していることが前提。--desktop のときはモニタ上のデスクトップウィンドウに、
-// --world のときはSteamVR Homeなどコントローラを開かずにワールド空間へ直接表示する。
+// --dashboard のときはSteamVR ダッシュボードのオーバーレイに、既定(--world 相当)は
+// SteamVR Homeなどコントローラを開かずにワールド空間へ直接表示する。
 app.CreateWindow(
     useDesktop
         ? new DesktopWindow { Title = "Chrome View", Child = widget }
-        : useWorld
-            ? new WorldSpaceWindow
+        : useDashboard
+            ? new DashboardWindow { Dpm = new Dpm(1600), Title = "Chrome View", Child = widget }
+            : new WorldSpaceWindow
             {
                 Title = "Chrome View",
                 Size = new SKSize(1920, 1080),
@@ -125,8 +131,7 @@ app.CreateWindow(
                     ? new System.Numerics.Vector3(0f, 1f, -1f)
                     : worldPosition,
                 Rotation = System.Numerics.Quaternion.CreateFromAxisAngle(System.Numerics.Vector3.UnitY, worldYawDeg * MathF.PI / 180f),
-            }
-            : new DashboardWindow { Dpm = new Dpm(1600), Title = "Chrome View", Child = widget });
+            });
 
 // --world ではワールドに浮かんだパネルをコントローラで捉えられるようにする(掴み移動・拡縮・対象切替)。
 OverlayManipulator? manipulator = null;
@@ -138,6 +143,9 @@ if (!useDesktop)
         w.ProcessName.Contains("TextInputHost", StringComparison.OrdinalIgnoreCase);
 
     uint selfPid = (uint)Environment.ProcessId;
+
+    // SteamVR 自動起動の vrmanifest 登録は OpenVR コンテキストが整うのを待って行うので背景で試す(非致命)。
+    _ = Task.Run(SteamVrAutoLaunch.Register);
 
     manipulator = new OverlayManipulator("Chrome View", toggleSpec, switchSpec);
     manipulator.TargetSwitchRequested += () =>
