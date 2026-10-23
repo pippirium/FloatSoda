@@ -36,6 +36,14 @@ for (var i = 0; i < args.Length; i++)
     }
 }
 
+// MCP サーバーモード: Codex / Claude Code の mcp_servers から stdio で起動される。
+// tools/call ask_wrist(question) を腕 UI(POST /requests)へ中継し、
+// ユーザーの返答を文字列で返す。
+if (Array.IndexOf(args, "serve-mcp") >= 0)
+{
+    return await RunMcpServerAsync();
+}
+
 string inputJson;
 using (var stdin = Console.OpenStandardInput())
 using (var reader = new StreamReader(stdin, Encoding.UTF8))
@@ -99,6 +107,132 @@ catch (Exception)
 }
 
 return 0;
+
+async Task<int> RunMcpServerAsync()
+{
+    while (await Console.In.ReadLineAsync() is { } line)
+    {
+        if (line.Trim().Length == 0) continue;
+
+        JsonDocument document;
+        try
+        {
+            document = JsonDocument.Parse(line);
+        }
+        catch (JsonException)
+        {
+            continue;
+        }
+
+        using (document)
+        {
+            var root = document.RootElement;
+
+            if (!root.TryGetProperty("id", out var id))
+            {
+                continue; // notification (notifications/initialized など) には返答しない
+            }
+
+            var method = root.TryGetProperty("method", out var m) ? m.GetString() : null;
+
+            object? result = null;
+            object? error = null;
+
+            switch (method)
+            {
+                case "initialize":
+                    result = new
+                    {
+                        protocolVersion = "2024-11-05",
+                        capabilities = new { tools = new { } },
+                        serverInfo = new { name = "wristagent-bridge", version = "0.1.0" },
+                    };
+                    break;
+
+                case "tools/list":
+                    result = new
+                    {
+                        tools = new[]
+                        {
+                            new
+                            {
+                                name = "ask_wrist",
+                                description = "腕オーバーレイ(WristAgent)に質問を投げ、ユーザーの返答を文字列として受け取ります。" +
+                                              "返答は「はい」「いいえ」もしくは OSK で入力された自由テキストです。",
+                                inputSchema = new
+                                {
+                                    type = "object",
+                                    properties = new { question = new { type = "string", description = "ユーザーに投げる質問。" } },
+                                    required = new[] { "question" },
+                                },
+                            },
+                        },
+                    };
+                    break;
+
+                case "tools/call":
+                    var question = "";
+                    if (root.TryGetProperty("params", out var p) &&
+                        p.TryGetProperty("arguments", out var a) &&
+                        a.TryGetProperty("question", out var q))
+                    {
+                        question = q.GetString() ?? "";
+                    }
+
+                    var answer = await AskWristAsync(question);
+                    result = new
+                    {
+                        content = new[] { new { type = "text", text = answer } },
+                    };
+                    break;
+
+                default:
+                    error = new { code = -32601, message = $"method not found: {method}" };
+                    break;
+            }
+
+            object response = error is null
+                ? (object)new { jsonrpc = "2.0", id, result }
+                : (object)new { jsonrpc = "2.0", id, error };
+
+            await Console.Out.WriteLineAsync(JsonSerializer.Serialize(response));
+        }
+    }
+
+    return 0;
+}
+
+async Task<string> AskWristAsync(string question)
+{
+    var postBody = JsonSerializer.Serialize(new
+    {
+        id = Guid.NewGuid().ToString("n")[..12],
+        kind = "question",
+        agent,
+        tool = "",
+        detail = question,
+    });
+
+    using var http = new HttpClient { Timeout = TimeSpan.FromSeconds(15) };
+    using var content = new StringContent(postBody, Encoding.UTF8, "application/json");
+    using var response = await http.PostAsync($"{endpoint.TrimEnd('/')}/requests", content);
+    if (!response.IsSuccessStatusCode)
+    {
+        return "エラー: WristAgent に接続できませんでした(通常のやり取りに戻ってください)";
+    }
+
+    var payload = await response.Content.ReadAsStringAsync();
+    var json = JsonSerializer.Deserialize<BridgeResponse>(payload);
+
+    return json?.Decision switch
+    {
+        "allow" => "はい",
+        "deny" => "いいえ",
+        "text" => json.Value ?? "",
+        "timeout" => "無応答(タイムアウト)",
+        _ => "無応答",
+    };
+}
 
 void WriteDecision(string behavior, string message)
 {

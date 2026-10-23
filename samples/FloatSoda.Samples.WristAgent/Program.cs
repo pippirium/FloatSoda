@@ -39,4 +39,34 @@ app.CreateWindow(new DeviceTrackedWindow
 
 server.Start();
 
+// ホットキー保険: Ctrl+Alt+Y(はい) / N(いいえ) / C(続行) / T(OSK 入力)。
+// どの保留中要求からも選択できない場合(リスト空)は何もしない。
+var hotkeys = new GlobalHotkeys(new Dictionary<int, Action>
+{
+    ['Y'] = () => ResolveOldest("allow"),
+    ['N'] = () => ResolveOldest("deny"),
+    ['C'] = () => ResolveOldest("continue"),
+    ['T'] = () =>
+    {
+        var pending = broker.Pending;
+        if (pending.Count > 0)
+        {
+            input.TryOpen(pending[0].Id);
+        }
+    },
+}, a => app.Post(a));
+hotkeys.Start();
+
+// 着信通知(コントローラー振動)。
+var vibrator = new WristVibrator(broker);
+
+void ResolveOldest(string decision)
+{
+    var pending = broker.Pending;
+    if (pending.Count > 0)
+    {
+        broker.Resolve(pending[0].Id, new WristAnswer(decision, null));
+    }
+}
+
 await host.RunAsync();

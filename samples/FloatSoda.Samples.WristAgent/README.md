@@ -40,6 +40,13 @@ SteamVR が起動している必要があります。起動すると左腕に `W
 curl http://127.0.0.1:8797/requests -d "{\"id\":\"t1\",\"kind\":\"approve\",\"agent\":\"test\",\"tool\":\"Bash\",\"detail\":\"echo hello\"}"
 ```
 
+## ドキュメント(text)入力(SteamVR OSK)
+
+腕カードの[入力]ボタンで SteamVR のオーバーレイ用仮想キーボード(OSK)が開きます。
+確定(Done)すると入力テキストが `decision: "text"` として要求に返ります。
+hooks 経路ではこのテキストを deny + メッセージとしてエージェントへ伝えます
+(hooks の語彙に自由テキストがないため)。MCP経由では自由テキストのまま使えます。
+
 ## エージェントへの接続(tools/WristAgentBridge)
 
 `tools/WristAgentBridge` は stdin の hooks イベント JSON を腕 UI へ転送し、
@@ -87,12 +94,52 @@ Claude Code の設定例(`~/.claude/settings.json` の hooks)。
 }
 ```
 
-注意:
+### MCP による自由テキスト指示(serve-mcp)
+
+`tools/WristAgentBridge` には stdio MCP サーバーモードもあります。
+Codex / Claude Code の `mcp_servers` に登録すると、エージェントは
+`ask_wrist(question)` ツールで腕 UI へ質問を投げ、[はい] / [いいえ] /
+OSK 入力テキストを文字列として受け取れます。
+
+```jsonc
+// Codex: ~/.codex/config.toml
+// [mcp_servers.wristagent]
+// command = "dotnet"
+// args = ["run", "--project", "C:/Users/haru/repo/FloatSoda/tools/WristAgentBridge", "serve-mcp"]
+
+// Claude Code: .mcp.json
+{
+  "mcpServers": {
+    "wristagent": {
+      "command": "dotnet",
+      "args": ["run", "--project", "C:/Users/haru/repo/FloatSoda/tools/WristAgentBridge", "serve-mcp"]
+    }
+  }
+}
+```
+
+注意 (hooks 設定の続き):
 
 - hooks を変更したら Codex では `/hooks` で trust review を通す必要があります。
 - `timeout` は腕 UI の待ち時間(既定 5 分)より長めに設定してください。
 - 本サンプルは `MakeOverlaysInteractiveIfVisible` を立てない
   `ControllerRayPointerSource` 経由の入力のため、SteamVR の入力横取りは発生しません。
+
+- hooks 経由で `ask_wrist` ツール自体への承認要求が出た場合は、
+  `PermissionRequest` の `matcher` に `mcp__wristagent__ask_wrist` を許可して
+  承認ループを避けてください(MCP サーバー名は設定名に依存します)。
+
+### ホットキー保険
+
+サンプル起動中はグローバルホットキー(Ctrl+Alt+Y/N/C/T)も有効です。
+どちらの保留中要求にも選択できる最古の要求に作用し、キーは他アプリへ漏れません。
+
+| キー | 動作 |
+|---|---|
+| Ctrl+Alt+Y | はい(allow) |
+| Ctrl+Alt+N | いいえ(deny) |
+| Ctrl+Alt+C | 続行(continue) |
+| Ctrl+Alt+T | 最古の要求へ OSK を開く |
 
 ## 既知の制限
 
