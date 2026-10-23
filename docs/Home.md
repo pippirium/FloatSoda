@@ -79,10 +79,11 @@ graph LR
 | Phase 6 | DX 向上(Storybook・manifest 自動生成・ライフサイクル) | 未着手 |
 | Phase 7 | 安定版リリース(1.0) | 未着手 |
 
-> ⚠️ **現在、ユーザー操作が機能するのはダッシュボードオーバーレイのみです。**
+> ⚠️ **現在、ユーザー操作が機能するのは OpenVR オーバーレイのウィンドウ全体です。**
 > ヒットテストとジェスチャ認識は実装済みであり、`GestureDetector` でタップとパンを受け取れます。
-> ただし、ポインタ座標の供給元(SteamVR のレーザーポインター)がダッシュボードオーバーレイにしか
-> 接続されていないため、`WorldSpaceWindow` と `DeviceTrackedWindow` は表示専用です。
+> ポインタ座標はダッシュボードオーバーレイでは SteamVR のレーザーポインター(マウスイベント)から、
+> `WorldSpaceWindow` と `DeviceTrackedWindow` では `ControllerRayPointerSource` のコントローラーレイ
+> ポーリングから供給されます(#182)。
 > また、**UI3層構成(`FloatSoda.UI` と `Cream` / `FizzyPop`)は未提供です。**
 > 3プロジェクトとも NuGet では未配布であり、`Button` は骨組みのみで押下に反応しません(Phase 5 で提供予定)。
 > ボタンは `GestureDetector` を使って組み立ててください
@@ -131,7 +132,7 @@ graph LR
 | intrinsic 測定(`IntrinsicWidth` / `IntrinsicHeight`) | ✓ 実装済み |
 | ヒットテスト(座標 → RenderObject の特定) | ✓ 実装済み |
 | ジェスチャ認識(`GestureDetector` / `Listener` / タップ・パン) | ✓ 実装済み |
-| ポインタ入力源(SteamVR レーザーポインターの接続) | △ 部分実装(ダッシュボードオーバーレイのみ) |
+| ポインタ入力源 | ✓ 実装済み(ダッシュボード + `ControllerRayPointerSource` による movable オーバーレイ、#182) |
 | `Container` | ✓ 実装済み(`Padding` の合成を含む) |
 | UI3層構成(`FloatSoda.UI` ヘッドレス / `Cream` / `FizzyPop`) | 予定(Phase 5)。NuGet 未配布・骨組みのみ(→ [UILayering](UILayering.md#実装状況)) |
 | Hooks(`FloatSoda.Hooks` / R3 ベースの `UseState`) | △ 部分実装(フレームワーク未統合) |

@@ -184,7 +184,7 @@ public void DrawFrame()
 |---|---|
 | スクロール系ウィジェット | `ListView` / `GridView` / `SingleChildScrollView` は `internal` で公開 API から除外。viewport 基盤とあわせて Phase 3 で実装 |
 | 画像・アイコン | 描画系の `Paint.Image` / `Paint.Icon` を使用可能。フォントは `FontProvider` 経由で解決 |
-| ポインタ入力源 | ヒットテストとジェスチャ認識は実装済み。ただし座標の供給元がダッシュボードオーバーレイにしか接続されておらず、`WorldSpaceWindow` / `DeviceTrackedWindow` では入力が届かない |
+| ポインタ入力源 | ヒットテストとジェスチャ認識は実装済み。ダッシュボードオーバーレイは SteamVR のマウスイベントを受け、`WorldSpaceWindow` / `DeviceTrackedWindow` は `ControllerRayPointerSource` のコントローラーレイポーリング([#182](https://github.com/sumx21t-3310/FloatSoda/issues/182))で座標を供給する |
 | UI3層構成(`FloatSoda.UI` / `Cream` / `FizzyPop`) | Phase 5 の予定。`ButtonBase` / `Button` / `ButtonStyle` の型はあるが `GestureDetector` へ未配線で、3つのプロジェクトはいずれも NuGet で未配布 |
 | `FloatSoda.Hooks` | `HookWidget` / `HookElement`(R3 の `ReactiveProperty` による `UseState`)が部分実装。フレームワークのビルドループとは統合されておらず、`HookExtension` の各ヘルパーは `NotImplementedException` |
 

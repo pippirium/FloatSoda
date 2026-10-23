@@ -189,10 +189,10 @@ public sealed record RawRootWidget : SingleChildRenderObjectWidget<RenderPositio
 | ウィンドウ定義 | オーバーレイ種別 | 位置の管理 | ポインタ入力 |
 |---|---|---|---|
 | `DashboardWindow { Title, Child, Size? }` | `DashboardOverlay` | SteamVR ダッシュボードが管理（ユーザーが開くタブ） | ✓ 届く |
-| `WorldSpaceWindow { Title, Child, Size?, Position, Rotation }` | `WorldSpaceOverlay` | ワールド座標で固定（`Vector3 Position`、既定は前方1m・高さ1m） | ✗ 届かない |
-| `DeviceTrackedWindow { Title, Child, Size?, Target, Offset, Rotation }` | `DeviceTrackedOverlay` | トラッキングデバイスに追従（`TrackedDevice` 列挙体） | ✗ 届かない |
+| `WorldSpaceWindow { Title, Child, Size?, Position, Rotation }` | `WorldSpaceOverlay` | ワールド座標で固定（`Vector3 Position`、既定は前方1m・高さ1m） | ✓ 届く |
+| `DeviceTrackedWindow { Title, Child, Size?, Target, Offset, Rotation }` | `DeviceTrackedOverlay` | トラッキングデバイスに追従（`TrackedDevice` 列挙体） | ✓ 届く |
 
-**ポインタ入力が届くのはダッシュボードオーバーレイだけです。** SteamVR はダッシュボード上のレーザーポインターをマウスイベントとして送信するため、FloatSoda はそれをそのままヒットテストへ渡せます。ワールド座標固定とデバイス追従のオーバーレイには、コントローラーのレイからポインタ座標を生成する仕組みがまだありません。これらのウィンドウに `GestureDetector` を置くと、コンパイルは通り例外も出ませんが、コールバックは呼ばれません。
+**movable オーバーレイ（`WorldSpaceWindow` / `DeviceTrackedWindow`）にもポインタ入力が届きます。** これらのオーバーレイでは、ダッシュボードのように SteamVR からのマウスイベントを使わず、`ControllerRayPointerSource` が指定デバイス（既定は両手コントローラー）のコントローラーレイを毎フレーム交差させてポインタ座標を生成します。ダッシュボード経路と異なり `MakeOverlaysInteractiveIfVisible` フラグを立てないため、SteamVR によるレーザー入力の横取りが発生しません。入力は左トリガーのみで、レーザーがオーバーレイから外れたフレームでは Leave（押下中は Cancel になりません）が合成されます。
 
 `Title` は SteamVR 上の表示名（ダッシュボードタブ名など）です。OpenVR のオーバーレイキーは「エントリアセンブリ名 + `Title` のスネークケース」から自動生成されます（例: アセンブリ `MyOverlayApp` + `Title = "My Dashboard"` → `my_overlay_app.my_dashboard`）。
 

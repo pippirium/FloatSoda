@@ -725,14 +725,16 @@ Widget tappable = new GestureDetector
 
 ### ポインタ入力が届く範囲
 
-**現時点でポインタ座標が届くのは、ダッシュボードオーバーレイ(`DashboardWindow`)だけです。**
-SteamVR がダッシュボード上のレーザーポインターをマウスイベントとして送信するため、
-FloatSoda はこれを `IRawPointerSource` として受け取っています。
-`WorldSpaceWindow` と `DeviceTrackedWindow` はコントローラーレイからの入力が未接続です。
-ヒットテスト自体は機能しますが、判定用の座標が供給されません。この接続は Phase 3.5 で扱います([#182](https://github.com/sumx21t-3310/FloatSoda/issues/182))。
+**ポインタ座標はすべての OpenVR オーバーレイウィンドウに届きます。**
+ダッシュボードオーバーレイ(`DashboardWindow`)では、SteamVR がレーザーポインターをマウスイベント
+として送信するため、それを `IRawPointerSource` として受け取ります。
+`WorldSpaceWindow` と `DeviceTrackedWindow` では、`ControllerRayPointerSource` がコントローラーレイを
+毎フレーム交差させ、交差 UV とトリガー状態をポインタイベントへ変換します(#182)。
+コントローラーレイ経路では `MakeOverlaysInteractiveIfVisible` を立てないため SteamVR への入力横取りは
+発生しません。
 
-したがって、`WorldSpaceWindow` で `GestureDetector` を使用しても、
-コンパイルや実行は成功しますがコールバックは呼ばれません。
+コントローラーレイ経路の入力は「左トリガーのみでヒット位置に Enter / Move / Down / Up、
+レーザーが外れたフレームで Leave」です。
 
 ### ヒットテストの振る舞い
 

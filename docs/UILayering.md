@@ -108,7 +108,7 @@ new Button { Child = new Text("OK"), OnPressed = () => ... };
 `PointerRegion` によって press / hover を受け取れます(→ [WidgetSystem § ジェスチャとヒットテスト](WidgetSystem.md#ジェスチャとヒットテスト))。
 残る制約は2つあります。
 
-- ポインタ座標が届くのはダッシュボードオーバーレイのみ。他のオーバーレイ種別への接続は Phase 3.5 で扱う([#182](https://github.com/sumx21t-3310/FloatSoda/issues/182))。
+- ポインタ座標は `ControllerRayPointerSource`(コントローラーレイポーリング、#182)経由で movable オーバーレイにも届く。ダッシュボードと違い `MakeOverlaysInteractiveIfVisible` を使わない。
 - フォーカスの概念はまだ存在しない。`InteractionState.IsFocused` を埋める仕組みは未設計。
 
 ### 1. Tier 1 — 原始インタラクション
