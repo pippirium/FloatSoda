@@ -78,6 +78,13 @@ public class FloatSodaApp : IDisposable
         }
     }
 
+    /// <summary>任意スレッドからメインスレッドの次フレーム処理へアクションを投入します。</summary>
+    /// <remarks>
+    /// HTTP サーバーや音声認識など外部由来のイベントからウィジェットツリーを更新する際の投入口として使用します。
+    /// 投入されたアクションは次フレームの先頭（<see cref="MainLoop"/> のキュー消化）で実行されます。
+    /// </remarks>
+    public void Post(Action action) => _pendingTasks.Enqueue(action);
+
     private void Reassemble()
     {
         foreach (var (_, binding) in _bindings)
