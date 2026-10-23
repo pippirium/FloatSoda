@@ -12,7 +12,8 @@ namespace FloatSoda.Samples.WristAgent;
 
 /// <summary>腕ディスプレイに表示する要求カード。保留中の要求と最近の履歴を表示します。</summary>
 /// <param name="Broker">要求ブローカー。表示内容の観察元です。</param>
-public record WristAgentCard(ApprovalBroker Broker) : StatefulWidget<WristAgentCard>
+/// <param name="Input">SteamVR OSK によるフリーテキスト入力。null の場合は[入力]ボタンが非表示になります。</param>
+public record WristAgentCard(ApprovalBroker Broker, WristInputService? Input = null) : StatefulWidget<WristAgentCard>
 {
     public override State<WristAgentCard> CreateState() => new WristAgentCardState();
 }
@@ -137,10 +138,12 @@ public class WristAgentCardState : State<WristAgentCard>
         Children =
         [
             BuildButton("はい", AllowColor, () => Widget!.Broker.Resolve(request.Id, new WristAnswer("allow", null))),
-            new SizedBox { Width = 10 },
+            new SizedBox { Width = 8 },
             BuildButton("いいえ", DenyColor, () => Widget!.Broker.Resolve(request.Id, new WristAnswer("deny", null))),
-            new SizedBox { Width = 10 },
+            new SizedBox { Width = 8 },
             BuildButton("続行", NeutralColor, () => Widget!.Broker.Resolve(request.Id, new WristAnswer("continue", null))),
+            new SizedBox { Width = 8 },
+            BuildButton("入力", NeutralColor, () => Widget?.Input?.TryOpen(request.Id)),
         ],
     };
 
