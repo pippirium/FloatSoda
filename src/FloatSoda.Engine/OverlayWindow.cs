@@ -4,6 +4,7 @@ using FloatSoda.Abstractions.Input;
 using FloatSoda.Rendering.Layers;
 using FloatSoda.OVR;
 using FloatSoda.OVR.Overlay;
+using SkiaSharp;
 
 namespace FloatSoda.Engine;
 
@@ -21,24 +22,37 @@ public class OverlayWindow : IEngineWindow
     /// <param name="overlay">描画先となるOpenVRオーバーレイ。</param>
     /// <param name="renderer">レイヤーツリーをテクスチャへ描画するレンダラー。</param>
     /// <param name="dpm">ピクセルサイズをオーバーレイの物理幅へ換算する際に使用する密度。</param>
+    /// <param name="pointerDevices">movableオーバーレイでコントローラーレイをポールするデバイスのリスト。
+    /// 省略時は両手コントローラーの順です。</param>
     /// <remarks>
     /// <paramref name="overlay"/>がダッシュボードオーバーレイの場合、入力方式をマウスへ設定し、
     /// SteamVRのレーザーポインター入力を受け取る<see cref="PointerSource"/>を生成します。
-    /// それ以外のオーバーレイでは<see cref="PointerSource"/>は<see langword="null"/>のままです。
+    /// デバイス追従・ワールド固定（movable）オーバーレイの場合は、コントローラーレイを毎フレーム
+    /// 交差させる<see cref="ControllerRayPointerSource"/>を生成します（入力横取りフラグは使用しません）。
+    /// どちらでもないオーバーレイでは<see cref="PointerSource"/>は<see langword="null"/>のままです。
     /// </remarks>
-    public OverlayWindow(IOverlay overlay, Renderer renderer, Dpm dpm)
+    public OverlayWindow(IOverlay overlay, Renderer renderer, Dpm dpm,
+        IReadOnlyList<TrackedDevice>? pointerDevices = null)
     {
         Overlay = overlay;
         this.renderer = renderer;
         this.dpm = dpm;
 
         // ダッシュボードはSteamVRのレーザーがマウスイベントとして届く。
-        // それ以外のオーバーレイの入力（コントローラーレイ経路）は未実装のため当面 null。
         if (overlay is IDashboardOverlay)
         {
             overlay.Input.Method = VROverlayInputMethod.Mouse;
             overlay.Input.SetMouseScale(renderer.GLView.Size.Width, renderer.GLView.Size.Height);
             PointerSource = new OverlayMouseRawPointerSource(overlay.EventDispatcher);
+        }
+
+        // デバイス追従・ワールド固定はコントローラーレイを毎フレーム交差させて届く。
+        // MakeOverlaysInteractiveIfVisible を使わないため入力横取りは発生しない。
+        else if (overlay is IMovableOverlay movable)
+        {
+            PointerSource = new ControllerRayPointerSource(movable.Intersection,
+                () => new SKSizeI((int)renderer.GLView.Size.Width, (int)renderer.GLView.Size.Height),
+                pointerDevices);
         }
     }
 
@@ -78,7 +92,8 @@ public class OverlayWindow : IEngineWindow
     }
 
     /// <summary>このウィンドウの生ポインター入力源を取得します。</summary>
-    /// <value>ダッシュボードオーバーレイの場合はレーザーポインター入力源。それ以外では<see langword="null"/>です。</value>
+    /// <value>ダッシュボードオーバーレイの場合はSteamVRレーザー入力源、デバイス追従・ワールド固定
+    /// オーバーレイの場合はコントローラーレイ入力源。それ以外では<see langword="null"/>です。</value>
     public IRawPointerSource? PointerSource { get; }
 
     /// <summary>
@@ -90,6 +105,12 @@ public class OverlayWindow : IEngineWindow
         if (PointerSource == null) return;
 
         Overlay.EventDispatcher.PollEvents();
+
+        // コントローラーレイ経路はイベント駆動でなくポーリングなので、ここで1フレーム分を追加で実行する。
+        if (PointerSource is ControllerRayPointerSource controllerRay)
+        {
+            controllerRay.Pump();
+        }
     }
 
     /// <summary>このウィンドウの生ポインター入力源とオーバーレイを破棄します。</summary>
