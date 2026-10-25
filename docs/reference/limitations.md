@@ -12,16 +12,16 @@ FloatSoda で作りたいものが今できるかを、このページで確か�
 
 ## 置く場所と入力
 
-ポインタの座標が届くのは、ダッシュボードのオーバーレイだけです。ボタンを置く画面は、ダッシュボードに置きます。
+ポインターの座標は、3種類すべてのオーバーレイに届きます。ダッシュボード以外のオーバーレイでは、コントローラーのレイから座標が作られます。
 
 | 制約の内容 | 起きる症状 | 今できる回避 | 追跡 |
 | :-- | :-- | :-- | :-- |
-| ポインタの座標が届くのは、`DashboardWindow` だけ | `WorldSpaceWindow` と `DeviceTrackedWindow` に `GestureDetector` を置いても、コンパイルは通り例外も出ないが、コールバックは呼ばれない | ポインター操作が要る画面は `DashboardWindow` に置き、コントローラーのボタンで操作するならアクション入力を使う | #182 |
+| movable オーバーレイ(`WorldSpaceWindow` と `DeviceTrackedWindow`)へのポインター入力は、左トリガーだけ | 右トリガーやグリップでは押せない。レーザーがオーバーレイから外れたフレームで `Leave` が合成される | コントローラーのレイを当てて、左トリガーで押す | #182 |
 | `Size` を省略したウィンドウは、表示範囲が起動時の大きさに固定される | 起動後に中身が大きくなると、増えた部分が SteamVR 上に表示されない | 中身の大きさが変わるウィンドウに `Size` を指定する | #285 |
 | `Size` を省略したウィンドウは、ルートの制約に幅の上限がない | 途中の部品が幅の上限を渡さない場合、`Wrap` が折り返さず横一列に並ぶ | `Size` を指定する。または `Wrap` を、幅を決めた `SizedBox` で包む | 追跡先なし(仕様) |
 | 実行中にオーバーレイの種類を切り替えられない | `DashboardWindow` から `WorldSpaceWindow` への切り替えのような API がない | 起動時に、使う種類ごとにウィンドウを作る | #90 |
 
-<!-- ※要確認: Size 省略時に Wrap が折り返さないこと。再編前の GettingStarted.md の記述が根拠で、samples/FloatSoda.Samples.Wrap で Size を省略して動かして確かめていない。ルートが Loosen(無限上限)の制約でレイアウトされることは、src/FloatSoda/RenderObjects/RenderView.cs のコメントで確かめた。`SizedBox` で包む回避は動かして確かめていない -->
+<!-- ※要確認: Size 省略時に Wrap が折り返さないこと。docs 再編で削除した旧 GettingStarted.md の記述が根拠で、samples/FloatSoda.Samples.Wrap で Size を省略して動かして確かめていない。ルートが Loosen(無限上限)の制約でレイアウトされることは、src/FloatSoda/RenderObjects/RenderView.cs のコメントで確かめた。`SizedBox` で包む回避は動かして確かめていない -->
 
 置き場所の選び方は、ガイドの[オーバーレイの種類と選び方](../guide/4-build/mechanics/overlay-types.md)にあります。コントローラーの入力は[コントローラーの入力を受け取る](../guide/4-build/input/controller-input.md)、押しても反応しないときの切り分けは[反応しないときに切り分ける](../guide/5-troubleshoot/not-responding.md)を開いてください。
 

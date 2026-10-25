@@ -62,7 +62,7 @@
 | :-- | :-- | :-- |
 | 起動しない、起動の直後に終わる | SteamVR が未起動、HMD が未接続、配布物のファイル不足 | コンソールのメッセージを [エラーを読んで直す](../5-troubleshoot/read-errors.md) で引く。配布物に `openvr_api.dll` などのネイティブライブラリがあるか([exe にして配る](../6-distribute/publish-exe.md)) |
 | `Init_HmdNotFound` と出る | HMD が未接続 | HMD の接続を頼む。デスクトップの窓でも HMD の接続が要る(追跡: #140) |
-| 起動するが、押せない | オーバーレイの種類 | ポインターで操作するなら、窓の種類を確かめる。`WorldSpaceWindow` と `DeviceTrackedWindow` は未対応(追跡: #182)。[反応しないときに切り分ける](../5-troubleshoot/not-responding.md) |
+| 起動するが、押せない | オーバーレイの種類と入力の経路 | `WorldSpaceWindow` と `DeviceTrackedWindow` では、コントローラーのレイが当たっていて、左トリガーで押しているかを確かめる(追跡: #182)。[反応しないときに切り分ける](../5-troubleshoot/not-responding.md) |
 | 表示の大きさが、自分の PC と違う | ピクセル数か、VR 内の実寸かの違い | `Size`、`Dpm`、窓の種類を確かめる。`Size` を省略すると、起動後の大きさの変化が反映されない(追跡: #285)。[レイアウトの考え方](../5-troubleshoot/layout-model.md) |
 
 HMD 未接続の PC では、デスクトップの窓でも起動に失敗します。相手が HMD なしで試している場合は、この点を最初に疑います。

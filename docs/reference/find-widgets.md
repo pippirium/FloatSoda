@@ -86,7 +86,7 @@
 | `AbsorbPointer` | 子を描いたまま、ポインター入力を自分で止めて子に届けない | なし |
 | `IgnorePointer` | 子を描いたまま、子の部分をポインター入力の対象から外す | なし |
 
-ポインターの座標が届くのは、ダッシュボードのオーバーレイだけです。詳しくは、[できないこと・まだ使えないもの](limitations.md#置く場所と入力)を開いてください。ボタンの組み立て方は[ボタンやトグルを組み立てる](../guide/4-build/screen/build-buttons-toggles.md)、コントローラーのボタンやトリガーは[コントローラーの入力を受け取る](../guide/4-build/input/controller-input.md)にあります。
+ポインターの座標は、3種類すべてのオーバーレイに届きます。押し方の違い(ダッシュボードでは SteamVR のレーザー、ほかではコントローラーのレイと左トリガー)は、[できないこと・まだ使えないもの](limitations.md#置く場所と入力)にあります。ボタンの組み立て方は[ボタンやトグルを組み立てる](../guide/4-build/screen/build-buttons-toggles.md)、コントローラーのボタンやトリガーは[コントローラーの入力を受け取る](../guide/4-build/input/controller-input.md)にあります。
 
 ## 動かす
 
@@ -125,7 +125,7 @@
 | `DeviceTrackedWindow` | HMD やコントローラーなどのデバイスに付いて動く | [OverlayApp](../../samples/FloatSoda.Samples.OverlayApp/Program.cs) |
 | `DesktopWindow` | PC のデスクトップのウィンドウに出す | [Flex](../../samples/FloatSoda.Samples.Flex/Program.cs) |
 
-SteamVR 上のオーバーレイでポインターの座標が届くのは、ダッシュボードだけです。<!-- ※要確認: `DesktopWindow` に `GestureDetector` の入力が届くか。src/FloatSoda.Engine/DesktopWindow.cs は GLFW のポインター入力源を持つが、ウィジェットまで届くことは実行して確かめていない -->種類の選び方は、ガイドの[オーバーレイの種類と選び方](../guide/4-build/mechanics/overlay-types.md)にあります。
+SteamVR 上のオーバーレイでは、3種類すべてにポインターの座標が届きます。押し方の違いは、[オーバーレイの種類と選び方](../guide/4-build/mechanics/overlay-types.md)にあります。<!-- ※要確認: PC の `DesktopWindow` に `GestureDetector` の入力が届くか。src/FloatSoda.Engine/DesktopWindow.cs は GLFW のポインター入力源を持つが、ウィジェットまで届くことは実行して確かめていない -->
 
 ## 見つからないとき
 

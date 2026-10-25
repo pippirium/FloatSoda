@@ -133,11 +133,10 @@ OpenVR まわりで詰まりやすい点を、症状、原因、取る行動の�
 - 取る行動: 小文字、数字、ドット、アンダースコアだけで、127 文字までの値を渡す
 - 確かめた程度: 実行して確かめた。大文字、200 文字、空文字の3通りで、例外にならなかった
 
-### ポインター入力が届くのは、ダッシュボードのオーバーレイだけ
+### movable オーバーレイの入力は、ControllerRayPointerSource から届く
 
-- 症状: ダッシュボード以外のオーバーレイで、`GestureDetector` のコールバックが呼ばれない
-- 原因: エンジン層の `OverlayWindow` が入力源を作るのは、ダッシュボードのときだけ。`ControllerPointerSystem` は、どこからも呼ばれていない
-- 取る行動: ダッシュボード以外へのポインター入力は、Issue で追跡している(追跡: [#182](https://github.com/sumx21t-3310/FloatSoda/issues/182))
+- 症状: movable オーバーレイ(`WorldSpaceWindow` と `DeviceTrackedWindow`)では、`ControllerRayPointerSource` がコントローラーのレイを毎フレーム交差させ、交差 UV と左トリガーの状態から `RawPointerEvent` を発火する
+- 注意: `MakeOverlaysInteractiveIfVisible` を立てないため、SteamVR の入力横取り(レーザーの全域ブロック)は起きない(追跡: [#182](https://github.com/sumx21t-3310/FloatSoda/issues/182))
 - 確かめた程度: コードから読んだ。実機では確かめていない
 
 `ControllerPointerSystem` は、`MakeOverlaysInteractiveIfVisible` を使わずに、コントローラーのレイとオーバーレイの交差を毎フレーム計算します。SteamVR の入力の横取りが起きないので、VRChat の AFK 判定を避けられる、とクラスの説明に書かれています。これはクラスの説明にあるだけで、VRChat では確かめていません。

@@ -4,15 +4,15 @@
 
 ## オーバーレイは3種類あり、出る場所と入力の届き方が違う
 
-FloatSoda のオーバーレイは、`DashboardWindow`、`WorldSpaceWindow`、`DeviceTrackedWindow` の3種類です。出る場所と、コントローラーで押せるかどうかが違います。押して操作する物はダッシュボード、表示だけでよい物は空間に固定するか、コントローラーに追従させます。
+FloatSoda のオーバーレイは、`DashboardWindow`、`WorldSpaceWindow`、`DeviceTrackedWindow` の3種類です。出る場所と、位置の決め方が違います。押して操作する物も見るだけの物も、置き場所の都合で選びます。押す方法は、ダッシュボードでは SteamVR のレーザー、それ以外ではコントローラーのレイと左トリガーです。
 
 | 種類 | 出る場所 | 押して操作できるか | 位置の決め方 |
 | :-- | :-- | :-- | :-- |
-| `DashboardWindow` | SteamVR のダッシュボード | できる | SteamVR が管理する |
-| `WorldSpaceWindow` | ワールドの決まった座標 | できない(表示専用) | `Position` と `Rotation` |
-| `DeviceTrackedWindow` | コントローラーや HMD のそば | できない(表示専用) | `Target`、`Offset`、`Rotation` |
+| `DashboardWindow` | SteamVR のダッシュボード | できる(SteamVR のレーザー) | SteamVR が管理する |
+| `WorldSpaceWindow` | ワールドの決まった座標 | できる(左トリガー) | `Position` と `Rotation` |
+| `DeviceTrackedWindow` | コントローラーや HMD のそば | できる(左トリガー) | `Target`、`Offset`、`Rotation` |
 
-作る前に種類を選ぶ理由は、選び間違えると、ボタンが押せない物ができてしまうためです。表示専用になる理由は、ポインターの座標が、ダッシュボードのオーバーレイにしか届かないことにあります(追跡: #182)。
+入力の届き方は、種類ごとに経路が違います。ダッシュボードでは、SteamVR がレーザーをマウスイベントとして送ります。それ以外では、`ControllerRayPointerSource` がコントローラーのレイを毎フレーム交差させてポインターの座標を作ります(追跡: #182)。movable オーバーレイ(WorldSpaceWindow・DeviceTrackedWindow)では、押す操作が左トリガーだけです。
 
 1つのアプリは、複数のウィンドウを同時に作れます。種類を混ぜてもかまいません。複数のウィンドウを作るときの条件は、次のとおりです。
 
@@ -34,7 +34,7 @@ app.CreateWindow(new DashboardWindow { Title = "Panel", Child = panel });
 
 操作する物は、この種類で作ります。押せる部品の組み立て方は、[ボタンやトグルを組み立てる](../screen/build-buttons-toggles.md)にあります。
 
-## 空間に固定: 表示専用
+## 空間に固定: ワールドの座標に出す
 
 `WorldSpaceWindow` は、ワールドの座標に固定されます。座標は、Standing の追跡座標系で、プレイエリアの床の中央が原点、前方が -Z 方向、単位はメートルです。`Position` を省略すると、中央から前方 1m、高さ 1m に出ます。
 
@@ -47,9 +47,9 @@ app.CreateWindow(new WorldSpaceWindow
 });
 ```
 
-この種類は表示専用です。コントローラーのレーザー操作を受け取れないので、`GestureDetector` のコールバックは呼ばれません(追跡: #182)。時計や字幕のように、見るだけの物に向いています。
+この種類でも押せます。`ControllerRayPointerSource` が、コントローラーのレイを毎フレーム交差させます。押すのは左トリガーです(追跡: #182)。時計や字幕のように、見るだけの物にも向いています。
 
-## 手首などに追従: 表示専用
+## 手首などに追従: デバイスに追従させる
 
 `DeviceTrackedWindow` は、`Target` に指定したデバイスに追従します。`Target` には `TrackedDevice.LeftController`、`TrackedDevice.RightController`、`TrackedDevice.HMD` を指定できます。`Offset` でデバイスからの位置を、`Rotation` で向きを決めます。`TrackedDevice` は `FloatSoda.OVR.Overlay` の名前空間にあり、`Vector3` は `System.Numerics` のものです。
 
@@ -65,7 +65,7 @@ app.CreateWindow(new DeviceTrackedWindow
 
 <!-- ※要確認: `Offset` の座標系の向き(コントローラーのどの軸か)。HMD で確かめる -->
 
-この種類も表示専用です(追跡: #182)。手元に常に出しておきたい時計のような物に向いています。
+この種類でも押せます(追跡: #182)。押し方は、前の節のとおり左トリガーです。手元に常に出しておきたい時計のような物に向いています。
 
 ## 大きさの決まり方
 
@@ -89,8 +89,8 @@ app.CreateWindow(new WorldSpaceWindow
 
 ## 自分の物に合う種類の選び方
 
-押して操作する物は、`DashboardWindow` を選びます。見るだけの物は、空間のどこかに置くなら `WorldSpaceWindow`、手元に付けたいなら `DeviceTrackedWindow` を選びます。
+押して操作する物は、置き場所の都合でどの種類でも作れます。押し方は、`DashboardWindow` では SteamVR のレーザー、`WorldSpaceWindow` と `DeviceTrackedWindow` ではコントローラーのレイと左トリガーです。
 
-`WorldSpaceWindow` と `DeviceTrackedWindow` では、コントローラーのレーザー操作を受け取れません(追跡: #182)。できないことの一覧は、[できないこと・まだ使えないもの](../../../reference/limitations.md)にあります。
+`WorldSpaceWindow` と `DeviceTrackedWindow` では、入力が左トリガーだけです(追跡: #182)。できないことの一覧は、[できないこと・まだ使えないもの](../../../reference/limitations.md)にあります。
 
 選んだ種類で最初の画面を作るときは、[ボタンやトグルを組み立てる](../screen/build-buttons-toggles.md)に進みます。開発中の見た目の確認には、HMD を被らずに窓へ出せる `DesktopWindow` を使えます([HMD を被らずに確かめる](../input/test-without-hmd.md))。

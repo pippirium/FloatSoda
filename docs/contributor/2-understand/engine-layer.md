@@ -81,7 +81,7 @@ renderThread.PostTask(() =>
 | `OverlayWindow` | GL テクスチャのハンドルを `Texture_t` に包み、`Overlay.Texture.FromTexture_t` で OpenVR に渡す | テクスチャを作り直し、オーバーレイの幅(ピクセル幅 ÷ `Dpm`)を更新する |
 | `DesktopWindow` | テクスチャを既定のフレームバッファに転送し、`SwapBuffers` を呼ぶ | テクスチャを作り直し、GLFW のウィンドウサイズを変える |
 
-`OverlayWindow` を作るとき、オーバーレイがダッシュボードなら、入力方式をマウスにして `OverlayMouseRawPointerSource` を作ります。ほかのオーバーレイでは、`PointerSource` は `null` です。OpenVR 側の型は [OVR 層](ovr-layer.md) で説明しています。
+`OverlayWindow` を作るときの入力源は、オーバーレイの種類で決まります。ダッシュボードなら、入力方式をマウスにして、SteamVR のレーザーをマウスイベントとして受け取る `OverlayMouseRawPointerSource` を作ります。`IMovableOverlay`(デバイス追従・ワールド固定)なら、`ControllerRayPointerSource` を作り、指定デバイス(既定は両手コントローラー)のレイを毎フレーム交差させます。このとき、入力横取りフラグ(`MakeOverlaysInteractiveIfVisible`)は設定しません。どちらでもないオーバーレイでは、`PointerSource` は `null` のままです。OpenVR 側の型は [OVR 層](ovr-layer.md) で説明しています。
 
 ## なぜ Layer を複製して描画スレッドに渡すのか
 

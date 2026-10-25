@@ -4,7 +4,7 @@
 
 ## ボタンが効くオーバーレイの種類
 
-今、コントローラーで押せるのは、ダッシュボードのオーバーレイだけです。`WorldSpaceWindow` と `DeviceTrackedWindow` は表示専用で、`GestureDetector` のコールバックが呼ばれません(追跡: #182)。ボタンやトグルを組み立てるときは、`DashboardWindow` に出します。
+今、ボタンやトグルは、どの種類のオーバーレイでも押せます。押し方は、`DashboardWindow` では SteamVR のレーザー、`WorldSpaceWindow` と `DeviceTrackedWindow` ではコントローラーのレイと左トリガーです(追跡: #182)。`DashboardWindow` 以外では、押す操作が左トリガーだけになる点に注意します。
 
 `Button` ウィジェットは、まだありません(追跡: #219)。この手順では、`GestureDetector` と見た目のウィジェットを組み合わせて、押せるボタンと、押すたびに切り替わるトグルを作ります。
 
