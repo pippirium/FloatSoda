@@ -4,6 +4,21 @@ This file provides guidance to coding agents — Codex, Claude Code (claude.ai/c
 
 > **This file is the single source of project instructions for every agent.** Codex and other AGENTS.md-aware tools read it directly; Claude Code reads it through a one-line `@AGENTS.md` import in `CLAUDE.md`. Put project instructions here, never in `CLAUDE.md` — anything added there is invisible to every other agent.
 
+
+## Fork専用の作業境界（pippirium/FloatSoda）
+
+このリポジトリは `sumx21t-3310/FloatSoda` のForkです。以下は **`pippirium/FloatSoda` での作業に限る追加規則**です。既存の調査優先方針、実装委任の範囲、`CONTRIBUTING.md`・`REVIEW.md`・`API_DESIGN.md` の規約を置き換えません。
+
+- **書き込み先をForkに限定する。** ブランチのpush、Issue、PR、レビューなどの作成・変更は `pippirium/FloatSoda` に限ります。上流の `sumx21t-3310/FloatSoda` は参照・調査のみ許可し、別途明示承認がない限り書き込みません。
+- **PRのbaseを必ず検証する。** 作業はFork内のタスク専用ブランチで行い、PR作成前に base repository が `pippirium/FloatSoda`、base branch が `main` であることを確認します。GitHubの初期選択を信用せず、CLIを使用する場合は `gh pr create --repo pippirium/FloatSoda --base main --head <branch> --draft` のように明示します。上流宛てにはPRを作成しません。
+- **Draft PRでレビューを受ける。** 指示された実装が完了したら、Fork内にDraft PRを作成します。レビュー・承認があるまでマージせず、公開・デプロイも別途承認を要します。ブランチ命名、PR記載内容、テストは既存の `CONTRIBUTING.md` に従います。
+- **Issue必須規則を勝手に迂回しない。** 2026-10-25時点でForkのIssues機能は無効です。`CONTRIBUTING.md` によりIssueが必須となる作業では、Fork側のIssues有効化または別のタスク管理方法について事前承認を得ます。Issueを作るためだけに上流へ書き込まないでください。既存規則でIssueが不要な軽微な管理・文書修正には適用しません。
+- **上流との同期は禁止を既定値とする。** 上流 `sumx21t-3310/FloatSoda` からForkへ変更を取り込む操作と、Forkから上流へ変更を送る操作は、方向に関係なく、**その操作を特定したユーザーの事前・個別・明示承認がなければ実行しません**。一般的な開発依頼、「最新化」「依存を更新」といった曖昧な指示、過去の許可、PR作成・マージの許可は同期の許可とみなしません。禁止は人間が使うGitHub UIだけではなく、AIエージェント・CLI・スクリプト・自動化にも適用します。
+- **禁止対象をコマンド名ではなく結果で判断する。** 未承認でのGitHubの **Sync fork / Update branch**（上流変更を取り込む場合）、`gh repo sync`、`git pull upstream ...`、`git merge upstream/*`、`git rebase upstream/*`、`git cherry-pick`、上流由来のパッチ適用など、実質的に上流コードをForkへ取り込む操作を禁止します。同期を目的とするGitHub Actions、定期ジョブ、bot、hooks、外部サービスの設定・有効化も禁止します。コマンドやremoteの名前を変えて回避してはいけません。`git fetch upstream` や上流のソース・差分の閲覧は、**Forkに変更を反映しない読み取り目的に限り**許可します。
+- **例外を実行する前に承認を取る。** 同期が必要なら実行を停止し、①方向と対象リポジトリ、②取り込むbranch/commitと変更範囲、③Fork固有の変更・PRへの影響、④衝突や破壊的変更のリスク、⑤具体的な実行手順を提示して承認を待ちます。許可は提示した1回の操作だけに有効です。確認できない条件や手順変更があれば再承認を求めます。
+- **承認後もForkのmainを直接同期しない。** 上流からの取り込みを承認された場合はFork内の専用ブランチで差分と衝突を確認し、baseを`pippirium/FloatSoda:main`とするDraft PRでレビューを受け、別途マージ承認を得ます。`gh repo sync` / WebのSync forkによる直接更新、Fork固有の規則の削除、`reset --hard` / 強制pushによる履歴破棄は実施しません。上流への書き込みも、明示的に上流への変更操作を許可された場合のみ別途扱います。
+- **プリセットとの整合を保つ。** Fork用の再利用可能な原則は `pippirium/agent_instructions/projects/floatsoda/AGENTS.md` にも管理されています。ただし自動同期ではなく、**このルートの `AGENTS.md` が作業時に読まれる指示**です。Fork規則を変更する際は両方のリポジトリでPRを用意し、内容の整合を確認します。
+
 ## Working Style
 
 The repository owner develops hands-on and tracks the implementation themselves. By default, **investigate and explain — do not modify code.** When asked about a bug or behavior, report the root cause, the relevant files/lines, and (optionally) how a fix would look, but leave the actual implementation to the owner unless they explicitly ask you to make the change.
