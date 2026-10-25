@@ -81,7 +81,7 @@ uGUI で使ってきた概念が、FloatSoda でどうなるかを表にしま�
 
 ## 入力と時間の対応
 
-uGUI の EventSystem に当たるのは、ウィジェットの入力の受け取り口です。押す、離す、ドラッグするといった操作は、`GestureDetector` と `Listener` が受け取ります。ポインタが届くのは、ダッシュボードのオーバーレイだけです(追跡: #182)。
+uGUI の EventSystem に当たるのは、ウィジェットの入力の受け取り口です。押す、離す、ドラッグするといった操作は、`GestureDetector` と `Listener` が受け取ります。ポインターの座標は、3種類すべてのオーバーレイに届きます(追跡: #182)。
 
 コントローラーのボタンやスティックの入力は、`InputActionMap` と `InputAction<T>` で受け取ります。Unity の Input System の ActionMap、Action、DefaultBinding に近い語彙です。受け取り方は、[コントローラーの入力を受け取る](../4-build/input/controller-input.md)で説明しています。
 

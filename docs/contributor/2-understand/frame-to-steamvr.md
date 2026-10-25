@@ -94,7 +94,7 @@
 
 1 の `PollInputEvents` も、3 の `Flush` も、メインスレッドで `BeginFrame` から呼ばれます。つまり、これらの段は、すべてメインスレッドで動きます。デスクトップウィンドウでは、GLFW のコールバックが描画スレッドで `RawPointerEvent` を発火しますが、キューに積むだけで、変換とそれ以降はメインスレッドの `Flush` が行います。
 
-フレームワークの標準のポインター入力が接続されるのは、オーバーレイのうち、ダッシュボードだけです。ほかのオーバーレイでは、`PointerSource` が `null` です。コントローラーのレイで当たりを判定する `ControllerPointerSystem` は、どこからも呼ばれていません(追跡: [#182](https://github.com/sumx21t-3310/FloatSoda/issues/182))。
+フレームワークの標準のポインター入力は、オーバーレイの3種類すべてに接続されています。ダッシュボードでは `OverlayMouseRawPointerSource` が、movable オーバーレイ(ワールド固定とデバイス追従)では `ControllerRayPointerSource` が、`RawPointerEvent` を発火します(追跡: [#182](https://github.com/sumx21t-3310/FloatSoda/issues/182))。
 
 コントローラーのボタンを読むアクション入力は、別の流れです。メインループが、1周ごとに `VRInputUpdater.Update` で更新します。
 

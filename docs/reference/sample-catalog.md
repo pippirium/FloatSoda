@@ -91,7 +91,7 @@ dotnet run --project samples/FloatSoda.Samples.Flex -- --desktop
 | [Listener](../../samples/FloatSoda.Samples.Listener/README.md) | `Listener`(生のポインターイベント) |
 | [PointerRegion](../../samples/FloatSoda.Samples.PointerRegion/README.md) | `PointerRegion`(ホバーの出入りと、`Listener`・`GestureDetector` を重ねたときのイベントの順序) |
 
-ポインタの座標が届くのは、ダッシュボードのオーバーレイだけです。詳しくは、[できないこと・まだ使えないもの](limitations.md#置く場所と入力)を開いてください。ボタンの組み立て方は、ガイドの[ボタンやトグルを組み立てる](../guide/4-build/screen/build-buttons-toggles.md)にあります。
+ポインターの座標は、3種類すべてのオーバーレイに届きます。押し方の違い(ダッシュボードでは SteamVR のレーザー、ほかではコントローラーのレイと左トリガー)は、[できないこと・まだ使えないもの](limitations.md#置く場所と入力)にあります。ボタンの組み立て方は、ガイドの[ボタンやトグルを組み立てる](../guide/4-build/screen/build-buttons-toggles.md)にあります。
 
 ## 目的から作例を探す
 

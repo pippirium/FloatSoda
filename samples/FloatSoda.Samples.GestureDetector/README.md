@@ -80,7 +80,7 @@ private void HandlePanUpdate(Offset delta) => SetState(() =>
 
 ### 入力が届くウィンドウ種別
 
-ポインター座標が届くのは、現状 `DashboardWindow` と `DesktopWindow` です。`WorldSpaceWindow` / `DeviceTrackedWindow` ではコールバックが発火しません(issue #182)。
+ポインター座標は `DashboardWindow` と `DesktopWindow` に加え、`ControllerRayPointerSource` のコントローラーレイポーリングで `WorldSpaceWindow` / `DeviceTrackedWindow` にも届くようになりました(issue #182)。コントローラーレイ経路は左トリガーのみです。
 
 ## Flutterとの違い
 

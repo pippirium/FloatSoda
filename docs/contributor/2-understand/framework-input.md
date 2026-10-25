@@ -14,7 +14,7 @@
 
 認識器は `src/FloatSoda/Gesture/` にあります。ウィジェットとして使うのは `GestureDetector` や `Listener` です。
 
-オーバーレイのうち、ポインターが届くのはダッシュボードだけです。エンジン層の `OverlayWindow` が入力源を作るのが、ダッシュボードのときだけだからです。ほかのオーバーレイへの接続は、Issue で追跡しています(追跡: [#182](https://github.com/sumx21t-3310/FloatSoda/issues/182))。
+ポインターの入力源は、オーバーレイの種類ごとに違います。ダッシュボードでは、SteamVR のレーザーがマウスイベントとして届きます。デバイス追従とワールド固定の movable オーバーレイでは、エンジン層の `ControllerRayPointerSource` がコントローラーのレイを毎フレーム交差させ、交差 UV と左トリガーの状態をイベントに変換します(追跡: [#182](https://github.com/sumx21t-3310/FloatSoda/issues/182))。
 
 OpenVR のイベントがポインター入力になるまでは、[エンジン層](engine-layer.md) と [OVR 層](ovr-layer.md) の担当です。ウィジェット側の仕事は、`PointerEvent` を受け取るところから始まります。
 

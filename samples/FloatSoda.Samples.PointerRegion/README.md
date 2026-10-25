@@ -62,7 +62,7 @@ Enter / Exit で状態を切り替え、`SetState` で色やラベルを差し�
 
 ### 入力が届くウィンドウ種別
 
-ポインター座標が届くのは、現状 `DashboardWindow` と `DesktopWindow` です。`WorldSpaceWindow` / `DeviceTrackedWindow` では Enter / Exit も発火しません(issue #182)。
+ポインター座標は `DashboardWindow` と `DesktopWindow` に加え、`ControllerRayPointerSource` のコントローラーレイポーリングで `WorldSpaceWindow` / `DeviceTrackedWindow` にも届くようになりました(issue #182)。コントローラーレイ経路は左トリガーのみです。
 
 ## Flutterとの違い
 

@@ -189,7 +189,7 @@ public sealed class FoldableTagState : State<FoldableTag>
 
 状態を作ったときに一度だけ行う準備は `InitState()` に、部品が画面から外れるときの後片付けは `Dispose()` に書きます。どちらも `State<T>` を継承した `class` で上書きします。
 
-押せるのは、ダッシュボードに出したオーバーレイだけです(追跡: #182)。押せる範囲の決め方は、[ボタンやトグルを組み立てる](build-buttons-toggles.md)で説明しています。
+押せるのは、`DashboardWindow` では SteamVR のレーザー、`WorldSpaceWindow` と `DeviceTrackedWindow` ではコントローラーのレイと左トリガーです(追跡: #182)。押せる範囲の決め方は、[ボタンやトグルを組み立てる](build-buttons-toggles.md)で説明しています。
 
 **できた?** 札を押すたびに、説明が出たり隠れたりする。
 

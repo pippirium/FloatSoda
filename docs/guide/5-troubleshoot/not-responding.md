@@ -25,14 +25,14 @@
 
 押しても何も起きないときは、次の順に確かめます。
 
-1. 窓の種類が `DashboardWindow` であることを確かめる
+1. 窓の種類と、そこへポインターが届く経路を確かめる
 2. 押す範囲に、ヒットテストに応じる子があることを確かめる
 3. 上に重なって入力を塞ぐウィジェットがないことを確かめる
 4. `OnTap` が、離した時点で呼ばれる前提で動いていることを確かめる
 
 各項目の理由は次のとおりです。
 
-- 窓の種類: ポインタの座標が届くのは `DashboardWindow` だけです。`WorldSpaceWindow` と `DeviceTrackedWindow` では、`GestureDetector` のコールバックが呼ばれません(追跡: #182)。デスクトップの窓で反応しても、ダッシュボードで反応する証明にはなりません。
+- 窓の種類: ポインターの座標は、`DashboardWindow` では SteamVR のレーザー(マウスイベント)から、`WorldSpaceWindow` と `DeviceTrackedWindow` では `ControllerRayPointerSource` のコントローラーレイのポーリングから届きます(追跡: #182)。movable の窓に入れるときは、コントローラーのレイが当たっていて、左トリガーを押していることを確かめます。デスクトップの窓で反応しても、オーバーレイで反応する証明にはなりません。
 - 押す範囲: `Behaviour` の既定は `HitTestBehaviour.DeferToChild` で、子が押された位置を受け取れる範囲でだけ反応します。`ColoredBox` と `Text` は自分の範囲全体で受け取りますが、`Padding` や `SizedBox` の余白は受け取りません。空白を含む領域全体で反応させるには、`Behaviour = HitTestBehaviour.Opaque` を指定します。
 - 重なり: `Stack` などで重ねたウィジェットの上側に、`AbsorbPointer` や `Opaque` の `GestureDetector` があると、下側に入力が届きません。入力を素通りさせたい上側のウィジェットは、`IgnorePointer` で包みます。
 - `OnTap`: 押した時点ではなく、離した時点でタップが成立して呼ばれます。押したまま 18 ピクセル(`GestureConstants.TouchSlop`)を超えて動かすと、タップは成立せず、`OnTap` は呼ばれません。そのとき `OnPanUpdate` などを指定していれば、ドラッグとして扱われます。
@@ -149,7 +149,7 @@ app.CreateWindow(new DashboardWindow
 
 ## ほかの種類のオーバーレイで試した場合
 
-`WorldSpaceWindow` や `DeviceTrackedWindow` で押せないのは、書き間違いではなく制約です。この 2 種類では、ポインタの座標を使うウィジェット(`GestureDetector` など)が動きません(追跡: #182)。コントローラーのボタンで操作するなら、アクション入力を使えます。操作が要る画面は `DashboardWindow` に置き、ダッシュボードに替えて試してください。3 種類の違いは [オーバーレイの種類と選び方](../4-build/mechanics/overlay-types.md) にあります。
+`WorldSpaceWindow` や `DeviceTrackedWindow` で押せないときは、コントローラーのレイと左トリガーを確かめます。この 2 種類では、`ControllerRayPointerSource` がレイを毎フレーム交差させてポインターの座標を作り、押す操作が左トリガーだけになります(追跡: #182)。押しても反応しないときは、レイが当たっているかとトリガーを確認してください。3 種類の違いは [オーバーレイの種類と選び方](../4-build/mechanics/overlay-types.md) にあります。
 
 ## それでも直らないとき
 
