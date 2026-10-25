@@ -4,6 +4,18 @@ This file provides guidance to coding agents — Codex, Claude Code (claude.ai/c
 
 > **This file is the single source of project instructions for every agent.** Codex and other AGENTS.md-aware tools read it directly; Claude Code reads it through a one-line `@AGENTS.md` import in `CLAUDE.md`. Put project instructions here, never in `CLAUDE.md` — anything added there is invisible to every other agent.
 
+
+## Fork専用の作業境界（pippirium/FloatSoda）
+
+このリポジトリは `sumx21t-3310/FloatSoda` のForkです。以下は **`pippirium/FloatSoda` での作業に限る追加規則**です。既存の調査優先方針、実装委任の範囲、`CONTRIBUTING.md`・`REVIEW.md`・`API_DESIGN.md` の規約を置き換えません。
+
+- **書き込み先をForkに限定する。** ブランチのpush、Issue、PR、レビューなどの作成・変更は `pippirium/FloatSoda` に限ります。上流の `sumx21t-3310/FloatSoda` は参照・調査のみ許可し、別途明示承認がない限り書き込みません。
+- **PRのbaseを必ず検証する。** 作業はFork内のタスク専用ブランチで行い、PR作成前に base repository が `pippirium/FloatSoda`、base branch が `main` であることを確認します。GitHubの初期選択を信用せず、CLIを使用する場合は `gh pr create --repo pippirium/FloatSoda --base main --head <branch> --draft` のように明示します。上流宛てにはPRを作成しません。
+- **Draft PRでレビューを受ける。** 指示された実装が完了したら、Fork内にDraft PRを作成します。レビュー・承認があるまでマージせず、公開・デプロイも別途承認を要します。ブランチ命名、PR記載内容、テストは既存の `CONTRIBUTING.md` に従います。
+- **Issue必須規則を勝手に迂回しない。** 2026-10-25時点でForkのIssues機能は無効です。`CONTRIBUTING.md` によりIssueが必須となる作業では、Fork側のIssues有効化または別のタスク管理方法について事前承認を得ます。Issueを作るためだけに上流へ書き込まないでください。既存規則でIssueが不要な軽微な管理・文書修正には適用しません。
+- **上流同期と独自作業を分離する。** 上流の変更を取り込む場合は依頼範囲を確認し、このFork固有の節を保持して衝突を解決します。意図せずForkの変更を消すreset・強制pushはしません。衝突時は勝手に全面置換せず報告します。
+- **プリセットとの整合を保つ。** Fork用の再利用可能な原則は `pippirium/agent_instructions/projects/floatsoda/AGENTS.md` にも管理されています。ただし自動同期ではなく、**このルートの `AGENTS.md` が作業時に読まれる指示**です。Fork規則を変更する際は両方のリポジトリでPRを用意し、内容の整合を確認します。
+
 ## Working Style
 
 The repository owner develops hands-on and tracks the implementation themselves. By default, **investigate and explain — do not modify code.** When asked about a bug or behavior, report the root cause, the relevant files/lines, and (optionally) how a fix would look, but leave the actual implementation to the owner unless they explicitly ask you to make the change.
