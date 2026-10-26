@@ -20,7 +20,7 @@ public class PaintingContext(ContainerLayer containerLayer, SKRect estimatedBoun
     private SKCanvas? _canvas;
 
     /// <summary>画像への描画命令を記録中かどうかを取得します。</summary>
-    private bool IsRecording => _canvas != null;
+    private bool IsRecording => _canvas is not null;
 
     /// <summary>描画命令を記録するキャンバスを取得します。</summary>
     /// <value>このコンテキストの現在の画像へ記録するキャンバス。</value>
@@ -29,7 +29,7 @@ public class PaintingContext(ContainerLayer containerLayer, SKRect estimatedBoun
     {
         get
         {
-            if (_canvas == null) StartRecording();
+            if (_canvas is null) StartRecording();
             return _canvas!;
         }
     }

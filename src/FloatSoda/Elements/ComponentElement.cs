@@ -44,7 +44,7 @@ public abstract class ComponentElement : Element
     /// <inheritdoc/>
     public override void VisitChildren(Action<Element> visitor)
     {
-        if (Child != null) visitor(Child);
+        if (Child is not null) visitor(Child);
     }
 }
 

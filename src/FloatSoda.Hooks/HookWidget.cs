@@ -14,7 +14,7 @@ public abstract record HookWidget : Widget
 
     protected ReactiveProperty<T> UseState<T>(T initState)
     {
-        if (CurrentElementBuilding == null)
+        if (CurrentElementBuilding is null)
         {
             throw new InvalidOperationException("UseState は Build メソッド内でのみ呼び出すことができます。");
         }

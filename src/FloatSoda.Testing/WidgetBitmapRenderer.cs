@@ -52,7 +52,7 @@ public sealed class WidgetBitmapRenderer
             pipeline.FlushPaint();
 
             var layer = renderView.Layer?.Clone();
-            return layer == null
+            return layer is null
                 ? new SKBitmap(imageSize.Width, imageSize.Height)
                 : _layerRenderer.Render(layer, imageSize);
         }

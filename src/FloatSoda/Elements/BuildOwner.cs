@@ -97,11 +97,11 @@ public class BuildOwner
     {
         _taskScheduler.DrainTasks();
 
-        if (callback == null && _dirtyElements.Count == 0) return;
+        if (callback is null && _dirtyElements.Count == 0) return;
 
         _scheduledFlushDirtyElements = true;
 
-        if (callback != null)
+        if (callback is not null)
         {
             _dirtyElementsNeedsRestoring = false;
             callback();

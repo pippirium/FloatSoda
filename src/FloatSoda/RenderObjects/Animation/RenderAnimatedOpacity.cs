@@ -30,7 +30,7 @@ public class RenderAnimatedOpacity : RenderProxyBox
         {
             if (ReferenceEquals(field, value)) return;
 
-            if (Attached && field != null)
+            if (Attached && field is not null)
             {
                 field.Changed -= UpdateOpacity;
             }

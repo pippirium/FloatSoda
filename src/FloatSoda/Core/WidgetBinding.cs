@@ -151,7 +151,7 @@ public class WidgetBinding : IFrameScheduler, IHitTestTarget, IGestureBinding
     public void AttachRootWidget(Widget rootWidget)
     {
 
-        var isBootStrapFrame = RenderViewElement == null;
+        var isBootStrapFrame = RenderViewElement is null;
 
         RenderViewElement = new RenderObjectToWidgetAdapter
             {
@@ -177,12 +177,12 @@ public class WidgetBinding : IFrameScheduler, IHitTestTarget, IGestureBinding
     public void DrawFrame()
     {
 
-        if (RenderViewElement != null)
+        if (RenderViewElement is not null)
         {
             BuildOwner.BuildScope();
         }
 
-        if (!NeedsVisualUpdate || Window == null) return;
+        if (!NeedsVisualUpdate || Window is null) return;
         NeedsVisualUpdate = false;
 
         Pipeline?.FlushLayout();
@@ -210,7 +210,7 @@ public class WidgetBinding : IFrameScheduler, IHitTestTarget, IGestureBinding
         _lastPostedSize = newSize;
 
         var window = Window;
-        if (window == null) return;
+        if (window is null) return;
 
         RenderThreadRunner?.PostTask(() => window.Resize(newSize));
     }
@@ -267,11 +267,11 @@ public class WidgetBinding : IFrameScheduler, IHitTestTarget, IGestureBinding
     private void FlushPointerEvents()
     {
         var window = Window;
-        if (window == null) return;
+        if (window is null) return;
 
         (window as OverlayWindow)?.PollInputEvents();
 
-        if (_pointerController == null && window.PointerSource is { } pointerSource)
+        if (_pointerController is null && window.PointerSource is { } pointerSource)
         {
             _pointerController = new PointerController(pointerSource);
             _pointerController.OnPointerEvent += HandlePointerEvent;

@@ -57,6 +57,6 @@ public class SingleChildRenderObjectElement<T> : RenderObjectElement<T> where T 
     /// <inheritdoc/>
     public override void VisitChildren(Action<Element> visitor)
     {
-        if (Child != null) visitor(Child);
+        if (Child is not null) visitor(Child);
     }
 }

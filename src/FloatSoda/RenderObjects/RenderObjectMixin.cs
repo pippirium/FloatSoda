@@ -48,9 +48,9 @@ public class SingleChildContainer<T>(RenderObject owner) where T : RenderObject
         get;
         set
         {
-            if (field != null) owner.DropChild(field);
+            if (field is not null) owner.DropChild(field);
             field = value;
-            if (value != null) owner.AdoptChild(value);
+            if (value is not null) owner.AdoptChild(value);
         }
     }
 
@@ -63,7 +63,7 @@ public class SingleChildContainer<T>(RenderObject owner) where T : RenderObject
     /// <summary>子が存在すればvisitorを適用する。</summary>
     public void VisitChildren(Action<RenderObject> visitor)
     {
-        if (Child != null) visitor(Child);
+        if (Child is not null) visitor(Child);
     }
 }
 

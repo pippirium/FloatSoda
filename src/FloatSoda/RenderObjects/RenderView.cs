@@ -77,7 +77,7 @@ public class RenderView : RenderObject, IHasSingleChildRenderObject
     /// </summary>
     public override void PerformLayout()
     {
-        if (Child == null)
+        if (Child is null)
         {
             Size = FixedSize ?? SKSize.Empty;
             return;
@@ -95,7 +95,7 @@ public class RenderView : RenderObject, IHasSingleChildRenderObject
     /// <inheritdoc/>
     public override void Paint(PaintingContext context, Offset offset)
     {
-        if (Child != null) context.PaintChild(Child, offset);
+        if (Child is not null) context.PaintChild(Child, offset);
     }
 
     /// <inheritdoc/>

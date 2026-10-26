@@ -35,5 +35,5 @@ public abstract record Widget
     public abstract Element CreateElement();
 
     /// <inheritdoc/>
-    public override int GetHashCode() => (Key != null ? Key.GetHashCode() : 0);
+    public override int GetHashCode() => (Key is not null ? Key.GetHashCode() : 0);
 }

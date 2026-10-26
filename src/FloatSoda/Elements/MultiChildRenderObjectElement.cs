@@ -88,6 +88,6 @@ public class MultiChildRenderObjectElement<T> : RenderObjectElement<T> where T :
     /// <inheritdoc/>
     public override void RemoveRenderObjectChild(RenderObject? child)
     {
-        if (child != null && RenderObject is IHasMultiChildrenRenderObject ro) ro.RemoveChild(child);
+        if (child is not null && RenderObject is IHasMultiChildrenRenderObject ro) ro.RemoveChild(child);
     }
 }

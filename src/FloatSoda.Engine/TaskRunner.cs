@@ -441,7 +441,7 @@ public abstract class PostTaskRunner(string threadName, IFramePacer pacer, ILogg
             _linkedTokenSource = null;
         }
 
-        if (targetThread == null) return;
+        if (targetThread is null) return;
 
         if (Thread.CurrentThread == targetThread) return;
 

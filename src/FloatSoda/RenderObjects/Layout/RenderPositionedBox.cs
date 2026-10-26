@@ -107,7 +107,7 @@ public class RenderPositionedBox : RenderBox, IHasSingleChildRenderObject
         var shrinkWrapWidth = WidthFactor.HasValue || IsPositiveInfinity(Constraints.MaxWidth);
         var shrinkWrapHeight = HeightFactor.HasValue || IsPositiveInfinity(Constraints.MaxHeight);
 
-        if (Child != null)
+        if (Child is not null)
         {
             Child.ParentData ??= new BoxParentData();
             Child.Layout(Constraints.Loosen, parentUseSize: true);
@@ -189,7 +189,7 @@ public class RenderPositionedBox : RenderBox, IHasSingleChildRenderObject
     /// <inheritdoc/>
     public override void Paint(PaintingContext context, Offset offset)
     {
-        if (Child == null) return;
+        if (Child is null) return;
 
         var childParentData = Child.ParentData as BoxParentData;
         context.PaintChild(Child, offset + (childParentData?.Offset ?? Offset.Zero));

@@ -7,6 +7,7 @@
     <PropertyGroup>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
         <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+        <WarningsAsErrors>$(WarningsAsErrors);RCS1248</WarningsAsErrors>
     </PropertyGroup>
 
     <PropertyGroup>

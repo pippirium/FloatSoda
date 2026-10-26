@@ -67,6 +67,6 @@ public class RenderObjectToWidgetElement<T> : RenderObjectElement<T> where T : R
     /// <inheritdoc/>
     public override void VisitChildren(Action<Element> visitor)
     {
-        if (Child != null) visitor(Child);
+        if (Child is not null) visitor(Child);
     }
 }

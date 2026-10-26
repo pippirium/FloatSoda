@@ -201,7 +201,7 @@ public class GLView : IDisposable
 
         unsafe
         {
-            if (_window != null)
+            if (_window is not null)
             {
                 GLFW.DestroyWindow(_window);
             }
