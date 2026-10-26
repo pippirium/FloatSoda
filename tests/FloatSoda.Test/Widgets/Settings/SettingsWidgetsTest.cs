@@ -111,6 +111,71 @@ public class SettingsWidgetsTest
         Assert.Equal("Second", selected);
     }
 
+    [Fact]
+    public void ClampValue_有限値でも差が無限になる範囲_例外を投げる()
+    {
+        Assert.Throws<ArgumentOutOfRangeException>(
+            () => SettingsSliderState.ClampValue(0, -1e308, 1e308));
+    }
+
+    [Fact]
+    public void Build_ページ幅の変更_レイアウトを再計算できる()
+    {
+        static Widget CreatePage(double width) => new SizedBox
+        {
+            Width = width,
+            Height = 350,
+            Child = new SettingsPage
+            {
+                Title = "Settings",
+                Sections =
+                {
+                    new SettingsSection
+                    {
+                        Title = "General",
+                        Children =
+                        {
+                            new SettingsTile
+                            {
+                                Title = "Enabled",
+                                Trailing = new SettingsSwitch { Value = true }
+                            }
+                        }
+                    }
+                }
+            }
+        };
+
+        var binding = Mount(CreatePage(840));
+        binding.AttachRootWidget(CreatePage(700));
+        binding.FlushBuildAndLayout();
+    }
+
+    [Fact]
+    public void OnTap_外部からDropdown値を変更する_次の選択が通知される()
+    {
+        var changes = new List<string>();
+        Widget Build(string value) => new SizedBox
+        {
+            Width = 228,
+            Height = 260,
+            Child = new SettingsDropdown
+            {
+                Value = value,
+                Options = ["First", "Second"],
+                OnChanged = changes.Add
+            }
+        };
+
+        var binding = Mount(Build("First"));
+        binding.AttachRootWidget(Build("Second"));
+        binding.FlushBuildAndLayout();
+        Tap(binding, 100, 28);
+        binding.FlushBuildAndLayout();
+        Tap(binding, 100, 88);
+        Assert.Equal(["First"], changes);
+    }
+
     private static WidgetBinding Mount(Widget root)
     {
         var binding = new WidgetBinding(new RenderView());
