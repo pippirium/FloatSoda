@@ -1,4 +1,5 @@
 ﻿using FloatSoda.Abstractions.Geometries;
+using FloatSoda.Geometrics;
 using FloatSoda.Gesture;
 using SkiaSharp;
 
@@ -17,7 +18,7 @@ public class RenderColoredBox : RenderProxyBox
     /// 次のパイプライン更新時に背景と子を再描画します。
     /// 値が変更されなかった場合、Dirty状態は変更されません。
     /// </remarks>
-    public SKColor Color
+    public Color Color
     {
         get;
         set
@@ -26,7 +27,7 @@ public class RenderColoredBox : RenderProxyBox
             field = value;
             MarkNeedsPaint();
         }
-    } = SKColors.Black;
+    } = new(0, 0, 0);
 
     /// <inheritdoc/>
     public override void Paint(PaintingContext context, Offset offset)

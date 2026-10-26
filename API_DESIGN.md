@@ -189,7 +189,7 @@ var ui = new Column
             OnPressed = HandleClick,
             Style = new FloatSoda.UI.Cream.ButtonStyle
             {
-                BackgroundColor = SKColors.CornflowerBlue
+                BackgroundColor = Color.FromArgb(0xFF6495ED)
             }
         }
     ]
@@ -304,9 +304,9 @@ new FloatSoda.UI.Cream.Button
     OnPressed = OnSubmit,
     Style = new FloatSoda.UI.Cream.ButtonStyle
     {
-        BackgroundColor = SKColors.CornflowerBlue,
-        PressedBackgroundColor = SKColors.RoyalBlue,
-        DisabledBackgroundColor = SKColors.LightGray
+        BackgroundColor = Color.FromArgb(0xFF6495ED),
+        PressedBackgroundColor = Color.FromArgb(0xFF4169E1),
+        DisabledBackgroundColor = Color.FromArgb(0xFFD3D3D3)
     }
 }
 ```
@@ -577,8 +577,8 @@ public record ThemeContext
     public static ThemeContext Light() => new();
     public static ThemeContext Dark() => new()
     {
-        PrimaryColor = Colors.Teal300,
-        SurfaceColor = Colors.Gray900,
+        PrimaryColor = Color.FromArgb(0xFF4DB6AC),
+        SurfaceColor = Color.FromArgb(0xFF212121),
         OnSurfaceColor = Colors.White
     };
 }
@@ -739,7 +739,7 @@ public record ButtonStyle
 // ❌ 避ける: Skia型の直接露出
 public record ButtonStyle
 {
-    public SKColor BackgroundColor { get; init; } = SKColors.White;
+    public SKColor BackgroundColor { get; init; } = new SKColor(0xFF, 0xFF, 0xFF);
 }
 ```
 
@@ -747,6 +747,10 @@ public record ButtonStyle
 
 - レンダリングバックエンドを実装詳細に保つため。Flutter が framework 層と `dart:ui` の境界を維持していたからこそ、Skia から Impeller への差し替えが可能だった。同じ境界を引くことで、将来のバックエンド変更を公開APIを破壊せずに行える。
 - 利用者に SkiaSharp への直接依存を強制しない。
+
+**例外: `Color` と `SKColor` の暗黙変換**
+
+`Color` は、`SKColor` との暗黙変換を両方向とも公開しています。`SKColor` から `Color` への変換があるため、SkiaSharp が定義する名前付きの色を、`Color` 型のプロパティにそのまま渡せます。samples と tests には SkiaSharp の名前付きの色を渡す書き方が多く(#367 の時点で 34 ファイルに 156 か所)、変換を外すとそのすべてがコンパイルできなくなるため残しています。`Color` から `SKColor` への変換は、フレームワークの内部で Skia に色を渡すために使います。
 
 > **移行中の注記:** 既存コードにはこの規約に違反する箇所が残っている(`RenderBox.Size` の `SKSize`、`Angle` / `Dpm` / `Alignment` の `float` など)。段階的な解消は [Issue #131](https://github.com/sumx21t-3310/FloatSoda/issues/131) のロードマップに従う。新規APIはこの規約に従うこと。
 
@@ -766,8 +770,8 @@ public record ThemeContext
     public static ThemeContext Light() => new();
     public static ThemeContext Dark() => new()
     {
-        PrimaryColor = Colors.Teal300,
-        SurfaceColor = Colors.Gray900,
+        PrimaryColor = Color.FromArgb(0xFF4DB6AC),
+        SurfaceColor = Color.FromArgb(0xFF212121),
         OnSurfaceColor = Colors.White
     };
 }
@@ -788,7 +792,7 @@ public record LocaleContext
 var darkSection = parentTheme with
 {
     PrimaryColor = Colors.White,
-    SurfaceColor = Colors.Gray900
+    SurfaceColor = Color.FromArgb(0xFF212121)
 };
 ```
 

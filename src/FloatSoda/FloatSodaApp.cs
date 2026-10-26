@@ -5,7 +5,6 @@ using FloatSoda.Abstractions.Scheduling;
 using FloatSoda.Core;
 using FloatSoda.Engine;
 using FloatSoda.OVR.Input;
-using FloatSoda.OVR.Overlay;
 using FloatSoda.Widgets;
 using Microsoft.Extensions.Logging;
 using OverlayWindow = FloatSoda.Widgets.OverlayWindow;
@@ -121,8 +120,7 @@ public class FloatSodaApp : IDisposable
     /// <summary>アプリケーションを初期化し、停止要求を受けるまでメインループを実行します。</summary>
     /// <remarks>メインループ終了時には、このインスタンスが保持するOpenVRおよびレンダースレッドのリソースを解放します。</remarks>
     [STAThread]
-    public void Run()
-        => Run(CancellationToken.None, static () => { });
+    public void Run() => Run(CancellationToken.None, static () => { });
 
     internal void Run(CancellationToken cancellationToken, Action started)
     {
