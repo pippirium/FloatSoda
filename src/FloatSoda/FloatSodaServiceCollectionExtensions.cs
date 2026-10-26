@@ -26,7 +26,7 @@ public static class FloatSodaServiceCollectionExtensions
         ArgumentNullException.ThrowIfNull(services);
 
         options ??= new FloatSodaOptions();
-
+        
         if (options.TargetFrameRate <= 0)
         {
             throw new ArgumentOutOfRangeException(
