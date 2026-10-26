@@ -121,8 +121,9 @@ public readonly record struct Color(byte Red, byte Green, byte Blue, byte Alpha 
             default: throw new FormatException($"無効なカラーコード形式です: {webColor}");
         }
 
+        // HexNumber は前後の空白を許すため、"# F0000" が通ってしまう。16進数の文字だけを受け付ける
         static byte ParseHex(ReadOnlySpan<char> chars) =>
-            byte.Parse(chars, NumberStyles.HexNumber, CultureInfo.InvariantCulture);
+            byte.Parse(chars, NumberStyles.AllowHexSpecifier, CultureInfo.InvariantCulture);
     }
 
     /// <summary>各成分を保持したまま描画用の色へ変換します。</summary>

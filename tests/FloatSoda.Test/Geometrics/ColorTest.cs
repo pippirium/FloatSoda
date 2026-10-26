@@ -165,6 +165,17 @@ public class ColorTest
         Assert.Throws<FormatException>(() => Color.Parse(webColor));
     }
 
+    [Theory]
+    [InlineData("# F0000")]
+    [InlineData("#F0000 ")]
+    [InlineData("#FF 0000")]
+    [InlineData("#F 0")]
+    [InlineData("#F00 ")]
+    public void Parse_成分の中に空白_FormatExceptionを投げる(string webColor)
+    {
+        Assert.Throws<FormatException>(() => Color.Parse(webColor));
+    }
+
     // ── SKColor との変換 ───────────────────────────────────────────
 
     [Fact]
