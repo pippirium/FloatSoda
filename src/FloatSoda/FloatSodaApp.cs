@@ -136,9 +136,9 @@ public class FloatSodaApp : IDisposable
     /// <remarks>メインループ終了時には、このインスタンスが保持するOpenVRおよびレンダースレッドのリソースを解放します。</remarks>
     [STAThread]
     public void Run()
-        => Run(CancellationToken.None, static () => { });
+        => Run(CancellationToken.None, static () => { }, static () => { });
 
-    internal void Run(CancellationToken cancellationToken, Action started)
+    internal void Run(CancellationToken cancellationToken, Action started, Action stopping)
     {
         using var cancellationRegistration = cancellationToken.Register(RequestStop);
 
@@ -152,7 +152,14 @@ public class FloatSodaApp : IDisposable
         }
         finally
         {
-            Dispose();
+            try
+            {
+                stopping();
+            }
+            finally
+            {
+                Dispose();
+            }
         }
     }
 
