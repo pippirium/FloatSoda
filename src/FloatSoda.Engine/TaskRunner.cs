@@ -416,7 +416,7 @@ public abstract class PostTaskRunner(string threadName, IFramePacer pacer, ILogg
             var cts = CancellationTokenSource.CreateLinkedTokenSource(ct);
             _linkedTokenSource = cts;
 
-            _thread = new Thread(() => RunLoop(cts.Token))
+            _thread = new Thread(() => RunLoop(cts))
             {
                 IsBackground = true,
                 Name = ThreadName
@@ -435,8 +435,9 @@ public abstract class PostTaskRunner(string threadName, IFramePacer pacer, ILogg
             targetThread = _thread;
             _thread = null;
             _isRunning = false;
+            // 破棄は専用スレッドが終了時に行う(FinishRun)。ここで破棄すると、まだRunLoopの中にいる
+            // スレッドが破棄済みのトークンに触れてObjectDisposedExceptionを投げる。
             _linkedTokenSource?.Cancel();
-            _linkedTokenSource?.Dispose();
             _linkedTokenSource = null;
         }
 
@@ -478,8 +479,9 @@ public abstract class PostTaskRunner(string threadName, IFramePacer pacer, ILogg
         }
     }
 
-    private void RunLoop(CancellationToken ct)
+    private void RunLoop(CancellationTokenSource cts)
     {
+        var ct = cts.Token;
         try
         {
             OnStart(ct);
@@ -504,8 +506,31 @@ public abstract class PostTaskRunner(string threadName, IFramePacer pacer, ILogg
         }
         finally
         {
-            OnStop();
-            _isRunning = false;
+            try
+            {
+                OnStop();
+            }
+            finally
+            {
+                FinishRun(cts);
+            }
+        }
+    }
+
+    /// <summary>
+    /// 終了した専用スレッドの実行状態を解除し、キャンセルトークンを破棄する。トークンを最後に使うのはこのスレッドなので、
+    /// ここで破棄すれば破棄後に触れられることはない。<see cref="Stop"/> の Cancel と同じロックで行い、
+    /// 破棄済みのトークンへの Cancel を防ぐ。終了待機がタイムアウトした後に再開始されていれば、
+    /// フィールドは新しいスレッドの実行状態とトークンを指しているため、それには触れない。
+    /// </summary>
+    private void FinishRun(CancellationTokenSource cts)
+    {
+        lock (this)
+        {
+            // _thread が別のスレッドを指していれば再開始済み。null なら Stop が _isRunning を下ろし済み。
+            if (ReferenceEquals(_thread, Thread.CurrentThread)) _isRunning = false;
+            if (ReferenceEquals(_linkedTokenSource, cts)) _linkedTokenSource = null;
+            cts.Dispose();
         }
     }
 
