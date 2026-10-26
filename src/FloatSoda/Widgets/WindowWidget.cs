@@ -81,7 +81,7 @@ public abstract record OverlayWindow : WindowWidget
     public Dpm Dpm { get; init; } = Dpm.Default;
 
     /// <summary>
-    /// このウィンドウ定義に対応する <see cref="IOverlay"/> を生成します。レンダースレッド上で呼ばれます。
+    /// このウィンドウ定義に対応する <see cref="IOverlay"/> を生成します。FloatSodaのメインループ上で呼ばれます。
     /// </summary>
     internal abstract IOverlay CreateOverlay();
 

@@ -50,6 +50,7 @@ public class WidgetBinding : IFrameScheduler, IHitTestTarget, IGestureBinding
     public Element? RenderViewElement { get; private set; }
     private RenderPostTaskRunner? RenderThreadRunner { get; set; }
     private IEngineWindow? Window { get; set; }
+    private IOverlay? _pendingOverlay;
     /// <summary>描画ウィンドウとパイプラインの初期化が開始済みかを取得します。</summary>
     public bool Initialized { get; private set; }
     /// <summary>次のフレームでレイアウトまたは描画を処理する必要があるかを取得します。</summary>
@@ -109,12 +110,32 @@ public class WidgetBinding : IFrameScheduler, IHitTestTarget, IGestureBinding
 
         RenderThreadRunner.PostTask(() =>
         {
-            var renderer = new Renderer
+            Renderer? renderer = null;
+            try
             {
-                GLView = new GLView(Size, visible, windowName)
-            };
+                renderer = new Renderer
+                {
+                    GLView = new GLView(Size, visible, windowName)
+                };
 
-            Window = windowFactory(renderer);
+                Window = windowFactory(renderer);
+                _pendingOverlay = null;
+            }
+            catch
+            {
+                var pendingOverlay = _pendingOverlay;
+                _pendingOverlay = null;
+                try
+                {
+                    renderer?.Dispose();
+                }
+                finally
+                {
+                    pendingOverlay?.Dispose();
+                }
+
+                throw;
+            }
         });
 
 
@@ -125,6 +146,35 @@ public class WidgetBinding : IFrameScheduler, IHitTestTarget, IGestureBinding
         };
 
         Pipeline.RenderView.PrepareInitialFrame();
+    }
+
+    internal void SetPendingOverlay(IOverlay overlay) => _pendingOverlay = overlay;
+
+    /// <summary>レンダースレッド上でウィンドウと、まだウィンドウへ渡していないオーバーレイを解放します。</summary>
+    internal void DisposeResources()
+    {
+        var pointerController = _pointerController;
+        _pointerController = null;
+
+        var window = Window;
+        Window = null;
+        var pendingOverlay = _pendingOverlay;
+        _pendingOverlay = null;
+        try
+        {
+            pointerController?.Dispose();
+        }
+        finally
+        {
+            try
+            {
+                window?.Dispose();
+            }
+            finally
+            {
+                pendingOverlay?.Dispose();
+            }
+        }
     }
 
     /// <summary>次のフレームで視覚更新が必要であることを記録します。</summary>

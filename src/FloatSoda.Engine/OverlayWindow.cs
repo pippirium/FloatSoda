@@ -116,7 +116,20 @@ public class OverlayWindow : IEngineWindow
     /// <summary>このウィンドウの生ポインター入力源とオーバーレイを破棄します。</summary>
     public void Dispose()
     {
-        PointerSource?.Dispose();
-        Overlay.Dispose();
+        try
+        {
+            PointerSource?.Dispose();
+        }
+        finally
+        {
+            try
+            {
+                Overlay.Dispose();
+            }
+            finally
+            {
+                renderer.Dispose();
+            }
+        }
     }
 }

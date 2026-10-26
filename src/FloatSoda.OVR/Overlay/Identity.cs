@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using FloatSoda.OVR.Exceptions;
 
 namespace FloatSoda.OVR.Overlay;
@@ -41,7 +42,7 @@ public class OverlayIdentity : IOverlayIdentity
 
         if (_handle == OpenVR.k_ulOverlayHandleInvalid)
         {
-            OpenVR.Overlay.CreateOverlay(Key, Name, ref _handle).ThrowIfError();
+            CreateOverlay(Key, Name, ref _handle).ThrowIfError();
         }
     }
 
@@ -52,6 +53,73 @@ public class OverlayIdentity : IOverlayIdentity
         {
             OpenVR.Overlay.DestroyOverlay(Handle).ThrowIfError();
             Handle = OpenVR.k_ulOverlayHandleInvalid;
+        }
+    }
+
+    private static EVROverlayError CreateOverlay(string key, string name, ref ulong handle)
+    {
+        var error = OpenVR.Overlay.CreateOverlay(key, name, ref handle);
+        if (error != EVROverlayError.KeyInUse) return error;
+        if (!TryDestroyStaleOverlay(key, out var cleanupError)) return cleanupError;
+
+        handle = OpenVR.k_ulOverlayHandleInvalid;
+        return OpenVR.Overlay.CreateOverlay(key, name, ref handle);
+    }
+
+    internal static EVROverlayError CreateDashboardOverlay(
+        string key, string name, ref ulong mainHandle, ref ulong thumbnailHandle)
+    {
+        var error = OpenVR.Overlay.CreateDashboardOverlay(key, name, ref mainHandle, ref thumbnailHandle);
+        if (error != EVROverlayError.KeyInUse) return error;
+        if (!TryDestroyStaleOverlay(key, out var cleanupError)) return cleanupError;
+
+        mainHandle = OpenVR.k_ulOverlayHandleInvalid;
+        thumbnailHandle = OpenVR.k_ulOverlayHandleInvalid;
+        return OpenVR.Overlay.CreateDashboardOverlay(key, name, ref mainHandle, ref thumbnailHandle);
+    }
+
+    /// <summary>
+    /// 同じキーのオーバーレイが既にある場合、最後に描画したプロセスが終了済みのときだけ回収します。
+    /// 所有プロセスを確認できない場合は、実行中のオーバーレイを壊さないよう回収しません。
+    /// </summary>
+    private static bool TryDestroyStaleOverlay(string key, out EVROverlayError error)
+    {
+        var handle = OpenVR.k_ulOverlayHandleInvalid;
+        error = OpenVR.Overlay.FindOverlay(key, ref handle);
+        if (error != EVROverlayError.None || handle == OpenVR.k_ulOverlayHandleInvalid) return false;
+
+        var renderingPid = OpenVR.Overlay.GetOverlayRenderingPid(handle);
+        if (IsProcessAliveOrUnknown(renderingPid))
+        {
+            error = EVROverlayError.KeyInUse;
+            return false;
+        }
+
+        error = OpenVR.Overlay.DestroyOverlay(handle);
+        return error == EVROverlayError.None;
+    }
+
+    private static bool IsProcessAliveOrUnknown(uint processId)
+    {
+        // PID が未設定、または現在のプロセスとして確認できない場合は安全側に倒す。
+        if (processId == 0 || processId > int.MaxValue) return true;
+
+        try
+        {
+            using var process = Process.GetProcessById((int)processId);
+            return !process.HasExited;
+        }
+        catch (ArgumentException)
+        {
+            return false;
+        }
+        catch (InvalidOperationException)
+        {
+            return false;
+        }
+        catch (Exception)
+        {
+            return true;
         }
     }
 }
@@ -79,7 +147,7 @@ public class DashboardOverlayIdentity : IOverlayIdentity
         ulong mainHandle = OpenVR.k_ulOverlayHandleInvalid;
         ulong thumbHandle = OpenVR.k_ulOverlayHandleInvalid;
 
-        OpenVR.Overlay.CreateDashboardOverlay(Key, Name, ref mainHandle, ref thumbHandle).ThrowIfError();
+        OverlayIdentity.CreateDashboardOverlay(Key, Name, ref mainHandle, ref thumbHandle).ThrowIfError();
 
         Handle = mainHandle;
         ThumbnailHandle = thumbHandle;

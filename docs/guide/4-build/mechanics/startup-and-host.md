@@ -79,4 +79,16 @@ HMD を接続していない、または SteamVR を起動していないと、O
 
 メインループが止まれば、ホストも止まって、`RunAsync` が終わります。
 
+OpenVR を使う独自のバックグラウンド処理を追加した場合は、`IHostApplicationLifetime.ApplicationStopping` を購読し、処理を止めて実行中の呼び出しが終わるまで待ちます。Generic Host 経由では、FloatSoda の内部エラーでメインループが止まった場合も、OpenVR を解放する前に `ApplicationStopping` が通知されます。
+
+```csharp
+appLifetime.ApplicationStopping.Register(() =>
+{
+    workerCancellation.Cancel();
+    workerTask.GetAwaiter().GetResult();
+});
+```
+
+イベントハンドラーから戻ったあとに OpenVR を呼ぶ処理が残らないよう、キャンセルを通知するだけでなく、実行中の処理が終わるまで待機してください。
+
 ホストの設定、ログ、裏で動く処理を足したいときは、[設定やログ、裏で動く処理を足す](use-generic-host.md)に進みます。

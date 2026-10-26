@@ -35,6 +35,22 @@ public class PostTaskRunnerTest
         public void Drain() => DrainPendingTasks();
     }
 
+    private sealed class StoppingPostTaskRunner(ManualResetEventSlim releaseOnStop)
+        : PostTaskRunner("StoppingTest", new CancellationFramePacer(), logger: null)
+    {
+        protected override void Update() { }
+
+        protected override void OnStop() => releaseOnStop.Wait();
+
+        public void StopAndJoin() => StopAndWait();
+    }
+
+    private sealed class CancellationFramePacer : IFramePacer
+    {
+        public void WaitForNextFrame(CancellationToken cancellationToken = default) =>
+            cancellationToken.WaitHandle.WaitOne();
+    }
+
     [Fact]
     public void DrainPendingTasks_タスクが例外を投げる_後続タスクは実行される()
     {
@@ -68,5 +84,19 @@ public class PostTaskRunnerTest
         runner.Drain();
 
         Assert.Equal([0, 1, 2, 3, 4], order);
+    }
+
+    [Fact]
+    public async Task StopAndWait_OnStopが完了するまで戻らない()
+    {
+        using var releaseOnStop = new ManualResetEventSlim();
+        var runner = new StoppingPostTaskRunner(releaseOnStop);
+        runner.Start(CancellationToken.None);
+
+        var stop = Task.Run(runner.StopAndJoin);
+        Assert.False(stop.Wait(TimeSpan.FromMilliseconds(50)));
+
+        releaseOnStop.Set();
+        await stop.WaitAsync(TimeSpan.FromSeconds(3));
     }
 }

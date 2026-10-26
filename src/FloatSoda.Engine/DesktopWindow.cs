@@ -74,12 +74,25 @@ public class DesktopWindow : IEngineWindow
     /// </summary>
     public void Dispose()
     {
-        PointerSource?.Dispose();
-
-        if (_blitFbo != 0)
+        renderer.GLView.MakeCurrent();
+        try
         {
-            GL.DeleteFramebuffer(_blitFbo);
-            _blitFbo = 0;
+            PointerSource?.Dispose();
+        }
+        finally
+        {
+            try
+            {
+                if (_blitFbo != 0)
+                {
+                    GL.DeleteFramebuffer(_blitFbo);
+                    _blitFbo = 0;
+                }
+            }
+            finally
+            {
+                renderer.Dispose();
+            }
         }
     }
 }

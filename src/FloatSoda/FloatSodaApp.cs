@@ -62,6 +62,7 @@ public class FloatSodaApp : IDisposable
         _renderPostTaskRunner =
             new RenderPostTaskRunner("RenderThread", renderFramePacer,
                 loggerFactory?.CreateLogger<RenderPostTaskRunner>());
+        _renderPostTaskRunner.BeforeGLFWTerminate = DisposeBindingsOnRenderThread;
         _logger = loggerFactory?.CreateLogger<FloatSodaApp>();
         ActiveApps.TryAdd(this, 0);
     }
@@ -106,8 +107,14 @@ public class FloatSodaApp : IDisposable
     {
         Action<WidgetBinding> initialize = window switch
         {
-            OverlayWindow overlayWindow => binding => binding.EnsureInitialized(window.Title, _renderPostTaskRunner,
-                renderer => new EngineOverlayWindow(overlayWindow.CreateOverlay(), renderer, overlayWindow.Dpm)),
+            OverlayWindow overlayWindow => binding =>
+            {
+                // OpenVR作成時のエラーをメインループへ戻し、レンダースレッドで握りつぶさない。
+                var overlay = overlayWindow.CreateOverlay();
+                binding.SetPendingOverlay(overlay);
+                binding.EnsureInitialized(window.Title, _renderPostTaskRunner,
+                    renderer => new EngineOverlayWindow(overlay, renderer, overlayWindow.Dpm));
+            },
             DesktopWindow => binding => binding.EnsureInitialized(window.Title, _renderPostTaskRunner,
                 renderer => new EngineDesktopWindow(renderer), visible: true),
             _ => throw new NotSupportedException($"{window.GetType().Name} は未対応のウィンドウ種別です。")
@@ -129,9 +136,9 @@ public class FloatSodaApp : IDisposable
     /// <remarks>メインループ終了時には、このインスタンスが保持するOpenVRおよびレンダースレッドのリソースを解放します。</remarks>
     [STAThread]
     public void Run()
-        => Run(CancellationToken.None, static () => { });
+        => Run(CancellationToken.None, static () => { }, static () => { });
 
-    internal void Run(CancellationToken cancellationToken, Action started)
+    internal void Run(CancellationToken cancellationToken, Action started, Action stopping)
     {
         using var cancellationRegistration = cancellationToken.Register(RequestStop);
 
@@ -145,7 +152,14 @@ public class FloatSodaApp : IDisposable
         }
         finally
         {
-            Dispose();
+            try
+            {
+                stopping();
+            }
+            finally
+            {
+                Dispose();
+            }
         }
     }
 
@@ -289,6 +303,23 @@ public class FloatSodaApp : IDisposable
         }
     }
 
+    private void DisposeBindingsOnRenderThread()
+    {
+        foreach (var (title, binding) in _bindings)
+        {
+            try
+            {
+                binding.DisposeResources();
+            }
+            catch (Exception exception)
+            {
+                _logger?.LogError(exception, "{Title}の描画リソース解放に失敗しました", title);
+            }
+        }
+
+        _bindings.Clear();
+    }
+
     /// <summary>メインループへ停止を要求し、レンダースレッドとOpenVRリソースを解放します。</summary>
     public void Dispose()
     {
@@ -306,7 +337,7 @@ public class FloatSodaApp : IDisposable
         {
             _cts.Cancel();
 
-            _renderPostTaskRunner.Stop();
+            _renderPostTaskRunner.StopAndWaitForShutdown();
             _ioTaskRunner.Stop();
 
             _cts.Dispose();
