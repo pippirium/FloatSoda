@@ -38,6 +38,7 @@
         <Project Path="samples/FloatSoda.Samples.PointerRegion/FloatSoda.Samples.PointerRegion.csproj" />
         <Project Path="samples/FloatSoda.Samples.PrimitiveOverlay/FloatSoda.Samples.PrimitiveOverlay.csproj" />
         <Project Path="samples/FloatSoda.Samples.RenderPath/FloatSoda.Samples.RenderPath.csproj" />
+        <Project Path="samples/FloatSoda.Samples.Settings/FloatSoda.Samples.Settings.csproj" />
         <Project Path="samples/FloatSoda.Samples.SizedBox/FloatSoda.Samples.SizedBox.csproj" />
         <Project Path="samples/FloatSoda.Samples.Stack/FloatSoda.Samples.Stack.csproj" />
         <Project Path="samples/FloatSoda.Samples.Text/FloatSoda.Samples.Text.csproj" />
