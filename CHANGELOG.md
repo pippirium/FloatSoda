@@ -12,6 +12,7 @@
 - `Color.FromArgb(uint)` / `Color.FromArgb(a, r, g, b)` / `Color.FromRgbo(r, g, b, opacity)` を追加。Flutter の `Color(int)` / `Color.fromARGB` / `Color.fromRGBO` に当たる。`FromArgb(uint)` は `0xAARRGGBB` の並び順で読む。`FromRgbo` は `opacity` が 0.0〜1.0 の範囲の外か `NaN` のとき `ArgumentOutOfRangeException` を投げる(#367)
 - 名前付きの色 `Colors` を追加(名前空間 `FloatSoda.Geometrics`)。CSS の名前付きの色から Grey の綴りの別名7つと `RebeccaPurple` を除き、`Transparent` を足した 141 色で、名前は SkiaSharp の `SKColors` と同じ。値は CSS に揃えたため、`DarkSeaGreen`(`#8FBC8F`)と `Transparent`(透明な黒)は `SKColors` と値が違う(#367)
 - `Color.Parse` が、透明度を含む8桁の `#RRGGBBAA` と4桁の `#RGBA` を読めるようにした。CSS と同じく透明度は末尾に置くため、`FromArgb(uint)` の `0xAARRGGBB` とは並び順が逆になる(#367)
+- カタログ型サンプル `Icon` / `DefaultTextStyle` / `Visibility`(`Offstage`・`IndexedStack`・`RotatedBox` を含む)/ `Builder`(`KeyedSubtree`・`RepaintBoundary` を含む)/ `IntrinsicWidth`(`IntrinsicHeight` を含む)/ `ListenableBuilder` を追加。`GettingStarted` / `OverlayApp` / `PaintingSample` に README を足し、既存の6サンプルの README に位置づけと主な読者を書いた(#366)
 
 ### Changed (Breaking)
 

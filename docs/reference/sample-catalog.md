@@ -2,7 +2,7 @@
 
 # 作例のカタログ
 
-`samples/` には、動かして手本にできる作例が入っています。このページで、作りたいものに近い作例を探し、動かし方を確かめられます。作例は、アプリ全体の形を見るものと、ウィジェット1つ(または1グループ)を扱うカタログ型に分かれます。ウィジェットの作例は、レイアウト・描画・入力の3つで引けます。目的(時計を出したい、アルバムを作りたい)から引ける作例の整備は、追跡: #261 です。
+`samples/` には、動かして手本にできる作例が入っています。このページで、作りたいものに近い作例を探し、動かし方を確かめられます。作例は、アプリ全体の形を見るものと、ウィジェット1つ(または1グループ)を扱うカタログ型に分かれます。ウィジェットの作例は、レイアウト・描画・入力・ツリーの組み立ての4つで引けます。目的(時計を出したい、アルバムを作りたい)から引ける作例の整備は、追跡: #261 です。
 
 ## 作例の動かし方
 
@@ -31,14 +31,14 @@ dotnet run --project samples/FloatSoda.Samples.Flex -- --desktop
 
 ## 総合・最小・低レベルの作例
 
-ウィジェット単体ではなく、まとまったアプリの形を見たいときは、次の4つから選びます。この4つに README はありません。コードを直接読んでください。
+ウィジェット単体ではなく、まとまったアプリの形を見たいときは、次の4つから選びます。名前から各作例の README を開けます。README には、作例の位置づけと主な読者も書いてあります。
 
 | 作例 | 示すもの | SteamVR |
 | :-- | :-- | :-- |
-| [FloatSoda.Samples.OverlayApp](../../samples/FloatSoda.Samples.OverlayApp/Program.cs) | レイアウト、時計、アニメーション、カウンター、ドラッグの総合デモ。3種類のオーバーレイを同時に作る | 要る |
-| [FloatSoda.Samples.GettingStarted](../../samples/FloatSoda.Samples.GettingStarted/Program.cs) | 色の四角を1つ出す最小のアプリ。チュートリアルの段1に近い | 要る |
-| [FloatSoda.Samples.PrimitiveOverlay](../../samples/FloatSoda.Samples.PrimitiveOverlay/Program.cs) | ウィジェットを使わず、`FloatSoda.OVR` の低レベル API だけでオーバーレイを出す。デスクトップにある `layer_tree_output.png` を貼るので、先に PaintingSample を実行しておく | 要る |
-| [FloatSoda.Samples.PaintingSample](../../samples/FloatSoda.Samples.PaintingSample/Program.cs) | ウィジェット、RenderObject、レイヤーの3つのツリーを、PNG の画像に書き出す。デスクトップに保存する | 要らない |
+| [FloatSoda.Samples.OverlayApp](../../samples/FloatSoda.Samples.OverlayApp/README.md) | レイアウト、時計、アニメーション、カウンター、ドラッグの総合デモ。3種類のオーバーレイを同時に作る | 要る |
+| [FloatSoda.Samples.GettingStarted](../../samples/FloatSoda.Samples.GettingStarted/README.md) | 色の四角を1つ出す最小のアプリ。チュートリアルの段1に近い | 要る |
+| [FloatSoda.Samples.PrimitiveOverlay](../../samples/FloatSoda.Samples.PrimitiveOverlay/README.md) | ウィジェットを使わず、`FloatSoda.OVR` の低レベル API だけでオーバーレイを出す。デスクトップにある `layer_tree_output.png` を貼るので、先に PaintingSample を実行しておく | 要る |
+| [FloatSoda.Samples.PaintingSample](../../samples/FloatSoda.Samples.PaintingSample/README.md) | ウィジェット、RenderObject、レイヤーの3つのツリーを、PNG の画像に書き出す。デスクトップに保存する | 要らない |
 
 チュートリアルを先に通したいときは、[最初のオーバーレイを作る](../tutorials/first-overlay.md)を開いてください。
 
@@ -62,6 +62,8 @@ dotnet run --project samples/FloatSoda.Samples.Flex -- --desktop
 | [FittedBox](../../samples/FloatSoda.Samples.FittedBox/README.md) | `FittedBox`、`BoxFit` |
 | [FractionallySizedBox](../../samples/FloatSoda.Samples.FractionallySizedBox/README.md) | `FractionallySizedBox` |
 | [OverflowBox](../../samples/FloatSoda.Samples.OverflowBox/README.md) | `OverflowBox`、`SizedOverflowBox` |
+| [IntrinsicWidth](../../samples/FloatSoda.Samples.IntrinsicWidth/README.md) | `IntrinsicWidth`、`IntrinsicHeight` |
+| [Visibility](../../samples/FloatSoda.Samples.Visibility/README.md) | `Visibility`、`Offstage`、`IndexedStack`、`RotatedBox` |
 
 表は、`samples/` のディレクトリから手で写したものです。作例が増えたときは、`samples/` の一覧が正になります。部品を目的から探したいときは、[部品を目的から探す](find-widgets.md)を開いてください。
 
@@ -77,6 +79,8 @@ dotnet run --project samples/FloatSoda.Samples.Flex -- --desktop
 | [Transform](../../samples/FloatSoda.Samples.Transform/README.md) | `Transform` |
 | [Clip](../../samples/FloatSoda.Samples.Clip/README.md) | `ClipRect`、`ClipRoundRect`、`ClipOval`、`ClipCustomPath` |
 | [Text](../../samples/FloatSoda.Samples.Text/README.md) | `Text`、`RichText`、`TextSpan`、`TextStyle` |
+| [DefaultTextStyle](../../samples/FloatSoda.Samples.DefaultTextStyle/README.md) | `DefaultTextStyle` |
+| [Icon](../../samples/FloatSoda.Samples.Icon/README.md) | `Icon`、`IconData` |
 | [Image](../../samples/FloatSoda.Samples.Image/README.md) | `Image`、`FileImageProvider`、`BoxFit` |
 
 見た目をまとめて整える手順は、ガイドの[見た目を整える](../guide/4-build/screen/style-appearance.md)にあります。
@@ -92,6 +96,15 @@ dotnet run --project samples/FloatSoda.Samples.Flex -- --desktop
 | [PointerRegion](../../samples/FloatSoda.Samples.PointerRegion/README.md) | `PointerRegion`(ホバーの出入りと、`Listener`・`GestureDetector` を重ねたときのイベントの順序) |
 
 ポインタの座標が届くのは、ダッシュボードのオーバーレイだけです。詳しくは、[できないこと・まだ使えないもの](limitations.md#置く場所と入力)を開いてください。ボタンの組み立て方は、ガイドの[ボタンやトグルを組み立てる](../guide/4-build/screen/build-buttons-toggles.md)にあります。
+
+## ウィジェットの作例(ツリーの組み立て)
+
+context を受け渡す、並べ替えても状態を保つ、モデルの変更で一部だけを作り直すといった、ツリーの組み立ての目的で選びます。
+
+| 作例 | 扱うウィジェット |
+| :-- | :-- |
+| [Builder](../../samples/FloatSoda.Samples.Builder/README.md) | `Builder`、`KeyedSubtree`、`RepaintBoundary` |
+| [ListenableBuilder](../../samples/FloatSoda.Samples.ListenableBuilder/README.md) | `ListenableBuilder`(`INotifyPropertyChanged` のモデルで作り直す) |
 
 ## 目的から作例を探す
 

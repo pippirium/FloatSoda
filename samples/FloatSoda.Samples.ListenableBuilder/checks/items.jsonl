@@ -1,0 +1,3 @@
+{"id": "listenable-builder-1", "source": "ListenableBuilderDemo.cs:46-49", "flutter_ref": "transitions.dart:1132", "question": "「Count を増やす」を押すたびに、黄色の「Count: n」の数字が1ずつ増えるか", "read_aloud": "ボタンを押すたびに黄色の数字が増えるか見て"}
+{"id": "listenable-builder-2", "source": "ListenableBuilderDemo.cs:75-80", "flutter_ref": "transitions.dart:1132", "question": "押すたびに、2つ目の行が「偶数」(水色)と「奇数」(赤)で交互に切り替わるか", "read_aloud": "押すたびに偶数と奇数が交互に変わるか見て"}
+{"id": "listenable-builder-3", "source": "ListenableBuilderDemo.cs:86", "flutter_ref": "transitions.dart:1132", "question": "何回押しても、一番下の灰色の「Count: 0」が変わらないか(ListenableBuilder の外)", "read_aloud": "一番下の灰色の0、押しても変わらないか見て"}
