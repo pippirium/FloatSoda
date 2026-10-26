@@ -65,7 +65,13 @@ public class PostTaskRunnerTest
     {
         var logger = new CountingLogger();
         using var parent = new CancellationTokenSource();
-        var runner = new BlockingPostTaskRunner(CreateWaitingPacer(), logger, _ => Thread.Sleep(50));
+        // Stop が実行状態を下ろすまで更新に留まり、Stop のロックが外れる(Cancel が終わる)のを待ってから戻る。
+        // これで、Stop の処理が更新の途中に必ず重なる。
+        var runner = new BlockingPostTaskRunner(CreateWaitingPacer(), logger, r =>
+        {
+            Assert.True(SpinWait.SpinUntil(() => !r.IsRunning, TimeSpan.FromSeconds(5)));
+            lock (r) { }
+        });
 
         runner.Start(parent.Token);
         Assert.True(runner.InUpdate.Wait(TimeSpan.FromSeconds(5)));
@@ -106,6 +112,36 @@ public class PostTaskRunnerTest
         release.Set();
 
         Assert.True(runner.Stopped.Wait(TimeSpan.FromSeconds(5)));
+        Assert.Equal(0, logger.ErrorCount);
+    }
+
+    [Fact]
+    public void Start_終了待機のタイムアウト後に再開始_古いスレッドの終了で新しい実行を止めない()
+    {
+        var logger = new CountingLogger();
+        using var release = new ManualResetEventSlim();
+        var updates = 0;
+        var runner = new BlockingPostTaskRunner(CreateWaitingPacer(), logger, _ =>
+        {
+            // 最初の更新だけ止め、Stop の終了待機をタイムアウトさせる
+            if (Interlocked.Increment(ref updates) == 1) release.Wait();
+        });
+
+        runner.Start(CancellationToken.None);
+        Assert.True(runner.InUpdate.Wait(TimeSpan.FromSeconds(5)));
+        runner.Stop();
+        Assert.Equal(1, logger.WarningCount);
+
+        runner.Start(CancellationToken.None);
+        release.Set();
+
+        // 古いスレッドの終了処理が済んだあとも、新しいスレッドは更新を続ける
+        Assert.True(runner.Stopped.Wait(TimeSpan.FromSeconds(5)));
+        var afterOldStopped = Volatile.Read(ref updates);
+        Assert.True(SpinWait.SpinUntil(() => Volatile.Read(ref updates) > afterOldStopped + 1, TimeSpan.FromSeconds(5)));
+        Assert.True(runner.IsRunning);
+
+        runner.Stop();
         Assert.Equal(0, logger.ErrorCount);
     }
 
