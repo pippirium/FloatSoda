@@ -39,7 +39,7 @@ public sealed class SettingsSliderState : State<SettingsSlider>
     /// <summary>値の範囲を検証し、範囲内に収めます。</summary>
     public static double ClampValue(double value, double min, double max)
     {
-        if (!double.IsFinite(min) || !double.IsFinite(max) || max <= min)
+        if (!double.IsFinite(min) || !double.IsFinite(max) || max <= min || !double.IsFinite(max - min))
         {
             throw new ArgumentOutOfRangeException(nameof(max), "MinとMaxは有限値で、MaxはMinより大きくしてください。");
         }
