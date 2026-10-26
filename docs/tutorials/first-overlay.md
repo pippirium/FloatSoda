@@ -50,7 +50,6 @@ using FloatSoda.Widgets.Layout;
 using FloatSoda.Widgets.Paint;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using SkiaSharp;
 
 var builder = Host.CreateApplicationBuilder(args);
 builder.Services.AddFloatSoda();
@@ -67,7 +66,7 @@ Widget root = new Align
         Height = 300,
         Child = new ColoredBox
         {
-            Color = SKColors.CornflowerBlue
+            Color = Colors.CornflowerBlue
         }
     }
 };
@@ -119,7 +118,6 @@ using FloatSoda.Widgets.Layout;
 using FloatSoda.Widgets.Paint;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using SkiaSharp;
 
 var builder = Host.CreateApplicationBuilder(args);
 builder.Services.AddFloatSoda();
@@ -175,14 +173,14 @@ class CounterPanelState : TickerProviderState<CounterPanel>
                 Height = 300,
                 Child = new ColoredBox
                 {
-                    Color = SKColors.CornflowerBlue,
+                    Color = Colors.CornflowerBlue,
                     Child = new Center
                     {
                         Child = new Text(_count.ToString())
                         {
                             Style = new TextStyle
                             {
-                                Color = SKColors.White,
+                                Color = Colors.White,
                                 FontSize = 120,
                                 FontWeight = 700
                             }
@@ -233,7 +231,6 @@ using FloatSoda.Widgets.Layout;
 using FloatSoda.Widgets.Paint;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using SkiaSharp;
 
 var builder = Host.CreateApplicationBuilder(args);
 builder.Services.AddFloatSoda();
@@ -269,7 +266,7 @@ class CounterPanelState : State<CounterPanel>
                 Height = 300,
                 Child = new ColoredBox
                 {
-                    Color = SKColors.CornflowerBlue,
+                    Color = Colors.CornflowerBlue,
                     Child = new Flex
                     {
                         Direction = Axis.Vertical,
@@ -281,7 +278,7 @@ class CounterPanelState : State<CounterPanel>
                             {
                                 Style = new TextStyle
                                 {
-                                    Color = SKColors.White,
+                                    Color = Colors.White,
                                     FontSize = 120,
                                     FontWeight = 700
                                 }
@@ -295,14 +292,14 @@ class CounterPanelState : State<CounterPanel>
                                     Height = 80,
                                     Child = new ColoredBox
                                     {
-                                        Color = SKColors.Tomato,
+                                        Color = Colors.Tomato,
                                         Child = new Center
                                         {
                                             Child = new Text("+1")
                                             {
                                                 Style = new TextStyle
                                                 {
-                                                    Color = SKColors.White,
+                                                    Color = Colors.White,
                                                     FontSize = 50,
                                                     FontWeight = 700
                                                 }

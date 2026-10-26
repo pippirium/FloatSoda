@@ -44,7 +44,7 @@ Widget ──CreateElement──▶ Element ──作成・更新──▶ Rende
 再ビルドは、`UpdateRenderObject` で RenderObject のプロパティを書き換えます。プロパティの設定が値の変化を検知すると、レイアウトか描画の再実行を要求します。たとえば `RenderColoredBox.Color` は、値が変わったときだけ `MarkNeedsPaint()` を呼びます。
 
 ```csharp
-public SKColor Color
+public Color Color
 {
     get;
     set
@@ -53,7 +53,7 @@ public SKColor Color
         field = value;
         MarkNeedsPaint();
     }
-} = SKColors.Black;
+} = new(0, 0, 0);
 ```
 
 再実行の要求は、境界で止まります。
