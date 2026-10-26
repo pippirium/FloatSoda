@@ -44,7 +44,7 @@ new GestureDetector
     OnTap = () => SetState(() => _count++),
     Child = new ColoredBox
     {
-        Color = SKColors.CornflowerBlue,
+        Color = Colors.CornflowerBlue,
         Child = new SizedBox { Width = 220, Height = 64 },
     },
 }
