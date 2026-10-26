@@ -1,0 +1,5 @@
+{"id": "intrinsic-width-1", "source": "IntrinsicWidthDemo.cs:38-42", "flutter_ref": "basic.dart:3812", "question": "1段目の左で、3つの水色の項目がどれも同じ広い幅(320)に広がっているか", "read_aloud": "1段目の左、3つとも同じ広い幅か見て"}
+{"id": "intrinsic-width-2", "source": "IntrinsicWidthDemo.cs:46", "flutter_ref": "basic.dart:3812", "question": "1段目の中央で、3つの項目がどれも「設定を開く」の文字幅にそろい、左より狭いか", "read_aloud": "1段目の真ん中、3つとも設定を開くの幅か見て"}
+{"id": "intrinsic-width-3", "source": "IntrinsicWidthDemo.cs:50-54", "flutter_ref": "basic.dart:3812", "question": "1段目の右で、3つの項目が同じ幅にそろい、中央より広いか(幅を100の倍数へ切り上げ)", "read_aloud": "1段目の右、真ん中より少し広くそろってるか見て"}
+{"id": "intrinsic-width-4", "source": "IntrinsicWidthDemo.cs:67-71", "flutter_ref": "basic.dart:3887", "question": "2段目の左のカードが、テキストより縦に長く伸び、赤い帯も同じ高さまで伸びているか", "read_aloud": "2段目の左、カードが縦に長く伸びてるか見て"}
+{"id": "intrinsic-width-5", "source": "IntrinsicWidthDemo.cs:75", "flutter_ref": "basic.dart:3887", "question": "2段目の右のカードの高さが2行のテキストにちょうど合い、赤い帯も同じ高さか", "read_aloud": "2段目の右、赤い帯が文字2行と同じ高さか見て"}
