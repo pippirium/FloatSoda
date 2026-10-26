@@ -28,7 +28,7 @@ public static class HotReloadHandler
     {
         Console.WriteLine("[🥤FloatSoda HotReload] 🔥 コード差し替えを検知、Widgetツリーを再ビルドします");
 
-        if (updatedTypes != null)
+        if (updatedTypes is not null)
         {
             foreach (var type in updatedTypes)
             {

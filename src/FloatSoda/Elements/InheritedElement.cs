@@ -22,7 +22,7 @@ public class InheritedElement : ComponentElement
     {
         var incomingWidgets = Parent?.InheritedWidgets;
 
-        InheritedWidgets = incomingWidgets != null
+        InheritedWidgets = incomingWidgets is not null
             ? new Dictionary<Type, InheritedElement>(incomingWidgets)
             : [];
 

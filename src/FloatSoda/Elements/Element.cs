@@ -137,9 +137,9 @@ public abstract class Element : IBuildContext, IComparable<Element>
     public virtual void Mount(Element? parent)
     {
         Parent = parent;
-        Depth = parent != null ? parent.Depth + 1 : 1;
+        Depth = parent is not null ? parent.Depth + 1 : 1;
 
-        if (Parent != null)
+        if (Parent is not null)
         {
             Owner = Parent.Owner;
         }
@@ -183,9 +183,9 @@ public abstract class Element : IBuildContext, IComparable<Element>
     /// <returns>更新または生成された子Element。子を取り除いた場合は<see langword="null"/>。</returns>
     protected Element? UpdateChild(Element? child, Widget? newWidget, object? newSlot)
     {
-        if (newWidget == null)
+        if (newWidget is null)
         {
-            if (child != null)
+            if (child is not null)
             {
                 DeactivateChild(child);
             }
@@ -194,7 +194,7 @@ public abstract class Element : IBuildContext, IComparable<Element>
         }
 
 
-        if (child == null) return InflateWidget(newWidget, newSlot);
+        if (child is null) return InflateWidget(newWidget, newSlot);
 
 
         // Flutter と同じく、同じインスタンスのときだけ更新を省く。

@@ -201,7 +201,7 @@ public abstract class RenderProxyBox : RenderBox, IHasSingleChildRenderObject
     /// <remarks>子が存在しない場合は、現在の制約で許される最小サイズを使用します。</remarks>
     public override void PerformLayout()
     {
-        if (Child != null)
+        if (Child is not null)
         {
             Child.Layout(Constraints, parentUseSize: true);
             Size = Child.Size;
@@ -234,7 +234,7 @@ public abstract class RenderProxyBox : RenderBox, IHasSingleChildRenderObject
     /// <remarks>子が存在しない場合は何も記録しません。</remarks>
     public override void Paint(PaintingContext context, Offset offset)
     {
-        if (Child != null) context.PaintChild(Child, offset);
+        if (Child is not null) context.PaintChild(Child, offset);
     }
 
     /// <summary>このRenderProxyBoxと子を指定した描画パイプラインへ接続します。</summary>

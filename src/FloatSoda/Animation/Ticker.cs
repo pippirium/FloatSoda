@@ -91,7 +91,7 @@ public class WidgetTicker(
     }
 
     /// <summary>次フレームのコールバックが登録済みかどうか。</summary>
-    public bool Scheduled => _animationId != null;
+    public bool Scheduled => _animationId is not null;
 
     /// <summary>フレームコールバックを解除し、生成元による追跡からこのTickerを取り除きます。</summary>
     public void Dispose()

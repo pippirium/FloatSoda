@@ -52,7 +52,7 @@ public abstract class RenderCustomClip<T> : RenderProxyBox
             var oldClipper = field;
             field = value;
 
-            if (value == null || oldClipper == null || value.GetType() != oldClipper.GetType() ||
+            if (value is null || oldClipper is null || value.GetType() != oldClipper.GetType() ||
                 value.ShouldReclip(oldClipper))
             {
                 MarkNeedsClip();
@@ -98,7 +98,7 @@ public abstract class RenderCustomClip<T> : RenderProxyBox
     {
         get
         {
-            if (Clipper == null) return DefaultClip;
+            if (Clipper is null) return DefaultClip;
 
             if (!_hasClipperClip)
             {
@@ -147,7 +147,7 @@ public class RenderClipRect : RenderCustomClip<SKRect>
     /// </remarks>
     public override bool HitTest(HitTestResult result, Offset position)
     {
-        if (Clipper != null && !Clip.Contains((float)position.X, (float)position.Y)) return false;
+        if (Clipper is not null && !Clip.Contains((float)position.X, (float)position.Y)) return false;
 
         return base.HitTest(result, position);
     }
@@ -155,7 +155,7 @@ public class RenderClipRect : RenderCustomClip<SKRect>
     /// <inheritdoc/>
     public override void Paint(PaintingContext context, Offset offset)
     {
-        if (Child != null && ClipBehavior != FloatSoda.Rendering.Layers.Clip.None)
+        if (Child is not null && ClipBehavior != FloatSoda.Rendering.Layers.Clip.None)
         {
             Layer = context.PushClipRect(
                 offset,
@@ -166,7 +166,7 @@ public class RenderClipRect : RenderCustomClip<SKRect>
         else
         {
             // Clip.None では Flutter と同じくクリップのレイヤーを作らず、子を直接描画する。子が無ければ何も描画しない。
-            if (Child != null) base.Paint(context, offset);
+            if (Child is not null) base.Paint(context, offset);
             Layer = null;
         }
     }
@@ -206,7 +206,7 @@ public class RenderClipRoundRect : RenderCustomClip<SKRoundRect>
     /// </remarks>
     public override bool HitTest(HitTestResult result, Offset position)
     {
-        if (Clipper != null && !Contains(Clip, (float)position.X, (float)position.Y)) return false;
+        if (Clipper is not null && !Contains(Clip, (float)position.X, (float)position.Y)) return false;
 
         return base.HitTest(result, position);
     }
@@ -249,7 +249,7 @@ public class RenderClipRoundRect : RenderCustomClip<SKRoundRect>
     /// <inheritdoc/>
     public override void Paint(PaintingContext context, Offset offset)
     {
-        if (Child != null && ClipBehavior != FloatSoda.Rendering.Layers.Clip.None)
+        if (Child is not null && ClipBehavior != FloatSoda.Rendering.Layers.Clip.None)
         {
             Layer = context.PushClipRoundRect(
                 offset,
@@ -263,7 +263,7 @@ public class RenderClipRoundRect : RenderCustomClip<SKRoundRect>
         else
         {
             // Clip.None では Flutter と同じくクリップのレイヤーを作らず、子を直接描画する。子が無ければ何も描画しない。
-            if (Child != null) base.Paint(context, offset);
+            if (Child is not null) base.Paint(context, offset);
             Layer = null;
         }
     }
@@ -292,7 +292,7 @@ public class RenderClipPath : RenderCustomClip<SKPath>
     /// </remarks>
     public override bool HitTest(HitTestResult result, Offset position)
     {
-        if (Clipper != null && !Clip.Contains((float)position.X, (float)position.Y)) return false;
+        if (Clipper is not null && !Clip.Contains((float)position.X, (float)position.Y)) return false;
 
         return base.HitTest(result, position);
     }
@@ -300,7 +300,7 @@ public class RenderClipPath : RenderCustomClip<SKPath>
     /// <inheritdoc/>
     public override void Paint(PaintingContext context, Offset offset)
     {
-        if (Child != null && ClipBehavior != FloatSoda.Rendering.Layers.Clip.None)
+        if (Child is not null && ClipBehavior != FloatSoda.Rendering.Layers.Clip.None)
         {
             Layer = context.PushClipPath(
                 offset,
@@ -314,7 +314,7 @@ public class RenderClipPath : RenderCustomClip<SKPath>
         else
         {
             // Clip.None では Flutter と同じくクリップのレイヤーを作らず、子を直接描画する。子が無ければ何も描画しない。
-            if (Child != null) base.Paint(context, offset);
+            if (Child is not null) base.Paint(context, offset);
             Layer = null;
         }
     }
@@ -346,7 +346,7 @@ public class RenderClipOval : RenderCustomClip<SKRect>
     /// <inheritdoc/>
     public override void Paint(PaintingContext context, Offset offset)
     {
-        if (Child == null) return;
+        if (Child is null) return;
 
         if (ClipBehavior == FloatSoda.Rendering.Layers.Clip.None)
         {

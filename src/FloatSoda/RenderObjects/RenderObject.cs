@@ -58,7 +58,7 @@ public abstract class RenderObject : IHitTestTarget
     public virtual bool IsRepaintBoundary { get; }
 
     /// <summary>描画パイプラインへ接続されているかどうかを取得します。</summary>
-    public bool Attached => Owner != null;
+    public bool Attached => Owner is not null;
 
     /// <summary>レイアウトDirtyの伝播が停止するRenderObjectを取得または設定します。</summary>
     /// <value>再レイアウト境界。境界がまだ決定されていない場合は<see langword="null"/>です。</value>
@@ -85,7 +85,7 @@ public abstract class RenderObject : IHitTestTarget
     {
         Debug.WriteLine("Call Layout");
 
-        var relayoutBoundary = !parentUseSize || SizedByParent || constraints.IsTight || Parent == null
+        var relayoutBoundary = !parentUseSize || SizedByParent || constraints.IsTight || Parent is null
             ? this
             : Parent.RelayoutBoundary;
 
@@ -102,7 +102,7 @@ public abstract class RenderObject : IHitTestTarget
 
         Constraints = constraints;
 
-        if (RelayoutBoundary != null && relayoutBoundary != RelayoutBoundary)
+        if (RelayoutBoundary is not null && relayoutBoundary != RelayoutBoundary)
         {
             VisitChildren(child => child.CleanChildRelayoutBoundary());
         }
@@ -205,7 +205,7 @@ public abstract class RenderObject : IHitTestTarget
 
         Owner = owner;
 
-        if (NeedsLayout && RelayoutBoundary != null)
+        if (NeedsLayout && RelayoutBoundary is not null)
         {
             NeedsLayout = false;
 

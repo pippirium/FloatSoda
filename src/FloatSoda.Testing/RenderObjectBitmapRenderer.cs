@@ -36,7 +36,7 @@ public sealed class RenderObjectBitmapRenderer
         pipeline.FlushPaint();
 
         var layer = pipeline.RenderView.Layer?.Clone();
-        return layer == null
+        return layer is null
             ? new SKBitmap(imageSize.Width, imageSize.Height)
             : _layerRenderer.Render(layer, imageSize);
     }

@@ -48,7 +48,7 @@ public record RenderObjectToWidgetAdapter : RenderObjectWidget<RenderView>
     public RenderObjectToWidgetElement<RenderView> AttachToRenderTree(BuildOwner owner, RenderObjectToWidgetElement<RenderView>? element)
     {
         RenderObjectToWidgetElement<RenderView> result;
-        if (element == null)
+        if (element is null)
         {
             result = (RenderObjectToWidgetElement<RenderView>)CreateElement();
             result.Widget = this;
