@@ -71,13 +71,12 @@ public class GLView : IDisposable
 
             _window = GLFW.CreateWindow(Size.Width, Size.Height, title, null, null);
             if (_window is null) throw new InvalidOperationException("GLFWウィンドウの作成に失敗しました。");
-
-            GLFW.MakeContextCurrent(_window);
         }
 
         GRContext? grContext = null;
         try
         {
+            MakeCurrent();
             GL.LoadBindings(new GLFWBindingsContext());
 
             grContext = GRContext.CreateGl(GRGlInterface.Create()) ??
@@ -227,9 +226,9 @@ public class GLView : IDisposable
     public void Dispose()
     {
         if (_disposed) return;
-        _disposed = true;
 
         MakeCurrent();
+        _disposed = true;
 
         try
         {
