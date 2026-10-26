@@ -4,7 +4,7 @@ using System.Text;
 namespace FloatSoda.Core;
 
 /// <summary>
-/// オーバーレイキーの生成器。「エントリアセンブリ名（プロジェクトの名前空間）+ タイトル」を
+/// オーバーレイキーの生成器。「エントリアセンブリ名 + タイトル」を
 /// それぞれスネークケース化し、<c>.</c> でつないだものをキーとする。
 /// 例: アセンブリ <c>MyApp.Overlay</c> + タイトル <c>Watch DashBoard</c> → <c>my_app_overlay.watch_dash_board</c>
 /// </summary>

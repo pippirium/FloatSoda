@@ -107,8 +107,14 @@ public class FloatSodaApp : IDisposable
     {
         Action<WidgetBinding> initialize = window switch
         {
-            OverlayWindow overlayWindow => binding => binding.EnsureInitialized(window.Title, _renderPostTaskRunner,
-                renderer => new EngineOverlayWindow(overlayWindow.CreateOverlay(), renderer, overlayWindow.Dpm)),
+            OverlayWindow overlayWindow => binding =>
+            {
+                // OpenVR作成時のエラーをメインループへ戻し、レンダースレッドで握りつぶさない。
+                var overlay = overlayWindow.CreateOverlay();
+                binding.SetPendingOverlay(overlay);
+                binding.EnsureInitialized(window.Title, _renderPostTaskRunner,
+                    renderer => new EngineOverlayWindow(overlay, renderer, overlayWindow.Dpm));
+            },
             DesktopWindow => binding => binding.EnsureInitialized(window.Title, _renderPostTaskRunner,
                 renderer => new EngineDesktopWindow(renderer), visible: true),
             _ => throw new NotSupportedException($"{window.GetType().Name} は未対応のウィンドウ種別です。")
