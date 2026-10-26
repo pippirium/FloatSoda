@@ -7,8 +7,17 @@
 
 ## [Unreleased]
 
+### Added
+
+- `Color.FromArgb(uint)` / `Color.FromArgb(a, r, g, b)` / `Color.FromRgbo(r, g, b, opacity)` を追加。Flutter の `Color(int)` / `Color.fromARGB` / `Color.fromRGBO` に当たる。`FromArgb(uint)` は `0xAARRGGBB` の並び順で読む。`FromRgbo` は `opacity` が 0.0〜1.0 の範囲の外か `NaN` のとき `ArgumentOutOfRangeException` を投げる(#367)
+- 名前付きの色 `Colors` を追加(名前空間 `FloatSoda.Geometrics`)。CSS の名前付きの色から Grey の綴りの別名7つと `RebeccaPurple` を除き、`Transparent` を足した 141 色で、名前は SkiaSharp の `SKColors` と同じ。値は CSS に揃えたため、`DarkSeaGreen`(`#8FBC8F`)と `Transparent`(透明な黒)は `SKColors` と値が違う(#367)
+- `Color.Parse` が、透明度を含む8桁の `#RRGGBBAA` と4桁の `#RGBA` を読めるようにした。CSS と同じく透明度は末尾に置くため、`FromArgb(uint)` の `0xAARRGGBB` とは並び順が逆になる(#367)
+
 ### Changed (Breaking)
 
+- `Color` のコンストラクターで、`Red` / `Green` / `Blue` を必須にした。`new Color(Red: 255)` のように成分を省いた呼び出しは、白ではなくコンパイルエラーになる。`Alpha` の既定値 255 は変わらない(#367)
+- `HSVColor` / `HSLColor` を公開 API から外した(`internal` にした)。どちらも変換が `NotImplementedException` を投げるだけだった(#367)
+- `RenderColoredBox.Color` と、`FloatSoda.UI.Cream.ButtonStyle` / `FloatSoda.UI.FizzyPop.ButtonStyle` の `BackgroundColor` / `PressedBackgroundColor` / `DisabledBackgroundColor` の型を、`SKColor` から `Color` に変えた。`SKColor` からの暗黙変換は残っているため、`SKColors.Red` の代入はそのまま通る(#367)
 - `Container` の `Decoration` に `Border` があるとき、ボーダーの太さを `Padding` に加算するようにした。`Padding` を省略しても、子がボーダーの内側に収まる。Flutter の `Container` と同じ挙動で、`Border` 付きの `Container` では子のレイアウト領域がボーダーの太さぶん狭くなる(#267)
 
 ### Fixed

@@ -1,4 +1,5 @@
 using FloatSoda.Elements;
+using FloatSoda.Geometrics;
 using FloatSoda.RenderObjects.Painting;
 using FloatSoda.Widgets;
 using SkiaSharp;
@@ -26,7 +27,7 @@ public class LeafRenderObjectWidgetTest
         element.Mount(parent: null);
 
         var renderObject = Assert.IsType<RenderColoredBox>(element.RenderObject);
-        Assert.Equal(SKColors.Red, renderObject.Color);
+        Assert.Equal<Color>(SKColors.Red, renderObject.Color);
         Assert.False(element.Dirty);
     }
 
@@ -40,7 +41,7 @@ public class LeafRenderObjectWidgetTest
         element.Update(new TestLeafWidget { Color = SKColors.Blue });
 
         Assert.Same(originalRenderObject, element.RenderObject);
-        Assert.Equal(SKColors.Blue, originalRenderObject.Color);
+        Assert.Equal<Color>(SKColors.Blue, originalRenderObject.Color);
         Assert.False(element.Dirty);
     }
 
