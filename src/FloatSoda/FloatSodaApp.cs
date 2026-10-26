@@ -62,6 +62,7 @@ public class FloatSodaApp : IDisposable
         _renderPostTaskRunner =
             new RenderPostTaskRunner("RenderThread", renderFramePacer,
                 loggerFactory?.CreateLogger<RenderPostTaskRunner>());
+        _renderPostTaskRunner.BeforeGLFWTerminate = DisposeBindingsOnRenderThread;
         _logger = loggerFactory?.CreateLogger<FloatSodaApp>();
         ActiveApps.TryAdd(this, 0);
     }
@@ -289,6 +290,23 @@ public class FloatSodaApp : IDisposable
         }
     }
 
+    private void DisposeBindingsOnRenderThread()
+    {
+        foreach (var (title, binding) in _bindings)
+        {
+            try
+            {
+                binding.DisposeResources();
+            }
+            catch (Exception exception)
+            {
+                _logger?.LogError(exception, "{Title}の描画リソース解放に失敗しました", title);
+            }
+        }
+
+        _bindings.Clear();
+    }
+
     /// <summary>メインループへ停止を要求し、レンダースレッドとOpenVRリソースを解放します。</summary>
     public void Dispose()
     {
@@ -306,7 +324,7 @@ public class FloatSodaApp : IDisposable
         {
             _cts.Cancel();
 
-            _renderPostTaskRunner.Stop();
+            _renderPostTaskRunner.StopAndWaitForShutdown();
             _ioTaskRunner.Stop();
 
             _cts.Dispose();

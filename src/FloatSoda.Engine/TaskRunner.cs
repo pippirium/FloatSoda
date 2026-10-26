@@ -388,6 +388,7 @@ public sealed class IOTaskRunner : ITaskRunner, IDisposable
 /// <param name="logger">専用スレッド上の失敗と停止タイムアウトを記録するロガー。記録しない場合は <see langword="null"/>。</param>
 public abstract class PostTaskRunner(string threadName, IFramePacer pacer, ILogger? logger = null) : ITaskRunner
 {
+    private static readonly TimeSpan StopTimeout = TimeSpan.FromSeconds(3);
     private Thread? _thread;
 
     /// <summary>
@@ -428,6 +429,13 @@ public abstract class PostTaskRunner(string threadName, IFramePacer pacer, ILogg
 
     /// <inheritdoc />
     public void Stop()
+        => StopCore(StopTimeout);
+
+    /// <summary>専用スレッド上の終了処理が完了するまで待機します。</summary>
+    internal void StopAndWait()
+        => StopCore(Timeout.InfiniteTimeSpan);
+
+    private void StopCore(TimeSpan timeout)
     {
         Thread? targetThread;
         lock (this)
@@ -444,7 +452,13 @@ public abstract class PostTaskRunner(string threadName, IFramePacer pacer, ILogg
 
         if (Thread.CurrentThread == targetThread) return;
 
-        if (!targetThread.Join(3000))
+        if (timeout == Timeout.InfiniteTimeSpan)
+        {
+            targetThread.Join();
+            return;
+        }
+
+        if (!targetThread.Join(timeout))
         {
             Logger?.LogWarning("{ThreadName} の停止がタイムアウトしました", ThreadName);
         }
@@ -551,6 +565,10 @@ public abstract class PostTaskRunner(string threadName, IFramePacer pacer, ILogg
 public class RenderPostTaskRunner(string threadName, IFramePacer pacer, ILogger? logger = null)
     : PostTaskRunner(threadName, pacer, logger)
 {
+    internal Action? BeforeGLFWTerminate { get; set; }
+
+    internal void StopAndWaitForShutdown() => StopAndWait();
+
     /// <summary>
     /// 指定したレイヤーツリーをウィンドウへ反映する処理をレンダースレッドへ追加します。
     /// </summary>
@@ -595,5 +613,19 @@ public class RenderPostTaskRunner(string threadName, IFramePacer pacer, ILogger?
     /// <remarks>
     /// GLFWウィンドウとOpenGLリソースは、このメソッドが呼ばれる前に同じレンダースレッド上で解放されている必要があります。
     /// </remarks>
-    protected override void OnStop() => GLFW.Terminate();
+    protected override void OnStop()
+    {
+        try
+        {
+            BeforeGLFWTerminate?.Invoke();
+        }
+        catch (Exception exception)
+        {
+            Logger?.LogError(exception, "{ThreadName} の終了時にリソース解放が失敗しました", ThreadName);
+        }
+        finally
+        {
+            GLFW.Terminate();
+        }
+    }
 }
