@@ -1,5 +1,5 @@
 {"id": "builder-1", "source": "BuilderDemo.cs:54", "flutter_ref": "basic.dart:8287", "question": "1段目の左の文字が「Build の context: FontSize 指定なし」になっているか", "read_aloud": "1段目の左、指定なしって書いてあるか見て"}
 {"id": "builder-2", "source": "BuilderDemo.cs:58-62", "flutter_ref": "basic.dart:8287", "question": "1段目の右の文字が「Builder の context: FontSize 26」になっているか", "read_aloud": "1段目の右、フォントサイズ26って書いてあるか見て"}
-{"id": "builder-3", "source": "BuilderDemo.cs:77-80", "flutter_ref": "basic.dart:8165", "question": "Key なしの行で、青を1回タップしてから「左右を入れ替える」を押すと、左に「赤 1 回」、右に「青 0 回」が出るか(回数が位置に残る)", "read_aloud": "Keyなしの青を1回押して入れ替え、左が赤1回か見て"}
-{"id": "builder-4", "source": "BuilderDemo.cs:89-100", "flutter_ref": "basic.dart:8165", "question": "Key ありの行で、青を2回タップしてから「左右を入れ替える」を押すと、左に「赤 0 回」、右に「青 2 回」が出るか(回数が色と一緒に動く)", "read_aloud": "Keyありの青を2回押して入れ替え、右が青2回か見て"}
+{"id": "builder-3", "source": "BuilderDemo.cs:77-80", "flutter_ref": "basic.dart:8165", "question": "起動直後の配置で、Key なしの青を1回、Key ありの青を2回タップしてから「左右を入れ替える」を1回押す。Key なしの行に、左「赤 1 回」、右「青 0 回」が出るか(回数が位置に残る)", "read_aloud": "Keyなし青1回、Keyあり青2回押して入れ替え。Keyなしの左が赤1回か見て"}
+{"id": "builder-4", "source": "BuilderDemo.cs:89-100", "flutter_ref": "basic.dart:8165", "question": "builder-3 の操作のあと(入れ替えは押し直さない)、Key ありの行に、左「赤 0 回」、右「青 2 回」が出るか(回数が色と一緒に動く)", "read_aloud": "そのまま、Keyありの右が青2回か見て"}
 {"id": "builder-5", "source": "BuilderDemo.cs:111-114", "flutter_ref": "basic.dart:7544", "question": "最下段の「なし」と「あり」が、同じ見た目で描かれているか", "read_aloud": "一番下のなしとあり、同じ見た目か見て"}
