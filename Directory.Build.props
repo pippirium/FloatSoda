@@ -5,9 +5,14 @@
     </PropertyGroup>
 
     <PropertyGroup>
+        <LangVersion>14</LangVersion>
+        <AnalysisLevel>10.0</AnalysisLevel>
+    </PropertyGroup>
+
+    <PropertyGroup>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
         <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
-        <WarningsAsErrors>$(WarningsAsErrors);RCS1248</WarningsAsErrors>
+        <WarningsAsErrors>$(WarningsAsErrors);RCS1248;RS0016;RS0017</WarningsAsErrors>
     </PropertyGroup>
 
     <PropertyGroup>
@@ -22,7 +27,12 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Roslynator.Analyzers" Version="4.13.1" PrivateAssets="all" />
+        <PackageReference Include="Roslynator.Analyzers" Version="5.0.1" PrivateAssets="all" />
+    </ItemGroup>
+
+    <!-- NuGet に公開するパッケージの公開 API を PublicAPI.Shipped.txt / PublicAPI.Unshipped.txt で追跡する -->
+    <ItemGroup Condition="$(MSBuildProjectDirectory.StartsWith('$(MSBuildThisFileDirectory)src')) And '$(IsPackable)' != 'false'">
+        <PackageReference Include="Microsoft.CodeAnalysis.PublicApiAnalyzers" Version="5.6.0" PrivateAssets="all" />
     </ItemGroup>
 
     <ItemGroup>
