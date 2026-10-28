@@ -26,11 +26,7 @@ public class RepaintBoundaryTest
     public void CreateRenderObject_Widgetツリーへマウント_RenderRepaintBoundaryを挟む()
     {
         var view = new RenderView(100, 100);
-        _ = new RenderPipeline
-        {
-            OnNeedVisualUpdate = () => { },
-            RenderView = view
-        };
+        _ = new RenderPipeline { OnNeedVisualUpdate = () => { }, RenderView = view };
         var owner = new BuildOwner(() => { });
 
         _ = new RenderObjectToWidgetAdapter
@@ -38,8 +34,8 @@ public class RepaintBoundaryTest
             Container = view,
             Child = new RepaintBoundary
             {
-                Child = new SizedBox { Width = 10, Height = 10 }
-            }
+                Child = new SizedBox { Width = 10, Height = 10 },
+            },
         }.AttachToRenderTree(owner, null);
 
         var boundary = Assert.IsType<RenderRepaintBoundary>(view.Child);
@@ -54,11 +50,7 @@ public class RepaintBoundaryTest
         var boundary = new RenderRepaintBoundary { Child = inside };
         var outside = new PaintCounterBox { Child = boundary };
         var view = new RenderView(100, 100) { FixedSize = new(100, 100), Child = outside };
-        var pipeline = new RenderPipeline
-        {
-            OnNeedVisualUpdate = () => { },
-            RenderView = view
-        };
+        var pipeline = new RenderPipeline { OnNeedVisualUpdate = () => { }, RenderView = view };
         view.PrepareInitialFrame();
         pipeline.FlushLayout();
         pipeline.FlushPaint();

@@ -9,8 +9,7 @@ public class EngineShell : IDisposable
     /// 指定したキャンセルトークンを使用してエンジンを開始します。
     /// </summary>
     /// <param name="token">エンジンの停止を通知するキャンセルトークン。</param>
-    public void Start(CancellationToken token) {}
-
+    public void Start(CancellationToken token) { }
 
     /// <summary>
     /// エンジンシェルが保持するリソースを解放します。

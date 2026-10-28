@@ -20,7 +20,8 @@ public static class Curves
         new Offset(0.108, 0.3085),
         new Offset(0.198, 0.541),
         new Offset(0.3655, 1.0),
-        new Offset(0.5465, 0.989));
+        new Offset(0.5465, 0.989)
+    );
 
     /// <summary>緩やかに加速し緩やかに減速する標準的なease。</summary>
     public static readonly ICurve Ease = new Cubic(0.25, 0.1, 0.25, 1.0);
@@ -103,7 +104,8 @@ public static class Curves
         new Offset(0.133333, 0.06),
         new Offset(0.166666, 0.4),
         new Offset(0.208333, 0.82),
-        new Offset(0.25, 1.0));
+        new Offset(0.25, 1.0)
+    );
 
     /// <summary>4次関数状のease in out。</summary>
     public static readonly ICurve EaseInOutQuart = new Cubic(0.77, 0.0, 0.175, 1.0);

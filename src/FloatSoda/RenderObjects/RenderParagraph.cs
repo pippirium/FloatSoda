@@ -25,10 +25,12 @@ public class RenderParagraph : RenderBox, IHasMultiChildrenRenderObject
     void IHasMultiChildrenRenderObject.MoveChild(RenderObject child, RenderObject? after) =>
         Children.MoveErased(child, after);
 
-    bool IHasMultiChildrenRenderObject.RemoveChild(RenderObject child) => Children.RemoveErased(child);
+    bool IHasMultiChildrenRenderObject.RemoveChild(RenderObject child) =>
+        Children.RemoveErased(child);
 
     /// <inheritdoc/>
-    public override void SetupParentData(RenderObject child) => child.ParentData = new BoxParentData();
+    public override void SetupParentData(RenderObject child) =>
+        child.ParentData = new BoxParentData();
 
     /// <inheritdoc/>
     public override void Attach(RenderPipeline? owner)
@@ -45,7 +47,8 @@ public class RenderParagraph : RenderBox, IHasMultiChildrenRenderObject
     }
 
     /// <inheritdoc/>
-    public override void VisitChildren(Action<RenderObject> visitor) => Children.VisitChildren(visitor);
+    public override void VisitChildren(Action<RenderObject> visitor) =>
+        Children.VisitChildren(visitor);
 
     /// <inheritdoc/>
     public override void RedepthChildren() => VisitChildren(RedepthChild);
@@ -63,7 +66,8 @@ public class RenderParagraph : RenderBox, IHasMultiChildrenRenderObject
         get;
         set
         {
-            if (field == value) return;
+            if (field == value)
+                return;
             field = value;
             _textPainter.Text = value;
             MarkNeedsLayout();
@@ -95,11 +99,14 @@ public class RenderParagraph : RenderBox, IHasMultiChildrenRenderObject
     protected override double ComputeMinIntrinsicWidth(double height)
     {
         var segments = Text.Text.Split((char[]?)null, StringSplitOptions.RemoveEmptyEntries);
-        return segments.Length == 0 ? 0 : segments.Max(segment => Measure(double.PositiveInfinity, segment).Width);
+        return segments.Length == 0
+            ? 0
+            : segments.Max(segment => Measure(double.PositiveInfinity, segment).Width);
     }
 
     /// <inheritdoc/>
-    protected override double ComputeMaxIntrinsicWidth(double height) => Measure(double.PositiveInfinity).Width;
+    protected override double ComputeMaxIntrinsicWidth(double height) =>
+        Measure(double.PositiveInfinity).Width;
 
     /// <inheritdoc/>
     protected override double ComputeMinIntrinsicHeight(double width) => Measure(width).Height;
@@ -109,16 +116,14 @@ public class RenderParagraph : RenderBox, IHasMultiChildrenRenderObject
 
     private SKSize Measure(double maxWidth, string? text = null)
     {
-        var painter = new TextPainter
-        {
-            Text = text is null ? Text : Text with { Text = text }
-        };
+        var painter = new TextPainter { Text = text is null ? Text : Text with { Text = text } };
         painter.Layout(0, maxWidth);
         return painter.Size;
     }
 
     /// <inheritdoc/>
-    public override void Paint(PaintingContext context, Offset offset) => _textPainter.Paint(context.Canvas, offset);
+    public override void Paint(PaintingContext context, Offset offset) =>
+        _textPainter.Paint(context.Canvas, offset);
 
     /// <inheritdoc/>
     public override bool HitTestSelf(Offset position) => true;
@@ -190,7 +195,8 @@ public class TextPainter
         get;
         set
         {
-            if (field == value) return;
+            if (field == value)
+                return;
             field = value;
             MarkNeedsLayout();
         }
@@ -219,14 +225,10 @@ public class TextPainter
 
     private TextBlock CreateTextBlock()
     {
-        var textBlock = new TextBlock
-        {
-            FontMapper = FloatSodaFontMapper.Instance
-        };
+        var textBlock = new TextBlock { FontMapper = FloatSodaFontMapper.Instance };
         Text?.Build(textBlock, CreateDefaultStyle());
         return textBlock;
     }
-
 
     /// <summary>
     /// 指定した幅の範囲でテキストを計測します。
@@ -240,7 +242,6 @@ public class TextPainter
         _textBlock.MaxWidth = (float)maxWidth;
         _textBlock.Layout();
     }
-
 
     /// <summary>
     /// 最後にレイアウトしたテキストを指定位置へ描画します。

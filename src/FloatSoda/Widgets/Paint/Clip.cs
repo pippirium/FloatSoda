@@ -1,5 +1,5 @@
-﻿using FloatSoda.Rendering.Layers;
-using FloatSoda.Geometrics;
+﻿using FloatSoda.Geometrics;
+using FloatSoda.Rendering.Layers;
 using FloatSoda.RenderObjects.Painting;
 using SkiaSharp;
 
@@ -16,6 +16,7 @@ public record ClipOval : SingleChildRenderObjectWidget<RenderClipOval>
     /// <see langword="null"/>の場合は、このウィジェットの領域全体を外接矩形として使用します。
     /// </summary>
     public CustomClipper<SKRect>? Clipper { get; init; } = null;
+
     /// <summary>
     /// クリップ境界の描画方式を取得します。
     /// </summary>
@@ -27,11 +28,7 @@ public record ClipOval : SingleChildRenderObjectWidget<RenderClipOval>
     /// <returns>クリッパーと描画方式を保持する新しいRenderObject。</returns>
     public override RenderClipOval CreateRenderObject()
     {
-        return new RenderClipOval
-        {
-            Clipper = Clipper,
-            ClipBehavior = ClipBehavior
-        };
+        return new RenderClipOval { Clipper = Clipper, ClipBehavior = ClipBehavior };
     }
 
     /// <summary>
@@ -61,12 +58,12 @@ public record ClipRect : SingleChildRenderObjectWidget<RenderClipRect>
     /// <see langword="null"/>の場合は、このウィジェットの領域全体を使用します。
     /// </summary>
     public CustomClipper<SKRect>? Clipper { get; init; } = null;
+
     /// <summary>
     /// クリップ境界の描画方式を取得します。
     /// </summary>
     /// <value>既定値は<see cref="Clip.HardEdge"/>です。Flutter の <c>ClipRect</c> に合わせています。</value>
     public Clip ClipBehavior { get; init; } = Clip.HardEdge;
-
 
     /// <summary>
     /// このウィジェットの矩形クリップを適用するRenderObjectを生成します。
@@ -74,11 +71,7 @@ public record ClipRect : SingleChildRenderObjectWidget<RenderClipRect>
     /// <returns>クリッパーと描画方式を保持する新しいRenderObject。</returns>
     public override RenderClipRect CreateRenderObject()
     {
-        return new RenderClipRect
-        {
-            Clipper = Clipper,
-            ClipBehavior = ClipBehavior
-        };
+        return new RenderClipRect { Clipper = Clipper, ClipBehavior = ClipBehavior };
     }
 
     /// <summary>
@@ -107,16 +100,17 @@ public record ClipRoundRect : SingleChildRenderObjectWidget<RenderClipRoundRect>
     /// 既定のクリップ領域へ適用する角の半径を取得または設定します。
     /// </summary>
     public BorderRadius BorderRadius;
+
     /// <summary>
     /// 角丸クリップ矩形を算出するクリッパーを取得します。
     /// <see langword="null"/>の場合は、<see cref="BorderRadius"/>を領域全体へ適用します。
     /// </summary>
     public CustomClipper<SKRoundRect>? Clipper { get; init; } = null;
+
     /// <summary>
     /// クリップ境界の描画方式を取得します。
     /// </summary>
     public Clip ClipBehavior { get; init; } = Clip.Antialias;
-
 
     /// <summary>
     /// このウィジェットの角丸矩形クリップを適用するRenderObjectを生成します。
@@ -128,7 +122,7 @@ public record ClipRoundRect : SingleChildRenderObjectWidget<RenderClipRoundRect>
         {
             BorderRadius = BorderRadius,
             Clipper = Clipper,
-            ClipBehavior = ClipBehavior
+            ClipBehavior = ClipBehavior,
         };
     }
 
@@ -160,11 +154,11 @@ public record ClipCustomPath : SingleChildRenderObjectWidget<RenderClipPath>
     /// <see langword="null"/>の場合は、このウィジェットの領域全体を囲む矩形パスを使用します。
     /// </summary>
     public CustomClipper<SKPath>? Clipper { get; init; } = null;
+
     /// <summary>
     /// クリップ境界の描画方式を取得します。
     /// </summary>
     public Clip ClipBehavior { get; init; } = Clip.Antialias;
-
 
     /// <summary>
     /// このウィジェットのパスクリップを適用するRenderObjectを生成します。
@@ -172,11 +166,7 @@ public record ClipCustomPath : SingleChildRenderObjectWidget<RenderClipPath>
     /// <returns>クリッパーと描画方式を保持する新しいRenderObject。</returns>
     public override RenderClipPath CreateRenderObject()
     {
-        return new RenderClipPath()
-        {
-            Clipper = Clipper,
-            ClipBehavior = ClipBehavior
-        };
+        return new RenderClipPath() { Clipper = Clipper, ClipBehavior = ClipBehavior };
     }
 
     /// <summary>

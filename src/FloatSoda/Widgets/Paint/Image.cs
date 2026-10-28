@@ -64,11 +64,8 @@ public record Image : StatefulWidget<Image>
             }
         }
 
-        public override Widget Build(IBuildContext context) => new TaskBuilder<ImageHandle>
-        {
-            Task = _loadTask,
-            Builder = BuildSnapshot
-        };
+        public override Widget Build(IBuildContext context) =>
+            new TaskBuilder<ImageHandle> { Task = _loadTask, Builder = BuildSnapshot };
 
         /// <summary>
         /// このStateがツリーから外れるときに、借りていた画像を返す。
@@ -106,7 +103,8 @@ public record Image : StatefulWidget<Image>
         /// </summary>
         private static void DisposeLoadedImage(Task<ImageHandle>? task)
         {
-            if (task is null) return;
+            if (task is null)
+                return;
 
             if (!task.IsCompleted)
             {
@@ -116,17 +114,22 @@ public record Image : StatefulWidget<Image>
                 _ = task.ContinueWith(
                     static completed =>
                     {
-                        if (completed.IsCompletedSuccessfully) completed.Result.Dispose();
-                        else _ = completed.Exception;
+                        if (completed.IsCompletedSuccessfully)
+                            completed.Result.Dispose();
+                        else
+                            _ = completed.Exception;
                     },
                     CancellationToken.None,
                     TaskContinuationOptions.ExecuteSynchronously,
-                    TaskScheduler.Default);
+                    TaskScheduler.Default
+                );
                 return;
             }
 
-            if (task.IsCompletedSuccessfully) task.Result.Dispose();
-            else _ = task.Exception;
+            if (task.IsCompletedSuccessfully)
+                task.Result.Dispose();
+            else
+                _ = task.Exception;
         }
 
         private Widget BuildSnapshot(IBuildContext context, TaskSnapshot<ImageHandle> snapshot)
@@ -139,7 +142,7 @@ public record Image : StatefulWidget<Image>
                 {
                     Image = snapshot.Data!.Image,
                     Fit = Widget!.Fit,
-                    Alignment = Widget!.Alignment
+                    Alignment = Widget!.Alignment,
                 };
             }
 
@@ -164,7 +167,12 @@ public record Image : StatefulWidget<Image>
         public required Alignment Alignment { get; init; }
 
         public override RenderImage CreateRenderObject() =>
-            new() { Image = Image, Fit = Fit, Alignment = Alignment };
+            new()
+            {
+                Image = Image,
+                Fit = Fit,
+                Alignment = Alignment,
+            };
 
         public override void UpdateRenderObject(RenderImage renderObject)
         {

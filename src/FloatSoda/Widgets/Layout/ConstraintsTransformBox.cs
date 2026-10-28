@@ -32,7 +32,11 @@ public record ConstraintsTransformBox : SingleChildRenderObjectWidget<RenderCons
         {
             if (!float.IsFinite(value.X) || !float.IsFinite(value.Y))
             {
-                throw new ArgumentOutOfRangeException(nameof(value), value, "配置値には有限値を指定してください。");
+                throw new ArgumentOutOfRangeException(
+                    nameof(value),
+                    value,
+                    "配置値には有限値を指定してください。"
+                );
             }
 
             field = value;
@@ -48,7 +52,11 @@ public record ConstraintsTransformBox : SingleChildRenderObjectWidget<RenderCons
         {
             if (!Enum.IsDefined(value))
             {
-                throw new ArgumentOutOfRangeException(nameof(value), value, "定義済みのクリップ方法を指定してください。");
+                throw new ArgumentOutOfRangeException(
+                    nameof(value),
+                    value,
+                    "定義済みのクリップ方法を指定してください。"
+                );
             }
 
             field = value;
@@ -56,12 +64,13 @@ public record ConstraintsTransformBox : SingleChildRenderObjectWidget<RenderCons
     } = Clip.None;
 
     /// <inheritdoc/>
-    public override RenderConstraintsTransformBox CreateRenderObject() => new()
-    {
-        ConstraintsTransform = ConstraintsTransform,
-        Alignment = Alignment,
-        ClipBehavior = ClipBehavior
-    };
+    public override RenderConstraintsTransformBox CreateRenderObject() =>
+        new()
+        {
+            ConstraintsTransform = ConstraintsTransform,
+            Alignment = Alignment,
+            ClipBehavior = ClipBehavior,
+        };
 
     /// <inheritdoc/>
     public override void UpdateRenderObject(RenderConstraintsTransformBox renderObject)
@@ -79,50 +88,56 @@ public record ConstraintsTransformBox : SingleChildRenderObjectWidget<RenderCons
     /// <summary>幅と高さの制約をすべて取り除きます。</summary>
     /// <param name="constraints">親から受け取った制約。この変換では使用しません。</param>
     /// <returns>両軸の最小値が0、最大値が正の無限大の制約。</returns>
-    public static BoxConstraints Unconstrained(BoxConstraints constraints) => BoxConstraints.Unbounded;
+    public static BoxConstraints Unconstrained(BoxConstraints constraints) =>
+        BoxConstraints.Unbounded;
 
     /// <summary>幅の最小値と最大値を取り除き、高さの制約を維持します。</summary>
     /// <param name="constraints">親から受け取った制約。</param>
     /// <returns>幅だけが制約されていない制約。</returns>
-    public static BoxConstraints WidthUnconstrained(BoxConstraints constraints) => constraints with
-    {
-        MinWidth = 0,
-        MaxWidth = double.PositiveInfinity
-    };
+    public static BoxConstraints WidthUnconstrained(BoxConstraints constraints) =>
+        constraints with
+        {
+            MinWidth = 0,
+            MaxWidth = double.PositiveInfinity,
+        };
 
     /// <summary>高さの最小値と最大値を取り除き、幅の制約を維持します。</summary>
     /// <param name="constraints">親から受け取った制約。</param>
     /// <returns>高さだけが制約されていない制約。</returns>
-    public static BoxConstraints HeightUnconstrained(BoxConstraints constraints) => constraints with
-    {
-        MinHeight = 0,
-        MaxHeight = double.PositiveInfinity
-    };
+    public static BoxConstraints HeightUnconstrained(BoxConstraints constraints) =>
+        constraints with
+        {
+            MinHeight = 0,
+            MaxHeight = double.PositiveInfinity,
+        };
 
     /// <summary>最大幅だけを取り除き、最小幅と高さの制約を維持します。</summary>
     /// <param name="constraints">親から受け取った制約。</param>
     /// <returns>最大幅が正の無限大の制約。</returns>
-    public static BoxConstraints MaxWidthUnconstrained(BoxConstraints constraints) => constraints with
-    {
-        MaxWidth = double.PositiveInfinity
-    };
+    public static BoxConstraints MaxWidthUnconstrained(BoxConstraints constraints) =>
+        constraints with
+        {
+            MaxWidth = double.PositiveInfinity,
+        };
 
     /// <summary>最大高さだけを取り除き、最小高さと幅の制約を維持します。</summary>
     /// <param name="constraints">親から受け取った制約。</param>
     /// <returns>最大高さが正の無限大の制約。</returns>
-    public static BoxConstraints MaxHeightUnconstrained(BoxConstraints constraints) => constraints with
-    {
-        MaxHeight = double.PositiveInfinity
-    };
+    public static BoxConstraints MaxHeightUnconstrained(BoxConstraints constraints) =>
+        constraints with
+        {
+            MaxHeight = double.PositiveInfinity,
+        };
 
     /// <summary>最大幅と最大高さを取り除き、両軸の最小値を維持します。</summary>
     /// <param name="constraints">親から受け取った制約。</param>
     /// <returns>両軸の最大値が正の無限大の制約。</returns>
-    public static BoxConstraints MaxUnconstrained(BoxConstraints constraints) => constraints with
-    {
-        MaxWidth = double.PositiveInfinity,
-        MaxHeight = double.PositiveInfinity
-    };
+    public static BoxConstraints MaxUnconstrained(BoxConstraints constraints) =>
+        constraints with
+        {
+            MaxWidth = double.PositiveInfinity,
+            MaxHeight = double.PositiveInfinity,
+        };
 }
 
 /// <summary>
@@ -140,7 +155,11 @@ public sealed record UnconstrainedBox : StatelessWidget
         {
             if (value is { } axis && !Enum.IsDefined(axis))
             {
-                throw new ArgumentOutOfRangeException(nameof(value), value, "定義済みの軸を指定してください。");
+                throw new ArgumentOutOfRangeException(
+                    nameof(value),
+                    value,
+                    "定義済みの軸を指定してください。"
+                );
             }
 
             field = value;
@@ -156,7 +175,11 @@ public sealed record UnconstrainedBox : StatelessWidget
         {
             if (!float.IsFinite(value.X) || !float.IsFinite(value.Y))
             {
-                throw new ArgumentOutOfRangeException(nameof(value), value, "配置値には有限値を指定してください。");
+                throw new ArgumentOutOfRangeException(
+                    nameof(value),
+                    value,
+                    "配置値には有限値を指定してください。"
+                );
             }
 
             field = value;
@@ -172,7 +195,11 @@ public sealed record UnconstrainedBox : StatelessWidget
         {
             if (!Enum.IsDefined(value))
             {
-                throw new ArgumentOutOfRangeException(nameof(value), value, "定義済みのクリップ方法を指定してください。");
+                throw new ArgumentOutOfRangeException(
+                    nameof(value),
+                    value,
+                    "定義済みのクリップ方法を指定してください。"
+                );
             }
 
             field = value;
@@ -182,19 +209,24 @@ public sealed record UnconstrainedBox : StatelessWidget
     /// <summary>制約を取り除いて子を配置するウィジェットを構築します。</summary>
     /// <param name="context">このウィジェットが配置されている構築コンテキスト。</param>
     /// <returns>軸に対応した標準変換を持つ<see cref="ConstraintsTransformBox"/>。</returns>
-    public override Widget Build(IBuildContext context) => new ConstraintsTransformBox
-    {
-        ConstraintsTransform = ConstrainedAxis switch
+    public override Widget Build(IBuildContext context) =>
+        new ConstraintsTransformBox
         {
-            Axis.Horizontal => ConstraintsTransformBox.HeightUnconstrained,
-            Axis.Vertical => ConstraintsTransformBox.WidthUnconstrained,
-            null => ConstraintsTransformBox.Unconstrained,
-            _ => throw new ArgumentOutOfRangeException(nameof(ConstrainedAxis), ConstrainedAxis, null)
-        },
-        Alignment = Alignment,
-        ClipBehavior = ClipBehavior,
-        Child = Child
-    };
+            ConstraintsTransform = ConstrainedAxis switch
+            {
+                Axis.Horizontal => ConstraintsTransformBox.HeightUnconstrained,
+                Axis.Vertical => ConstraintsTransformBox.WidthUnconstrained,
+                null => ConstraintsTransformBox.Unconstrained,
+                _ => throw new ArgumentOutOfRangeException(
+                    nameof(ConstrainedAxis),
+                    ConstrainedAxis,
+                    null
+                ),
+            },
+            Alignment = Alignment,
+            ClipBehavior = ClipBehavior,
+            Child = Child,
+        };
 
     /// <summary>制約を取り除いて配置する子ウィジェットを取得します。</summary>
     public Widget? Child { get; init; }

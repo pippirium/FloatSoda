@@ -15,7 +15,8 @@ public class GestureRecognizerTest
 
         private readonly List<GestureRecognizer> _recognizers = [];
 
-        public T Add<T>(T recognizer) where T : GestureRecognizer
+        public T Add<T>(T recognizer)
+            where T : GestureRecognizer
         {
             recognizer.Bind(Arena, Router);
             _recognizers.Add(recognizer);
@@ -25,13 +26,14 @@ public class GestureRecognizerTest
         public void Down(Offset position, int pointer = 1)
         {
             var e = new PointerEvent(pointer, PointerEventPhase.Down, position);
-            foreach (var r in _recognizers) r.AddPointer(e);   // Listener 相当
-            Router.Route(e);                                    // WidgetBinding 相当
+            foreach (var r in _recognizers)
+                r.AddPointer(e); // Listener 相当
+            Router.Route(e); // WidgetBinding 相当
             Arena.Close(pointer);
         }
 
-        public void Move(Offset position, int pointer = 1)
-            => Router.Route(new PointerEvent(pointer, PointerEventPhase.Move, position));
+        public void Move(Offset position, int pointer = 1) =>
+            Router.Route(new PointerEvent(pointer, PointerEventPhase.Move, position));
 
         public void Up(Offset position, int pointer = 1)
         {
@@ -66,10 +68,12 @@ public class GestureRecognizerTest
         var harness = new Harness();
         var tapped = 0;
         var canceled = 0;
-        harness.Add(new TapGestureRecognizer { OnTap = () => tapped++, OnTapCancel = () => canceled++ });
+        harness.Add(
+            new TapGestureRecognizer { OnTap = () => tapped++, OnTapCancel = () => canceled++ }
+        );
 
         harness.Down(new Offset(10, 10));
-        harness.Move(new Offset(10, 40));   // 30px > slop(18)
+        harness.Move(new Offset(10, 40)); // 30px > slop(18)
         harness.Up(new Offset(10, 40));
 
         Assert.Equal(0, tapped);
@@ -85,14 +89,16 @@ public class GestureRecognizerTest
         var totalDelta = Offset.Zero;
 
         harness.Add(new TapGestureRecognizer { OnTap = () => tapped++ });
-        harness.Add(new PanGestureRecognizer
-        {
-            OnPanStart = _ => panStarted++,
-            OnPanUpdate = d => totalDelta += d,
-        });
+        harness.Add(
+            new PanGestureRecognizer
+            {
+                OnPanStart = _ => panStarted++,
+                OnPanUpdate = d => totalDelta += d,
+            }
+        );
 
         harness.Down(new Offset(0, 0));
-        harness.Move(new Offset(0, 30));    // slop 超過 → pan 勝利、tap 敗北
+        harness.Move(new Offset(0, 30)); // slop 超過 → pan 勝利、tap 敗北
         harness.Move(new Offset(0, 50));
         harness.Up(new Offset(0, 50));
 
@@ -112,7 +118,7 @@ public class GestureRecognizerTest
         harness.Add(new PanGestureRecognizer { OnPanStart = _ => panStarted++ });
 
         harness.Down(new Offset(5, 5));
-        harness.Up(new Offset(6, 5));       // ほぼ動かず離す → tap 勝利
+        harness.Up(new Offset(6, 5)); // ほぼ動かず離す → tap 勝利
 
         Assert.Equal(1, tapped);
         Assert.Equal(0, panStarted);
@@ -124,7 +130,9 @@ public class GestureRecognizerTest
         var harness = new Harness();
         var tapped = 0;
         var canceled = 0;
-        harness.Add(new TapGestureRecognizer { OnTap = () => tapped++, OnTapCancel = () => canceled++ });
+        harness.Add(
+            new TapGestureRecognizer { OnTap = () => tapped++, OnTapCancel = () => canceled++ }
+        );
 
         harness.Down(new Offset(5, 5));
         harness.Cancel(new Offset(50, 50));
@@ -157,7 +165,9 @@ public class GestureRecognizerTest
         var harness = new Harness();
         var tapped = 0;
         var canceled = 0;
-        var tap = harness.Add(new TapGestureRecognizer { OnTap = () => tapped++, OnTapCancel = () => canceled++ });
+        var tap = harness.Add(
+            new TapGestureRecognizer { OnTap = () => tapped++, OnTapCancel = () => canceled++ }
+        );
         harness.Add(new PanGestureRecognizer());
 
         harness.Down(new Offset(5, 5));

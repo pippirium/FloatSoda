@@ -90,7 +90,8 @@ public sealed class TapGestureRecognizer : GestureRecognizer
     /// <remarks>すでに不成立を通知済みの場合は何も行いません。</remarks>
     private void Cancel(int pointer)
     {
-        if (_canceled) return;
+        if (_canceled)
+            return;
 
         _canceled = true;
         OnTapCancel?.Invoke();
@@ -101,7 +102,8 @@ public sealed class TapGestureRecognizer : GestureRecognizer
     /// <param name="pointer">成立後に購読を解除するポインター識別子。</param>
     private void CheckFire(int pointer)
     {
-        if (_fired || _canceled || !_wonArena || !_receivedUp) return;
+        if (_fired || _canceled || !_wonArena || !_receivedUp)
+            return;
 
         _fired = true;
         OnTap?.Invoke();

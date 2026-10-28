@@ -1,6 +1,6 @@
 using FloatSoda.Abstractions.Geometries;
-using FloatSoda.Gesture;
 using FloatSoda.Geometrics;
+using FloatSoda.Gesture;
 using FloatSoda.RenderObjects.Layout;
 using FloatSoda.RenderObjects.Painting;
 using FloatSoda.Testing;
@@ -36,9 +36,10 @@ public class ImageFlutterParityTest
             new RenderConstrainedBox
             {
                 AdditionalConstraints = BoxConstraints.Tight(40, 40),
-                Child = renderImage
+                Child = renderImage,
             },
-            new SKSizeI(40, 40));
+            new SKSizeI(40, 40)
+        );
 
         Assert.Equal(default, rendered.GetPixel(2, 15));
     }

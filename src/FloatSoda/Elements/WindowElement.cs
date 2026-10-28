@@ -27,7 +27,8 @@ public class WindowElement : InheritedElement
     {
         for (var ancestor = Parent; ancestor is not null; ancestor = ancestor.Parent)
         {
-            if (ancestor is not RenderObjectElement { RenderObject: RenderView view }) continue;
+            if (ancestor is not RenderObjectElement { RenderObject: RenderView view })
+                continue;
 
             view.FixedSize = (Widget as WindowWidget)?.Size;
             return;

@@ -19,7 +19,8 @@ public sealed class RenderIntrinsicWidth : RenderProxyBox
         set
         {
             ValidateStep(value, nameof(StepWidth));
-            if (field == value) return;
+            if (field == value)
+                return;
             field = value;
             MarkNeedsLayout();
         }
@@ -53,25 +54,33 @@ public sealed class RenderIntrinsicWidth : RenderProxyBox
 
     private BoxConstraints CreateChildConstraints(BoxConstraints constraints)
     {
-        if (constraints.HasTightWidth) return constraints;
+        if (constraints.HasTightWidth)
+            return constraints;
 
         var width = RoundUp(Child!.GetMaxIntrinsicWidth(constraints.MaxHeight), StepWidth);
         if (!double.IsFinite(width))
         {
-            throw new InvalidOperationException("IntrinsicWidthで使用する子の最大intrinsic幅は有限値である必要があります。");
+            throw new InvalidOperationException(
+                "IntrinsicWidthで使用する子の最大intrinsic幅は有限値である必要があります。"
+            );
         }
 
         width = constraints.ConstrainWidth(width);
         return new BoxConstraints(width, width, constraints.MinHeight, constraints.MaxHeight);
     }
 
-    internal static double RoundUp(double value, double? step) => step is null ? value : Math.Ceiling(value / step.Value) * step.Value;
+    internal static double RoundUp(double value, double? step) =>
+        step is null ? value : Math.Ceiling(value / step.Value) * step.Value;
 
     internal static void ValidateStep(double? value, string parameterName)
     {
         if (value is not null && (!double.IsFinite(value.Value) || value.Value <= 0))
         {
-            throw new ArgumentOutOfRangeException(parameterName, value, "stepには正の有限値を指定してください。");
+            throw new ArgumentOutOfRangeException(
+                parameterName,
+                value,
+                "stepには正の有限値を指定してください。"
+            );
         }
     }
 }

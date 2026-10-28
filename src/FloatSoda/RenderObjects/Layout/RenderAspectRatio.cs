@@ -15,7 +15,8 @@ public sealed class RenderAspectRatio : RenderProxyBox
         set
         {
             ValidateAspectRatio(value, nameof(AspectRatio));
-            if (field == value) return;
+            if (field == value)
+                return;
             field = value;
             MarkNeedsLayout();
         }
@@ -29,7 +30,8 @@ public sealed class RenderAspectRatio : RenderProxyBox
     }
 
     /// <inheritdoc/>
-    internal override SKSize ComputeDryLayout(BoxConstraints constraints) => ApplyAspectRatio(constraints);
+    internal override SKSize ComputeDryLayout(BoxConstraints constraints) =>
+        ApplyAspectRatio(constraints);
 
     /// <inheritdoc/>
     protected override double ComputeMinIntrinsicWidth(double height) =>
@@ -49,12 +51,14 @@ public sealed class RenderAspectRatio : RenderProxyBox
 
     private SKSize ApplyAspectRatio(BoxConstraints constraints)
     {
-        if (constraints.IsTight) return constraints.Smallest;
+        if (constraints.IsTight)
+            return constraints.Smallest;
 
         if (!double.IsFinite(constraints.MaxWidth) && !double.IsFinite(constraints.MaxHeight))
         {
             throw new InvalidOperationException(
-                "RenderAspectRatioは幅と高さの両方が制約されていない場合にサイズを決定できません。");
+                "RenderAspectRatioは幅と高さの両方が制約されていない場合にサイズを決定できません。"
+            );
         }
 
         var width = constraints.MaxWidth;
@@ -100,7 +104,11 @@ public sealed class RenderAspectRatio : RenderProxyBox
     {
         if (!double.IsFinite(value) || value <= 0)
         {
-            throw new ArgumentOutOfRangeException(parameterName, value, "AspectRatioには正の有限値を指定してください。");
+            throw new ArgumentOutOfRangeException(
+                parameterName,
+                value,
+                "AspectRatioには正の有限値を指定してください。"
+            );
         }
     }
 }

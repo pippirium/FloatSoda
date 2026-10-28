@@ -48,7 +48,12 @@ public class IndexedStackTest
     [Theory]
     [InlineData(0, 255, 0, 0)]
     [InlineData(1, 0, 0, 255)]
-    public void IndexedStack_Indexで選択した子だけを描画する(int index, byte red, byte green, byte blue)
+    public void IndexedStack_Indexで選択した子だけを描画する(
+        int index,
+        byte red,
+        byte green,
+        byte blue
+    )
     {
         using var bitmap = Renderer.Render(BuildWidget(index), Size);
 
@@ -101,37 +106,44 @@ public class IndexedStackTest
     [Theory]
     [InlineData(-1)]
     [InlineData(2)]
-    public void CreateRenderObject_IndexがChildren範囲外_ArgumentOutOfRangeExceptionを投げる(int index)
+    public void CreateRenderObject_IndexがChildren範囲外_ArgumentOutOfRangeExceptionを投げる(
+        int index
+    )
     {
         var widget = BuildWidget(index);
         Assert.Throws<ArgumentOutOfRangeException>(widget.CreateRenderObject);
     }
 
-    private static IndexedStack BuildWidget(int? index) => new()
-    {
-        Index = index,
-        Children =
-        [
-            new SizedBox
-            {
-                Width = 40,
-                Height = 40,
-                Child = new ColoredBox { Color = new Color(255, 0, 0) }
-            },
-            new SizedBox
-            {
-                Width = 40,
-                Height = 40,
-                Child = new ColoredBox { Color = new Color(0, 0, 255) }
-            }
-        ]
-    };
-
-    private static RenderPointerListener ListenerRenderBox() => new()
-    {
-        Child = new RenderColoredBox
+    private static IndexedStack BuildWidget(int? index) =>
+        new()
         {
-            Child = new RenderConstrainedBox { AdditionalConstraints = BoxConstraints.Tight(40, 40) }
-        }
-    };
+            Index = index,
+            Children =
+            [
+                new SizedBox
+                {
+                    Width = 40,
+                    Height = 40,
+                    Child = new ColoredBox { Color = new Color(255, 0, 0) },
+                },
+                new SizedBox
+                {
+                    Width = 40,
+                    Height = 40,
+                    Child = new ColoredBox { Color = new Color(0, 0, 255) },
+                },
+            ],
+        };
+
+    private static RenderPointerListener ListenerRenderBox() =>
+        new()
+        {
+            Child = new RenderColoredBox
+            {
+                Child = new RenderConstrainedBox
+                {
+                    AdditionalConstraints = BoxConstraints.Tight(40, 40),
+                },
+            },
+        };
 }

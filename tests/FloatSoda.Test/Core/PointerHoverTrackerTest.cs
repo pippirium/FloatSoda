@@ -45,7 +45,10 @@ public class PointerHoverTrackerTest
 
         tracker.Update(new PointerEvent(1, PointerEventPhase.Add, Offset.Zero), BuildResult(first));
         calls.Clear();
-        tracker.Update(new PointerEvent(1, PointerEventPhase.Move, Offset.Zero), BuildResult(second));
+        tracker.Update(
+            new PointerEvent(1, PointerEventPhase.Move, Offset.Zero),
+            BuildResult(second)
+        );
 
         Assert.Equal(["first exit", "second enter"], calls);
     }
@@ -71,9 +74,15 @@ public class PointerHoverTrackerTest
         };
         var tracker = new PointerHoverTracker();
 
-        tracker.Update(new PointerEvent(1, PointerEventPhase.Add, Offset.Zero), BuildResult(first, ancestor));
+        tracker.Update(
+            new PointerEvent(1, PointerEventPhase.Add, Offset.Zero),
+            BuildResult(first, ancestor)
+        );
         calls.Clear();
-        tracker.Update(new PointerEvent(1, PointerEventPhase.Move, Offset.Zero), BuildResult(second, ancestor));
+        tracker.Update(
+            new PointerEvent(1, PointerEventPhase.Move, Offset.Zero),
+            BuildResult(second, ancestor)
+        );
 
         Assert.Equal(["first exit", "second enter"], calls);
     }

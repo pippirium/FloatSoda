@@ -25,10 +25,7 @@ public sealed class RenderObjectBitmapRenderer
         var pipeline = new RenderPipeline
         {
             OnNeedVisualUpdate = () => { },
-            RenderView = new RenderView(imageSize.Width, imageSize.Height)
-            {
-                Child = renderObject
-            }
+            RenderView = new RenderView(imageSize.Width, imageSize.Height) { Child = renderObject },
         };
 
         pipeline.RenderView.PrepareInitialFrame();

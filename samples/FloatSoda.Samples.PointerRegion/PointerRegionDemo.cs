@@ -1,8 +1,8 @@
 using FloatSoda.Abstractions.Input;
 using FloatSoda.Elements;
 using FloatSoda.Geometrics;
-using FloatSoda.Painting;
 using FloatSoda.Gesture;
+using FloatSoda.Painting;
 using FloatSoda.RenderObjects;
 using FloatSoda.Widgets;
 using FloatSoda.Widgets.Gesture;
@@ -53,7 +53,11 @@ public sealed class PointerRegionDemoState : State<PointerRegionDemo>
                     {
                         BuildText("PointerRegion", 56, SKColors.White, 700),
                         new SizedBox { Height = 12 },
-                        BuildText("Aim, press the trigger, then leave while holding.", 24, SKColors.LightGray),
+                        BuildText(
+                            "Aim, press the trigger, then leave while holding.",
+                            24,
+                            SKColors.LightGray
+                        ),
                         new SizedBox { Height = 34 },
                         BuildInteractiveRegion(),
                         new SizedBox { Height = 30 },
@@ -62,10 +66,11 @@ public sealed class PointerRegionDemoState : State<PointerRegionDemo>
                         BuildText(
                             $"Enter {_enterCount}    Exit {_exitCount}    Cancel {_cancelCount}    Tap {_tapCount}",
                             26,
-                            SKColors.Gainsboro),
-                    }
-                }
-            }
+                            SKColors.Gainsboro
+                        ),
+                    },
+                },
+            },
         };
     }
 
@@ -85,9 +90,9 @@ public sealed class PointerRegionDemoState : State<PointerRegionDemo>
                 {
                     Behaviour = HitTestBehaviour.Opaque,
                     OnTap = HandleTap,
-                    Child = BuildTarget()
-                }
-            }
+                    Child = BuildTarget(),
+                },
+            },
         };
     }
 
@@ -104,32 +109,28 @@ public sealed class PointerRegionDemoState : State<PointerRegionDemo>
                 Child = new ColoredBox
                 {
                     Color = RegionColor,
-                    Child = new Center
-                    {
-                        Child = BuildText(RegionLabel, 52, SKColors.White, 700)
-                    }
-                }
-            }
+                    Child = new Center { Child = BuildText(RegionLabel, 52, SKColors.White, 700) },
+                },
+            },
         };
     }
 
-    private SKColor RegionColor => (_pressed, _hovered, _lastPressCanceled) switch
-    {
-        (true, _, _) => SKColors.DarkOrange,
-        (_, true, _) => SKColors.DeepSkyBlue,
-        (_, _, true) => SKColors.Crimson,
-        _ => SKColors.SlateGray,
-    };
+    private SKColor RegionColor =>
+        (_pressed, _hovered, _lastPressCanceled) switch
+        {
+            (true, _, _) => SKColors.DarkOrange,
+            (_, true, _) => SKColors.DeepSkyBlue,
+            (_, _, true) => SKColors.Crimson,
+            _ => SKColors.SlateGray,
+        };
 
     private SKColor StatusColor => _lastPressCanceled ? SKColors.OrangeRed : SKColors.LightSkyBlue;
 
-    private string RegionLabel => _pressed
-        ? "PRESSED"
-        : _hovered
-            ? "HOVER"
-            : _lastPressCanceled
-                ? "CANCELED"
-                : "AIM HERE";
+    private string RegionLabel =>
+        _pressed ? "PRESSED"
+        : _hovered ? "HOVER"
+        : _lastPressCanceled ? "CANCELED"
+        : "AIM HERE";
 
     private void HandleEnter(PointerEvent pointerEvent)
     {
@@ -199,12 +200,18 @@ public sealed class PointerRegionDemoState : State<PointerRegionDemo>
         });
     }
 
-    private static void Log(PointerEvent pointerEvent)
-        => Console.WriteLine(
-            $"{pointerEvent.Phase,-6} pointer={pointerEvent.PointerId} " +
-            $"position=({pointerEvent.Position.X:F1}, {pointerEvent.Position.Y:F1})");
+    private static void Log(PointerEvent pointerEvent) =>
+        Console.WriteLine(
+            $"{pointerEvent.Phase, -6} pointer={pointerEvent.PointerId} "
+                + $"position=({pointerEvent.Position.X:F1}, {pointerEvent.Position.Y:F1})"
+        );
 
-    private static Widget BuildText(string text, float fontSize, SKColor color, int fontWeight = 400)
+    private static Widget BuildText(
+        string text,
+        float fontSize,
+        SKColor color,
+        int fontWeight = 400
+    )
     {
         return new RichText
         {
@@ -215,8 +222,8 @@ public sealed class PointerRegionDemoState : State<PointerRegionDemo>
                     Color = color,
                     FontSize = fontSize,
                     FontWeight = fontWeight,
-                }
-            }
+                },
+            },
         };
     }
 }

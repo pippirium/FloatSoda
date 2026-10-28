@@ -26,6 +26,7 @@ public class RenderPipeline
     /// <summary>次回の描画フラッシュを待つRenderObjectの一覧を取得します。</summary>
     /// <remarks>描画フラッシュ開始時に一覧は消去され、処理中に新たにDirtyとなったノードは次回の描画対象になります。</remarks>
     public List<RenderObject> NodesNeedingPaint { get; } = [];
+
     /// <summary>次回のレイアウトフラッシュを待つRenderObjectの一覧を取得します。</summary>
     /// <remarks>レイアウト中に新たなDirtyノードが登録された場合は、一覧が空になるまで同じフラッシュ内で処理します。</remarks>
     public List<RenderObject> NodesNeedingLayout { get; } = [];

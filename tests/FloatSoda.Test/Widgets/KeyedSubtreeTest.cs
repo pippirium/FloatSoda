@@ -68,30 +68,32 @@ public class KeyedSubtreeTest
         int key,
         int version,
         List<Guid> builds,
-        List<Guid> disposals) => new()
-    {
-        Key = new ValueKey<int>(key),
-        Child = new IdentityProbe
+        List<Guid> disposals
+    ) =>
+        new()
         {
-            Version = version,
-            OnBuild = builds.Add,
-            OnDispose = disposals.Add
-        }
-    };
+            Key = new ValueKey<int>(key),
+            Child = new IdentityProbe
+            {
+                Version = version,
+                OnBuild = builds.Add,
+                OnDispose = disposals.Add,
+            },
+        };
 
-    private static (RenderObjectToWidgetElement<RenderView> Root, BuildOwner Owner, RenderView View) Mount(Widget widget)
+    private static (
+        RenderObjectToWidgetElement<RenderView> Root,
+        BuildOwner Owner,
+        RenderView View
+    ) Mount(Widget widget)
     {
         var view = new RenderView(100, 100);
-        _ = new RenderPipeline
-        {
-            OnNeedVisualUpdate = () => { },
-            RenderView = view
-        };
+        _ = new RenderPipeline { OnNeedVisualUpdate = () => { }, RenderView = view };
         var owner = new BuildOwner(() => { });
         var root = new RenderObjectToWidgetAdapter
         {
             Container = view,
-            Child = widget
+            Child = widget,
         }.AttachToRenderTree(owner, null);
 
         return (root, owner, view);
@@ -99,12 +101,13 @@ public class KeyedSubtreeTest
 
     private static void Reattach(
         (RenderObjectToWidgetElement<RenderView> Root, BuildOwner Owner, RenderView View) tree,
-        Widget widget)
+        Widget widget
+    )
     {
         _ = new RenderObjectToWidgetAdapter
         {
             Container = tree.View,
-            Child = widget
+            Child = widget,
         }.AttachToRenderTree(tree.Owner, tree.Root);
         tree.Owner.BuildScope();
     }

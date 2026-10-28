@@ -37,10 +37,7 @@ public record ListenableBuilder : StatefulWidget<ListenableBuilder>
     }
 
     /// <inheritdoc/>
-    public override Element CreateElement() => new ListenableBuilderElement
-    {
-        Widget = this
-    };
+    public override Element CreateElement() => new ListenableBuilderElement { Widget = this };
 
     /// <inheritdoc/>
     public override State<ListenableBuilder> CreateState() => new ListenableBuilderState();
@@ -67,7 +64,8 @@ public record ListenableBuilder : StatefulWidget<ListenableBuilder>
 
         public override void DidUpdateWidget(ListenableBuilder oldWidget)
         {
-            if (ReferenceEquals(oldWidget.Listenable, Widget!.Listenable)) return;
+            if (ReferenceEquals(oldWidget.Listenable, Widget!.Listenable))
+                return;
 
             Unsubscribe(oldWidget.Listenable);
             Subscribe(Widget.Listenable);
@@ -91,7 +89,8 @@ public record ListenableBuilder : StatefulWidget<ListenableBuilder>
 
         private void Unsubscribe(INotifyPropertyChanged listenable)
         {
-            if (!_subscribed) return;
+            if (!_subscribed)
+                return;
 
             listenable.PropertyChanged -= OnPropertyChanged;
             _subscribed = false;
@@ -102,7 +101,8 @@ public record ListenableBuilder : StatefulWidget<ListenableBuilder>
             if (Environment.CurrentManagedThreadId != _mountThreadId)
             {
                 throw new InvalidOperationException(
-                    "ListenableBuilderのPropertyChangedは、ウィジェットをマウントしたスレッドから通知してください。");
+                    "ListenableBuilderのPropertyChangedは、ウィジェットをマウントしたスレッドから通知してください。"
+                );
             }
 
             Element?.MarkNeedsBuild();

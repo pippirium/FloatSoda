@@ -12,11 +12,13 @@ public interface IBuildContext
     /// このコンテキストに対応する現在のWidgetを取得します。
     /// </summary>
     Widget Widget { get; }
+
     /// <summary>
     /// このコンテキストが属するElementツリーのビルド管理者を取得します。
     /// ツリーへ接続されていない場合は<see langword="null"/>です。
     /// </summary>
     BuildOwner? Owner { get; }
+
     /// <summary>
     /// 指定した型として登録された最も近い祖先のInheritedWidgetを取得し、
     /// このコンテキストとの依存関係を登録します。
@@ -29,7 +31,8 @@ public interface IBuildContext
     /// 取得したInheritedWidgetが更新を通知すると、このコンテキストに対応するElementは再構築を要求されます。
     /// </remarks>
     /// <seealso cref="InheritedElement"/>
-    T? DependOnInheritedWidgetOfExactType<T>() where T : InheritedWidget;
+    T? DependOnInheritedWidgetOfExactType<T>()
+        where T : InheritedWidget;
 
     /// <summary>
     /// 指定した型として登録された最も近い祖先のInheritedWidgetに対応するElementを取得します。
@@ -41,5 +44,6 @@ public interface IBuildContext
     /// </returns>
     /// <remarks>このメソッドは取得したElementへの依存関係を登録しません。</remarks>
     /// <seealso cref="InheritedWidget"/>
-    InheritedElement? GetElementForInheritedWidgetOfExactType<T>() where T : InheritedWidget;
+    InheritedElement? GetElementForInheritedWidgetOfExactType<T>()
+        where T : InheritedWidget;
 }

@@ -16,11 +16,7 @@ public class StackTest
     {
         var owner = new BuildOwner(() => { });
         var view = new RenderView();
-        var pipeline = new RenderPipeline
-        {
-            OnNeedVisualUpdate = () => { },
-            RenderView = view
-        };
+        var pipeline = new RenderPipeline { OnNeedVisualUpdate = () => { }, RenderView = view };
         view.PrepareInitialFrame();
 
         var root = Attach(10, view, owner, null);
@@ -44,16 +40,14 @@ public class StackTest
         var renderObject = new Stack
         {
             Alignment = Alignment.TopLeft,
-            Fit = StackFit.Loose
+            Fit = StackFit.Loose,
         }.CreateRenderObject();
         renderObject.Layout(BoxConstraints.Tight(100, 80));
         Assert.False(renderObject.NeedsLayout);
 
-        new Stack
-        {
-            Alignment = Alignment.BottomRight,
-            Fit = StackFit.Expand
-        }.UpdateRenderObject(renderObject);
+        new Stack { Alignment = Alignment.BottomRight, Fit = StackFit.Expand }.UpdateRenderObject(
+            renderObject
+        );
 
         Assert.Equal(Alignment.BottomRight, renderObject.Alignment);
         Assert.Equal(StackFit.Expand, renderObject.Fit);
@@ -64,7 +58,8 @@ public class StackTest
         double left,
         RenderView view,
         BuildOwner owner,
-        RenderObjectToWidgetElement<RenderView>? element)
+        RenderObjectToWidgetElement<RenderView>? element
+    )
     {
         return new RenderObjectToWidgetAdapter
         {
@@ -83,11 +78,11 @@ public class StackTest
                             Top = 5,
                             Width = 30,
                             Height = 20,
-                            Child = new SizedBox()
-                        }
-                    ]
-                }
-            }
+                            Child = new SizedBox(),
+                        },
+                    ],
+                },
+            },
         }.AttachToRenderTree(owner, element);
     }
 

@@ -18,7 +18,8 @@ public class RenderRotatedBox : RenderProxyBox
         set
         {
             var normalized = Normalize(value);
-            if (field == normalized) return;
+            if (field == normalized)
+                return;
             field = normalized;
             MarkNeedsLayout();
         }
@@ -35,7 +36,12 @@ public class RenderRotatedBox : RenderProxyBox
 
         var odd = QuarterTurns % 2 != 0;
         var childConstraints = odd
-            ? new BoxConstraints(Constraints.MinHeight, Constraints.MaxHeight, Constraints.MinWidth, Constraints.MaxWidth)
+            ? new BoxConstraints(
+                Constraints.MinHeight,
+                Constraints.MaxHeight,
+                Constraints.MinWidth,
+                Constraints.MaxWidth
+            )
             : Constraints;
 
         Child.Layout(childConstraints, parentUseSize: true);
@@ -53,38 +59,47 @@ public class RenderRotatedBox : RenderProxyBox
             return;
         }
 
-        var transform = GetTransform() * Matrix3x2.CreateTranslation((float)offset.X, (float)offset.Y);
+        var transform =
+            GetTransform() * Matrix3x2.CreateTranslation((float)offset.X, (float)offset.Y);
         Layer = context.PushTransform(ToSkMatrix(transform), base.Paint, Layer as TransformLayer);
     }
 
     /// <inheritdoc/>
-    public override bool HitTestChildren(HitTestResult result, Offset position)
-        => result.AddWithPaintTransform(
+    public override bool HitTestChildren(HitTestResult result, Offset position) =>
+        result.AddWithPaintTransform(
             GetTransform(),
             position,
-            (r, transformed) => Child?.HitTest(r, transformed) ?? false);
+            (r, transformed) => Child?.HitTest(r, transformed) ?? false
+        );
 
-    private Matrix3x2 GetTransform() => QuarterTurns switch
-    {
-        0 => Matrix3x2.Identity,
-        1 => Matrix3x2.CreateRotation(MathF.PI / 2) * Matrix3x2.CreateTranslation(Size.Width, 0),
-        2 => Matrix3x2.CreateRotation(MathF.PI) * Matrix3x2.CreateTranslation(Size.Width, Size.Height),
-        3 => Matrix3x2.CreateRotation(3 * MathF.PI / 2) * Matrix3x2.CreateTranslation(0, Size.Height),
-        _ => throw new InvalidOperationException("QuarterTurnsは0から3へ正規化されている必要があります。"),
-    };
+    private Matrix3x2 GetTransform() =>
+        QuarterTurns switch
+        {
+            0 => Matrix3x2.Identity,
+            1 => Matrix3x2.CreateRotation(MathF.PI / 2)
+                * Matrix3x2.CreateTranslation(Size.Width, 0),
+            2 => Matrix3x2.CreateRotation(MathF.PI)
+                * Matrix3x2.CreateTranslation(Size.Width, Size.Height),
+            3 => Matrix3x2.CreateRotation(3 * MathF.PI / 2)
+                * Matrix3x2.CreateTranslation(0, Size.Height),
+            _ => throw new InvalidOperationException(
+                "QuarterTurnsは0から3へ正規化されている必要があります。"
+            ),
+        };
 
     private static int Normalize(int value) => ((value % 4) + 4) % 4;
 
-    private static SKMatrix ToSkMatrix(Matrix3x2 matrix) => new()
-    {
-        ScaleX = matrix.M11,
-        SkewX = matrix.M21,
-        TransX = matrix.M31,
-        SkewY = matrix.M12,
-        ScaleY = matrix.M22,
-        TransY = matrix.M32,
-        Persp0 = 0,
-        Persp1 = 0,
-        Persp2 = 1,
-    };
+    private static SKMatrix ToSkMatrix(Matrix3x2 matrix) =>
+        new()
+        {
+            ScaleX = matrix.M11,
+            SkewX = matrix.M21,
+            TransX = matrix.M31,
+            SkewY = matrix.M12,
+            ScaleY = matrix.M22,
+            TransY = matrix.M32,
+            Persp0 = 0,
+            Persp1 = 0,
+            Persp2 = 1,
+        };
 }

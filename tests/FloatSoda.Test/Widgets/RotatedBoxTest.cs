@@ -20,9 +20,16 @@ public class RotatedBoxTest
     [InlineData(1, 20, 40)]
     [InlineData(2, 40, 20)]
     [InlineData(3, 20, 40)]
-    public void PerformLayout_QuarterTurnsに応じて非正方形の寸法を回転する(int quarterTurns, int width, int height)
+    public void PerformLayout_QuarterTurnsに応じて非正方形の寸法を回転する(
+        int quarterTurns,
+        int width,
+        int height
+    )
     {
-        var child = new RenderConstrainedBox { AdditionalConstraints = BoxConstraints.Tight(40, 20) };
+        var child = new RenderConstrainedBox
+        {
+            AdditionalConstraints = BoxConstraints.Tight(40, 20),
+        };
         var rotated = new RenderRotatedBox { QuarterTurns = quarterTurns, Child = child };
 
         rotated.Layout(BoxConstraints.Loose(100, 100));
@@ -57,12 +64,16 @@ public class RotatedBoxTest
         byte firstBlue,
         byte secondRed,
         byte secondGreen,
-        byte secondBlue)
+        byte secondBlue
+    )
     {
         using var bitmap = Renderer.Render(BuildPattern(quarterTurns), Size);
 
         Assert.Equal(new SKColor(firstRed, firstGreen, firstBlue), bitmap.GetPixel(firstX, firstY));
-        Assert.Equal(new SKColor(secondRed, secondGreen, secondBlue), bitmap.GetPixel(secondX, secondY));
+        Assert.Equal(
+            new SKColor(secondRed, secondGreen, secondBlue),
+            bitmap.GetPixel(secondX, secondY)
+        );
         Assert.Equal(0, bitmap.GetPixel(10, 10).Alpha);
     }
 
@@ -76,15 +87,19 @@ public class RotatedBoxTest
         int insideX,
         int insideY,
         int outsideX,
-        int outsideY)
+        int outsideY
+    )
     {
         var rotated = new RenderRotatedBox
         {
             QuarterTurns = quarterTurns,
             Child = new RenderColoredBox
             {
-                Child = new RenderConstrainedBox { AdditionalConstraints = BoxConstraints.Tight(40, 20) }
-            }
+                Child = new RenderConstrainedBox
+                {
+                    AdditionalConstraints = BoxConstraints.Tight(40, 20),
+                },
+            },
         };
         rotated.Layout(BoxConstraints.Loose(100, 100));
 
@@ -97,7 +112,10 @@ public class RotatedBoxTest
     {
         var child = new RenderColoredBox
         {
-            Child = new RenderConstrainedBox { AdditionalConstraints = BoxConstraints.Tight(40, 20) }
+            Child = new RenderConstrainedBox
+            {
+                AdditionalConstraints = BoxConstraints.Tight(40, 20),
+            },
         };
         var rotated = new RenderRotatedBox { QuarterTurns = 1, Child = child };
         rotated.Layout(BoxConstraints.Loose(100, 100));
@@ -107,7 +125,10 @@ public class RotatedBoxTest
 
         // 子の (x, y) は親の (20 - y, x) に描かれるので、親の (15, 5) は子の (5, 5)
         var entry = Assert.Single(result.Path, e => ReferenceEquals(e.Target, child));
-        var local = System.Numerics.Vector2.Transform(new System.Numerics.Vector2(15, 5), entry.Transform!.Value);
+        var local = System.Numerics.Vector2.Transform(
+            new System.Numerics.Vector2(15, 5),
+            entry.Transform!.Value
+        );
         Assert.Equal(5f, local.X, 3);
         Assert.Equal(5f, local.Y, 3);
     }
@@ -118,7 +139,10 @@ public class RotatedBoxTest
         var rotated = new RenderRotatedBox
         {
             QuarterTurns = 0,
-            Child = new RenderConstrainedBox { AdditionalConstraints = BoxConstraints.Tight(40, 20) }
+            Child = new RenderConstrainedBox
+            {
+                AdditionalConstraints = BoxConstraints.Tight(40, 20),
+            },
         };
         rotated.Layout(BoxConstraints.Loose(100, 100));
 
@@ -129,36 +153,37 @@ public class RotatedBoxTest
         Assert.Equal(new SKSize(20, 40), rotated.Size);
     }
 
-    private static SizedBox BuildPattern(int quarterTurns) => new()
-    {
-        Width = Size.Width,
-        Height = Size.Height,
-        Child = new Align
+    private static SizedBox BuildPattern(int quarterTurns) =>
+        new()
         {
-            Alignment = Alignment.Center,
-            Child = new RotatedBox
+            Width = Size.Width,
+            Height = Size.Height,
+            Child = new Align
             {
-                QuarterTurns = quarterTurns,
-                Child = new Row
+                Alignment = Alignment.Center,
+                Child = new RotatedBox
                 {
-                    MainAxisSize = MainAxisSize.Min,
-                    Children =
-                    [
-                        new SizedBox
-                        {
-                            Width = 20,
-                            Height = 20,
-                            Child = new ColoredBox { Color = new Color(255, 0, 0) }
-                        },
-                        new SizedBox
-                        {
-                            Width = 20,
-                            Height = 20,
-                            Child = new ColoredBox { Color = new Color(0, 0, 255) }
-                        }
-                    ]
-                }
-            }
-        }
-    };
+                    QuarterTurns = quarterTurns,
+                    Child = new Row
+                    {
+                        MainAxisSize = MainAxisSize.Min,
+                        Children =
+                        [
+                            new SizedBox
+                            {
+                                Width = 20,
+                                Height = 20,
+                                Child = new ColoredBox { Color = new Color(255, 0, 0) },
+                            },
+                            new SizedBox
+                            {
+                                Width = 20,
+                                Height = 20,
+                                Child = new ColoredBox { Color = new Color(0, 0, 255) },
+                            },
+                        ],
+                    },
+                },
+            },
+        };
 }

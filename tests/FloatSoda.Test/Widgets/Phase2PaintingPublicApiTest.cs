@@ -18,22 +18,35 @@ public class Phase2PaintingPublicApiTest
             typeof(DecoratedBox),
             typeof(Opacity),
             typeof(Transform),
-            typeof(Container)
+            typeof(Container),
         ];
 
         var exposedTypes = types
-            .SelectMany(type => type.GetMembers(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly))
+            .SelectMany(type =>
+                type.GetMembers(
+                    BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly
+                )
+            )
             .SelectMany(GetSignatureTypes);
 
-        Assert.DoesNotContain(exposedTypes, type => type.Namespace?.StartsWith("SkiaSharp", StringComparison.Ordinal) == true);
+        Assert.DoesNotContain(
+            exposedTypes,
+            type => type.Namespace?.StartsWith("SkiaSharp", StringComparison.Ordinal) == true
+        );
     }
 
-    private static IEnumerable<Type> GetSignatureTypes(MemberInfo member) => member switch
-    {
-        PropertyInfo property => [property.PropertyType],
-        FieldInfo field => [field.FieldType],
-        MethodInfo method => method.GetParameters().Select(parameter => parameter.ParameterType).Append(method.ReturnType),
-        ConstructorInfo constructor => constructor.GetParameters().Select(parameter => parameter.ParameterType),
-        _ => []
-    };
+    private static IEnumerable<Type> GetSignatureTypes(MemberInfo member) =>
+        member switch
+        {
+            PropertyInfo property => [property.PropertyType],
+            FieldInfo field => [field.FieldType],
+            MethodInfo method => method
+                .GetParameters()
+                .Select(parameter => parameter.ParameterType)
+                .Append(method.ReturnType),
+            ConstructorInfo constructor => constructor
+                .GetParameters()
+                .Select(parameter => parameter.ParameterType),
+            _ => [],
+        };
 }

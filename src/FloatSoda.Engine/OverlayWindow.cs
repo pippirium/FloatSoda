@@ -1,9 +1,9 @@
 using FloatSoda.Abstractions.Engine;
 using FloatSoda.Abstractions.Geometries;
 using FloatSoda.Abstractions.Input;
-using FloatSoda.Rendering.Layers;
 using FloatSoda.OVR;
 using FloatSoda.OVR.Overlay;
+using FloatSoda.Rendering.Layers;
 
 namespace FloatSoda.Engine;
 
@@ -87,7 +87,8 @@ public class OverlayWindow : IEngineWindow
     /// </summary>
     public void PollInputEvents()
     {
-        if (PointerSource is null) return;
+        if (PointerSource is null)
+            return;
 
         Overlay.EventDispatcher.PollEvents();
     }

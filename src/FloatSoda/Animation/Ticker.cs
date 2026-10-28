@@ -10,7 +10,8 @@ namespace FloatSoda.Animation;
 public class WidgetTicker(
     Action<TimeSpan> onTick,
     ITickerProvider creator,
-    Func<IFrameScheduler?> resolveScheduler) : IDisposable
+    Func<IFrameScheduler?> resolveScheduler
+) : IDisposable
 {
     /// <summary>Start済みかどうか。Mutedでも進行中扱いのままです。</summary>
     public bool IsActive { get; private set; }
@@ -32,7 +33,8 @@ public class WidgetTicker(
         get;
         set
         {
-            if (field == value) return;
+            if (field == value)
+                return;
             field = value;
 
             if (value)
@@ -49,23 +51,25 @@ public class WidgetTicker(
     /// <summary>Tickの供給を開始します。経過時間は次のTickを基準にゼロから始まります。</summary>
     public void Start()
     {
-        if (IsActive) return;
+        if (IsActive)
+            return;
 
         IsActive = true;
-        if (ShouldScheduledTick) ScheduleTick();
+        if (ShouldScheduledTick)
+            ScheduleTick();
     }
 
     /// <summary>Tickの供給を停止し、経過時間の基準点をリセットします。</summary>
     public void Stop()
     {
-        if (!IsActive) return;
+        if (!IsActive)
+            return;
 
         IsActive = false;
         StartTime = null;
 
         UnscheduleTick();
     }
-
 
     private void Tick(TimeSpan timeStep)
     {
@@ -74,7 +78,8 @@ public class WidgetTicker(
 
         onTick(timeStep - StartTime.Value);
 
-        if (ShouldScheduledTick) ScheduleTick();
+        if (ShouldScheduledTick)
+            ScheduleTick();
     }
 
     private void ScheduleTick()
@@ -84,7 +89,8 @@ public class WidgetTicker(
 
     private void UnscheduleTick()
     {
-        if (!Scheduled) return;
+        if (!Scheduled)
+            return;
 
         resolveScheduler()?.CancelFrameCallback(_animationId!.Value);
         _animationId = null;
@@ -109,6 +115,7 @@ public interface ITickerProvider
     /// <param name="onTick">フレームごとに呼び出す処理。引数はTicker開始からの経過時間です。</param>
     /// <returns>この供給元が追跡するTicker。</returns>
     WidgetTicker CreateTicker(Action<TimeSpan> onTick);
+
     /// <summary>指定されたTickerを供給元の追跡対象から取り除きます。</summary>
     /// <param name="ticker">追跡を終了するTicker。</param>
     void RemoveTicker(WidgetTicker ticker);

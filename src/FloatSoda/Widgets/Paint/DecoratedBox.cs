@@ -20,11 +20,8 @@ public record DecoratedBox : SingleChildRenderObjectWidget<RenderDecoratedBox>
     public DecorationPosition Position { get; init; } = DecorationPosition.Background;
 
     /// <inheritdoc/>
-    public override RenderDecoratedBox CreateRenderObject() => new()
-    {
-        Decoration = Decoration,
-        Position = Position
-    };
+    public override RenderDecoratedBox CreateRenderObject() =>
+        new() { Decoration = Decoration, Position = Position };
 
     /// <inheritdoc/>
     public override void UpdateRenderObject(RenderDecoratedBox renderObject)

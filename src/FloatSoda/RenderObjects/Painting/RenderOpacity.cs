@@ -21,10 +21,15 @@ public class RenderOpacity : RenderProxyBox
         {
             if (!double.IsFinite(value) || value is < 0 or > 1)
             {
-                throw new ArgumentOutOfRangeException(nameof(value), value, "不透明度には0から1までの有限値を指定してください。");
+                throw new ArgumentOutOfRangeException(
+                    nameof(value),
+                    value,
+                    "不透明度には0から1までの有限値を指定してください。"
+                );
             }
 
-            if (field == value) return;
+            if (field == value)
+                return;
             field = value;
             MarkNeedsPaint();
         }

@@ -1,6 +1,6 @@
-﻿using FloatSoda.Core;
+﻿using System.Collections.Concurrent;
+using FloatSoda.Core;
 using FloatSoda.Gesture;
-using System.Collections.Concurrent;
 
 namespace FloatSoda.Elements;
 
@@ -78,7 +78,7 @@ public class BuildOwner
         {
             OnBuildScheduled();
         }
-        
+
         _dirtyElements.Add(element);
         element.InDirtyList = true;
     }
@@ -97,7 +97,8 @@ public class BuildOwner
     {
         _taskScheduler.DrainTasks();
 
-        if (callback is null && _dirtyElements.Count == 0) return;
+        if (callback is null && _dirtyElements.Count == 0)
+            return;
 
         _scheduledFlushDirtyElements = true;
 
@@ -106,7 +107,7 @@ public class BuildOwner
             _dirtyElementsNeedsRestoring = false;
             callback();
         }
-        
+
         _dirtyElements.Sort();
 
         _dirtyElementsNeedsRestoring = false;
@@ -119,7 +120,8 @@ public class BuildOwner
             var element = _dirtyElements[index];
             // 先に再構築された祖先から更新を受けて Dirty が解除されていれば、もう一度は構築しない。
             // Flutter の Element.rebuild と同じ判定。
-            if (element.Dirty) element.Rebuild();
+            if (element.Dirty)
+                element.Rebuild();
             index++;
 
             if (dirtyCount < _dirtyElements.Count || (_dirtyElementsNeedsRestoring ?? false))
@@ -127,7 +129,7 @@ public class BuildOwner
                 _dirtyElements.Sort();
                 _dirtyElementsNeedsRestoring = false;
                 dirtyCount = _dirtyElements.Count;
-                while (index > 0 && _dirtyElements[index -1].Dirty)
+                while (index > 0 && _dirtyElements[index - 1].Dirty)
                 {
                     index--;
                 }
@@ -138,7 +140,7 @@ public class BuildOwner
         {
             dirtyElement.InDirtyList = false;
         }
-        
+
         _dirtyElements.Clear();
 
         _scheduledFlushDirtyElements = false;
@@ -158,7 +160,8 @@ public class BuildOwner
             onTaskScheduled();
         }
 
-        protected override bool TryExecuteTaskInline(Task task, bool taskWasPreviouslyQueued) => false;
+        protected override bool TryExecuteTaskInline(Task task, bool taskWasPreviouslyQueued) =>
+            false;
 
         protected override IEnumerable<Task> GetScheduledTasks() => _tasks.ToArray();
 

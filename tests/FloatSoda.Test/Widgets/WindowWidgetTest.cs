@@ -27,14 +27,14 @@ public class WindowWidgetTest
         var pipeline = new RenderPipeline
         {
             OnNeedVisualUpdate = () => { },
-            RenderView = renderView
+            RenderView = renderView,
         };
         renderView.PrepareInitialFrame();
 
         new RenderObjectToWidgetAdapter
         {
             Container = renderView,
-            Child = widget
+            Child = widget,
         }.AttachToRenderTree(new BuildOwner(() => { }), null);
 
         return (pipeline, renderView);
@@ -45,11 +45,13 @@ public class WindowWidgetTest
     {
         WindowWidget? found = null;
 
-        MountTree(new DashboardWindow
-        {
-            Title = "TestWindow",
-            Child = new Probe { OnBuild = ctx => found = WindowWidget.Of(ctx) }
-        });
+        MountTree(
+            new DashboardWindow
+            {
+                Title = "TestWindow",
+                Child = new Probe { OnBuild = ctx => found = WindowWidget.Of(ctx) },
+            }
+        );
 
         // ScopeType により具象型（DashboardWindow）でも基底型 WindowWidget で lookup できる
         Assert.IsType<DashboardWindow>(found);
@@ -61,11 +63,13 @@ public class WindowWidgetTest
     {
         OverlayWindow? found = null;
 
-        MountTree(new DashboardWindow
-        {
-            Title = "TestWindow",
-            Child = new Probe { OnBuild = ctx => found = OverlayWindow.Of(ctx) }
-        });
+        MountTree(
+            new DashboardWindow
+            {
+                Title = "TestWindow",
+                Child = new Probe { OnBuild = ctx => found = OverlayWindow.Of(ctx) },
+            }
+        );
 
         // オーバーレイ系の中間基底 OverlayWindow でも lookup できる（Swap 拡張の前提）
         Assert.IsType<DashboardWindow>(found);
@@ -76,11 +80,13 @@ public class WindowWidgetTest
     {
         DesktopWindow? found = null;
 
-        MountTree(new DesktopWindow
-        {
-            Title = "TestWindow",
-            Child = new Probe { OnBuild = ctx => found = DesktopWindow.Of(ctx) }
-        });
+        MountTree(
+            new DesktopWindow
+            {
+                Title = "TestWindow",
+                Child = new Probe { OnBuild = ctx => found = DesktopWindow.Of(ctx) },
+            }
+        );
 
         Assert.IsType<DesktopWindow>(found);
         Assert.Equal("TestWindow", found!.Title);
@@ -89,21 +95,29 @@ public class WindowWidgetTest
     [Fact]
     public void OverlayWindowOf_ThrowsForDesktopWindow()
     {
-        MountTree(new DesktopWindow
-        {
-            Title = "TestWindow",
-            Child = new Probe { OnBuild = ctx => Assert.Throws<InvalidOperationException>(() => OverlayWindow.Of(ctx)) }
-        });
+        MountTree(
+            new DesktopWindow
+            {
+                Title = "TestWindow",
+                Child = new Probe
+                {
+                    OnBuild = ctx =>
+                        Assert.Throws<InvalidOperationException>(() => OverlayWindow.Of(ctx)),
+                },
+            }
+        );
     }
 
     [Fact]
     public void SizeUnset_RenderViewShrinkWrapsToChild()
     {
-        var (pipeline, renderView) = MountTree(new DashboardWindow
-        {
-            Title = "TestWindow",
-            Child = new SizedBox { Width = 320, Height = 240 }
-        });
+        var (pipeline, renderView) = MountTree(
+            new DashboardWindow
+            {
+                Title = "TestWindow",
+                Child = new SizedBox { Width = 320, Height = 240 },
+            }
+        );
 
         pipeline.FlushLayout();
 
@@ -114,12 +128,14 @@ public class WindowWidgetTest
     [Fact]
     public void SizeSet_RenderViewUsesFixedSize()
     {
-        var (pipeline, renderView) = MountTree(new DashboardWindow
-        {
-            Title = "TestWindow",
-            Size = new SKSize(800, 600),
-            Child = new SizedBox { Width = 320, Height = 240 }
-        });
+        var (pipeline, renderView) = MountTree(
+            new DashboardWindow
+            {
+                Title = "TestWindow",
+                Size = new SKSize(800, 600),
+                Child = new SizedBox { Width = 320, Height = 240 },
+            }
+        );
 
         pipeline.FlushLayout();
 

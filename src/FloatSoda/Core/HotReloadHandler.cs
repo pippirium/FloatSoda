@@ -26,7 +26,9 @@ public static class HotReloadHandler
     /// <remarks>稼働中の各アプリケーションへ再構築を予約し、実際のWidgetツリー再構築は各メインループの次フレームで行われます。</remarks>
     public static void UpdateApplication(Type[]? updatedTypes)
     {
-        Console.WriteLine("[🥤FloatSoda HotReload] 🔥 コード差し替えを検知、Widgetツリーを再ビルドします");
+        Console.WriteLine(
+            "[🥤FloatSoda HotReload] 🔥 コード差し替えを検知、Widgetツリーを再ビルドします"
+        );
 
         if (updatedTypes is not null)
         {

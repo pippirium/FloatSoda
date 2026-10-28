@@ -9,6 +9,7 @@ namespace FloatSoda.Elements;
 public class InheritedElement : ComponentElement
 {
     internal HashSet<Element> Dependents { get; } = [];
+
     /// <summary>
     /// 管理しているInheritedWidgetの子Widgetを返します。
     /// </summary>

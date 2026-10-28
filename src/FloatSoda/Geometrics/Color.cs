@@ -39,7 +39,11 @@ public readonly record struct Color(byte Red, byte Green, byte Blue, byte Alpha 
     {
         if (double.IsNaN(opacity) || opacity is < 0.0 or > 1.0)
         {
-            throw new ArgumentOutOfRangeException(nameof(opacity), opacity, "不透明度は0.0から1.0までの値で指定してください。");
+            throw new ArgumentOutOfRangeException(
+                nameof(opacity),
+                opacity,
+                "不透明度は0.0から1.0までの値で指定してください。"
+            );
         }
 
         return new Color(r, g, b, (byte)Math.Round(opacity * 255, MidpointRounding.AwayFromZero));
@@ -74,7 +78,6 @@ public readonly record struct Color(byte Red, byte Green, byte Blue, byte Alpha 
         {
             colorSpan = colorSpan[1..];
         }
-
 
         switch (colorSpan.Length)
         {
@@ -118,7 +121,8 @@ public readonly record struct Color(byte Red, byte Green, byte Blue, byte Alpha 
 
                 return new Color(r, g, b);
             }
-            default: throw new FormatException($"無効なカラーコード形式です: {webColor}");
+            default:
+                throw new FormatException($"無効なカラーコード形式です: {webColor}");
         }
 
         // HexNumber は前後の空白を許すため、"# F0000" が通ってしまう。16進数の文字だけを受け付ける
@@ -129,7 +133,8 @@ public readonly record struct Color(byte Red, byte Green, byte Blue, byte Alpha 
     /// <summary>各成分を保持したまま描画用の色へ変換します。</summary>
     /// <param name="color">変換する色値。</param>
     /// <returns>同じ赤、緑、青、不透明度を持つ描画用の色。</returns>
-    public static implicit operator SKColor(Color color) => new(color.Red, color.Green, color.Blue, color.Alpha);
+    public static implicit operator SKColor(Color color) =>
+        new(color.Red, color.Green, color.Blue, color.Alpha);
 
     /// <summary>描画用の色から各成分を保持した色値へ変換します。</summary>
     /// <param name="skColor">変換する描画用の色。</param>
@@ -152,7 +157,8 @@ internal readonly record struct HSVColor(double Hue, double Saturation, double V
         get;
         init
         {
-            if (value is < 0 or > 360) throw new ArgumentOutOfRangeException();
+            if (value is < 0 or > 360)
+                throw new ArgumentOutOfRangeException();
             field = value;
         }
     } = Hue;
@@ -164,7 +170,8 @@ internal readonly record struct HSVColor(double Hue, double Saturation, double V
         get;
         init
         {
-            if (value is < 0 or > 100) throw new ArgumentOutOfRangeException();
+            if (value is < 0 or > 100)
+                throw new ArgumentOutOfRangeException();
             field = value;
         }
     } = Saturation;
@@ -176,7 +183,8 @@ internal readonly record struct HSVColor(double Hue, double Saturation, double V
         get;
         init
         {
-            if (value is < 0 or > 100) throw new ArgumentOutOfRangeException();
+            if (value is < 0 or > 100)
+                throw new ArgumentOutOfRangeException();
             field = value;
         }
     } = Value;
@@ -208,7 +216,8 @@ internal readonly record struct HSLColor(double Hue, double Saturation, double V
         get;
         init
         {
-            if (value is < 0 or > 360) throw new ArgumentOutOfRangeException();
+            if (value is < 0 or > 360)
+                throw new ArgumentOutOfRangeException();
             field = value;
         }
     } = Hue;
@@ -220,7 +229,8 @@ internal readonly record struct HSLColor(double Hue, double Saturation, double V
         get;
         init
         {
-            if (value is < 0 or > 100) throw new ArgumentOutOfRangeException();
+            if (value is < 0 or > 100)
+                throw new ArgumentOutOfRangeException();
             field = value;
         }
     } = Saturation;
@@ -232,7 +242,8 @@ internal readonly record struct HSLColor(double Hue, double Saturation, double V
         get;
         init
         {
-            if (value is < 0 or > 100) throw new ArgumentOutOfRangeException();
+            if (value is < 0 or > 100)
+                throw new ArgumentOutOfRangeException();
             field = value;
         }
     } = Value;
