@@ -20,7 +20,8 @@ public class RenderConstrainedBox : RenderProxyBox
         get;
         set
         {
-            if (value == field) return;
+            if (value == field)
+                return;
 
             field = value;
             MarkNeedsLayout();
@@ -44,36 +45,44 @@ public class RenderConstrainedBox : RenderProxyBox
     }
 
     /// <inheritdoc/>
-    protected override double ComputeMinIntrinsicWidth(double height) => ComputeIntrinsicWidth(height, true);
+    protected override double ComputeMinIntrinsicWidth(double height) =>
+        ComputeIntrinsicWidth(height, true);
 
     /// <inheritdoc/>
-    protected override double ComputeMaxIntrinsicWidth(double height) => ComputeIntrinsicWidth(height, false);
+    protected override double ComputeMaxIntrinsicWidth(double height) =>
+        ComputeIntrinsicWidth(height, false);
 
     /// <inheritdoc/>
-    protected override double ComputeMinIntrinsicHeight(double width) => ComputeIntrinsicHeight(width, true);
+    protected override double ComputeMinIntrinsicHeight(double width) =>
+        ComputeIntrinsicHeight(width, true);
 
     /// <inheritdoc/>
-    protected override double ComputeMaxIntrinsicHeight(double width) => ComputeIntrinsicHeight(width, false);
+    protected override double ComputeMaxIntrinsicHeight(double width) =>
+        ComputeIntrinsicHeight(width, false);
 
     private double ComputeIntrinsicWidth(double height, bool minimum)
     {
-        if (AdditionalConstraints.HasTightWidth) return AdditionalConstraints.MinWidth;
+        if (AdditionalConstraints.HasTightWidth)
+            return AdditionalConstraints.MinWidth;
 
         var constrainedHeight = AdditionalConstraints.ConstrainHeight(height);
-        var childWidth = Child is null
-            ? 0
-            : minimum ? Child.GetMinIntrinsicWidth(constrainedHeight) : Child.GetMaxIntrinsicWidth(constrainedHeight);
+        var childWidth =
+            Child is null ? 0
+            : minimum ? Child.GetMinIntrinsicWidth(constrainedHeight)
+            : Child.GetMaxIntrinsicWidth(constrainedHeight);
         return AdditionalConstraints.ConstrainWidth(childWidth);
     }
 
     private double ComputeIntrinsicHeight(double width, bool minimum)
     {
-        if (AdditionalConstraints.HasTightHeight) return AdditionalConstraints.MinHeight;
+        if (AdditionalConstraints.HasTightHeight)
+            return AdditionalConstraints.MinHeight;
 
         var constrainedWidth = AdditionalConstraints.ConstrainWidth(width);
-        var childHeight = Child is null
-            ? 0
-            : minimum ? Child.GetMinIntrinsicHeight(constrainedWidth) : Child.GetMaxIntrinsicHeight(constrainedWidth);
+        var childHeight =
+            Child is null ? 0
+            : minimum ? Child.GetMinIntrinsicHeight(constrainedWidth)
+            : Child.GetMaxIntrinsicHeight(constrainedWidth);
         return AdditionalConstraints.ConstrainHeight(childHeight);
     }
 }

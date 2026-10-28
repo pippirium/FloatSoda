@@ -21,26 +21,29 @@ public static class FloatSodaServiceCollectionExtensions
     /// <returns>同じサービスコレクション。</returns>
     public static IServiceCollection AddFloatSoda(
         this IServiceCollection services,
-        FloatSodaOptions? options = null)
+        FloatSodaOptions? options = null
+    )
     {
         ArgumentNullException.ThrowIfNull(services);
 
         options ??= new FloatSodaOptions();
-        
+
         if (options.TargetFrameRate <= 0)
         {
             throw new ArgumentOutOfRangeException(
                 nameof(options),
                 options.TargetFrameRate,
-                "TargetFrameRateは1以上である必要があります。");
+                "TargetFrameRateは1以上である必要があります。"
+            );
         }
 
         services.TryAddSingleton(options);
         services.TryAddSingleton(new OVRAppInfo(options.AppKey));
         services.TryAddSingleton(TimeProvider.System);
         services.TryAddTransient<IFramePacer>(_ => new FramePacer(options.TargetFrameRate));
-        services.TryAddSingleton<IOTaskRunner>(provider =>
-            new IOTaskRunner(logger: provider.GetService<ILogger<IOTaskRunner>>()));
+        services.TryAddSingleton<IOTaskRunner>(provider => new IOTaskRunner(
+            logger: provider.GetService<ILogger<IOTaskRunner>>()
+        ));
 
         services.TryAddSingleton<FloatSodaApp>(provider =>
         {
@@ -58,7 +61,8 @@ public static class FloatSodaServiceCollectionExtensions
                 ioTaskRunner,
                 loggerFactory,
                 timeProvider,
-                options.InputActionMaps);
+                options.InputActionMaps
+            );
         });
 
         services.AddHostedService<FloatSodaHostedService>();

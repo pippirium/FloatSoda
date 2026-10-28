@@ -16,8 +16,16 @@ public class LimitedBoxTest
     [Fact]
     public void PerformLayout_両軸が制約されていない_指定した最大寸法を子へ適用する()
     {
-        var child = new RenderConstrainedBox { AdditionalConstraints = BoxConstraints.Tight(200, 150) };
-        var renderObject = new RenderLimitedBox { MaxWidth = 80, MaxHeight = 60, Child = child };
+        var child = new RenderConstrainedBox
+        {
+            AdditionalConstraints = BoxConstraints.Tight(200, 150),
+        };
+        var renderObject = new RenderLimitedBox
+        {
+            MaxWidth = 80,
+            MaxHeight = 60,
+            Child = child,
+        };
 
         renderObject.Layout(BoxConstraints.Unbounded);
 
@@ -28,8 +36,16 @@ public class LimitedBoxTest
     [Fact]
     public void PerformLayout_親に有限上限がある_指定した最大寸法を適用しない()
     {
-        var child = new RenderConstrainedBox { AdditionalConstraints = BoxConstraints.Tight(200, 150) };
-        var renderObject = new RenderLimitedBox { MaxWidth = 80, MaxHeight = 60, Child = child };
+        var child = new RenderConstrainedBox
+        {
+            AdditionalConstraints = BoxConstraints.Tight(200, 150),
+        };
+        var renderObject = new RenderLimitedBox
+        {
+            MaxWidth = 80,
+            MaxHeight = 60,
+            Child = child,
+        };
 
         renderObject.Layout(BoxConstraints.Loose(300, 300));
 
@@ -40,8 +56,16 @@ public class LimitedBoxTest
     [Fact]
     public void PerformLayout_幅だけ制約されていない_最大幅だけを適用する()
     {
-        var child = new RenderConstrainedBox { AdditionalConstraints = BoxConstraints.Tight(200, 150) };
-        var renderObject = new RenderLimitedBox { MaxWidth = 80, MaxHeight = 60, Child = child };
+        var child = new RenderConstrainedBox
+        {
+            AdditionalConstraints = BoxConstraints.Tight(200, 150),
+        };
+        var renderObject = new RenderLimitedBox
+        {
+            MaxWidth = 80,
+            MaxHeight = 60,
+            Child = child,
+        };
 
         renderObject.Layout(new BoxConstraints(MaxHeight: 200));
 
@@ -58,7 +82,9 @@ public class LimitedBoxTest
         Assert.Throws<ArgumentOutOfRangeException>(() => new LimitedBox { MaxWidth = value });
         Assert.Throws<ArgumentOutOfRangeException>(() => new LimitedBox { MaxHeight = value });
         Assert.Throws<ArgumentOutOfRangeException>(() => new RenderLimitedBox { MaxWidth = value });
-        Assert.Throws<ArgumentOutOfRangeException>(() => new RenderLimitedBox { MaxHeight = value });
+        Assert.Throws<ArgumentOutOfRangeException>(() =>
+            new RenderLimitedBox { MaxHeight = value }
+        );
     }
 
     [Fact]
@@ -84,7 +110,7 @@ public class LimitedBoxTest
         new RenderObjectToWidgetAdapter
         {
             Container = view,
-            Child = initial with { MaxWidth = 40, MaxHeight = 30 }
+            Child = initial with { MaxWidth = 40, MaxHeight = 30 },
         }.AttachToRenderTree(root.Owner!, root);
         root.Owner!.BuildScope();
 
@@ -97,36 +123,64 @@ public class LimitedBoxTest
     [Fact]
     public void PublicApi_LimitedBoxの公開表面_規約どおりで外部描画型を公開しない()
     {
-        foreach (var property in typeof(LimitedBox).GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly))
+        foreach (
+            var property in typeof(LimitedBox).GetProperties(
+                BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly
+            )
+        )
         {
             Assert.Equal(typeof(double), property.PropertyType);
-            Assert.Contains(typeof(IsExternalInit), property.SetMethod!.ReturnParameter.GetRequiredCustomModifiers());
+            Assert.Contains(
+                typeof(IsExternalInit),
+                property.SetMethod!.ReturnParameter.GetRequiredCustomModifiers()
+            );
         }
 
-        Assert.True(typeof(SingleChildRenderObjectWidget<RenderLimitedBox>).IsAssignableFrom(typeof(LimitedBox)));
+        Assert.True(
+            typeof(SingleChildRenderObjectWidget<RenderLimitedBox>).IsAssignableFrom(
+                typeof(LimitedBox)
+            )
+        );
         AssertNoSkiaMembers(typeof(LimitedBox));
         AssertNoSkiaMembers(typeof(RenderLimitedBox));
     }
 
-    private static (RenderPipeline Pipeline, RenderView View, RenderObjectToWidgetElement<RenderView> Root) Mount(Widget widget)
+    private static (
+        RenderPipeline Pipeline,
+        RenderView View,
+        RenderObjectToWidgetElement<RenderView> Root
+    ) Mount(Widget widget)
     {
         var view = new RenderView(100, 100) { FixedSize = new SKSize(100, 100) };
         var pipeline = new RenderPipeline { OnNeedVisualUpdate = () => { }, RenderView = view };
         view.PrepareInitialFrame();
-        var root = new RenderObjectToWidgetAdapter { Container = view, Child = widget }
-            .AttachToRenderTree(new BuildOwner(() => { }), null);
+        var root = new RenderObjectToWidgetAdapter
+        {
+            Container = view,
+            Child = widget,
+        }.AttachToRenderTree(new BuildOwner(() => { }), null);
         return (pipeline, view, root);
     }
 
-    private static void AssertNoSkiaMembers(Type type) => Assert.DoesNotContain(
-        type.GetMembers(BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static | BindingFlags.DeclaredOnly),
-        member => member switch
-        {
-            PropertyInfo property => IsSkiaType(property.PropertyType),
-            MethodInfo method => IsSkiaType(method.ReturnType)
-                                 || method.GetParameters().Any(parameter => IsSkiaType(parameter.ParameterType)),
-            _ => false
-        });
+    private static void AssertNoSkiaMembers(Type type) =>
+        Assert.DoesNotContain(
+            type.GetMembers(
+                BindingFlags.Public
+                    | BindingFlags.Instance
+                    | BindingFlags.Static
+                    | BindingFlags.DeclaredOnly
+            ),
+            member =>
+                member switch
+                {
+                    PropertyInfo property => IsSkiaType(property.PropertyType),
+                    MethodInfo method => IsSkiaType(method.ReturnType)
+                        || method
+                            .GetParameters()
+                            .Any(parameter => IsSkiaType(parameter.ParameterType)),
+                    _ => false,
+                }
+        );
 
     private static bool IsSkiaType(Type type) =>
         type.Namespace?.StartsWith("SkiaSharp", StringComparison.Ordinal) == true;

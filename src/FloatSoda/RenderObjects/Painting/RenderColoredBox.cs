@@ -23,7 +23,8 @@ public class RenderColoredBox : RenderProxyBox
         get;
         set
         {
-            if (field == value) return;
+            if (field == value)
+                return;
             field = value;
             MarkNeedsPaint();
         }
@@ -37,15 +38,16 @@ public class RenderColoredBox : RenderProxyBox
             context.Canvas.DrawRect(SKRect.Create(offset, Size), new SKPaint { Color = Color });
         }
 
-        if (Child is not null) context.PaintChild(Child, offset);
+        if (Child is not null)
+            context.PaintChild(Child, offset);
     }
-
 
     /// <inheritdoc/>
     public override bool HitTest(HitTestResult result, Offset position)
     {
-        if (!Size.Contains(position)) return false;
-        
+        if (!Size.Contains(position))
+            return false;
+
         var hitTarget = HitTestChildren(result, position) || HitTestSelf(position);
 
         if (hitTarget)

@@ -1,5 +1,5 @@
-using FloatSoda.Rendering.Layers;
 using FloatSoda.Rendering;
+using FloatSoda.Rendering.Layers;
 using SkiaSharp;
 
 namespace FloatSoda.Rendering.Test.Layers;
@@ -118,12 +118,16 @@ public class LayerTest
         Assert.Equal(SKColors.Empty, bitmap.GetPixel(5, 5));
     }
 
-    private static ContainerLayer MakeClipLayer(string kind, SKRect clipRect) => kind switch
-    {
-        "rect" => new ClipRectLayer(clipRect) { ClipBehavior = Clip.HardEdge },
-        "rrect" => new ClipRoundRectLayer(new SKRoundRect(clipRect, 8)) { ClipBehavior = Clip.HardEdge },
-        _ => new ClipPathLayer(MakePath(clipRect)) { ClipBehavior = Clip.HardEdge },
-    };
+    private static ContainerLayer MakeClipLayer(string kind, SKRect clipRect) =>
+        kind switch
+        {
+            "rect" => new ClipRectLayer(clipRect) { ClipBehavior = Clip.HardEdge },
+            "rrect" => new ClipRoundRectLayer(new SKRoundRect(clipRect, 8))
+            {
+                ClipBehavior = Clip.HardEdge,
+            },
+            _ => new ClipPathLayer(MakePath(clipRect)) { ClipBehavior = Clip.HardEdge },
+        };
 
     private static SKPath MakePath(SKRect rect)
     {

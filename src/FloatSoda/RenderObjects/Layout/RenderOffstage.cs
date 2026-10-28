@@ -12,7 +12,8 @@ public class RenderOffstage : RenderProxyBox
         get;
         set
         {
-            if (field == value) return;
+            if (field == value)
+                return;
             field = value;
             MarkNeedsLayout();
         }
@@ -34,10 +35,11 @@ public class RenderOffstage : RenderProxyBox
     /// <inheritdoc/>
     public override void Paint(PaintingContext context, Offset offset)
     {
-        if (!Offstage) base.Paint(context, offset);
+        if (!Offstage)
+            base.Paint(context, offset);
     }
 
     /// <inheritdoc/>
-    public override bool HitTestChildren(HitTestResult result, Offset position)
-        => !Offstage && base.HitTestChildren(result, position);
+    public override bool HitTestChildren(HitTestResult result, Offset position) =>
+        !Offstage && base.HitTestChildren(result, position);
 }

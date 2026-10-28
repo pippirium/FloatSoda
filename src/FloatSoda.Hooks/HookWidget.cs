@@ -10,13 +10,16 @@ public abstract record HookWidget : Widget
 
     // 現在ビルド中のElementを追跡するためのスレッドローカル（または引数経由）の仕組み
     // ここでは単純化のため、Build時にContextから取得する設計にします
-    [ThreadStatic] internal static HookElement? CurrentElementBuilding;
+    [ThreadStatic]
+    internal static HookElement? CurrentElementBuilding;
 
     protected ReactiveProperty<T> UseState<T>(T initState)
     {
         if (CurrentElementBuilding is null)
         {
-            throw new InvalidOperationException("UseState は Build メソッド内でのみ呼び出すことができます。");
+            throw new InvalidOperationException(
+                "UseState は Build メソッド内でのみ呼び出すことができます。"
+            );
         }
 
         return CurrentElementBuilding.GetOrCreateState(initState);
@@ -43,7 +46,6 @@ public class HookElement : ComponentElement, IDisposable
         _rebuildSubject = new Subject<Unit>();
         _rebuildSubject.Subscribe(_ => Rebuild());
     }
-
 
     // HookWidgetのBuildを呼び出すコアロジック
     public Widget PerformBuild(IBuildContext context)
@@ -92,7 +94,6 @@ public class HookElement : ComponentElement, IDisposable
         _rebuildSubject.OnCompleted();
         Bag.Dispose();
     }
-
 
     public override Widget Build()
     {

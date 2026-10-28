@@ -18,5 +18,6 @@ public class RenderIgnorePointer : RenderProxyBox
     /// <param name="result">ヒットした対象を格納する結果。</param>
     /// <param name="position">このRenderObjectのローカル座標で表した判定位置。</param>
     /// <returns>無視中は常に<see langword="false"/>、それ以外は基底実装がヒットした場合に<see langword="true"/>。</returns>
-    public override bool HitTest(HitTestResult result, Offset position) => !Ignoring && base.HitTest(result, position);
+    public override bool HitTest(HitTestResult result, Offset position) =>
+        !Ignoring && base.HitTest(result, position);
 }

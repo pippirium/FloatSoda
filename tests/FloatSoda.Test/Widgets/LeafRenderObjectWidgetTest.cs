@@ -13,7 +13,9 @@ public class LeafRenderObjectWidgetTest
     {
         var widget = new TestLeafWidget { Color = SKColors.Red };
 
-        var element = Assert.IsType<LeafRenderObjectElement<RenderColoredBox>>(widget.CreateElement());
+        var element = Assert.IsType<LeafRenderObjectElement<RenderColoredBox>>(
+            widget.CreateElement()
+        );
 
         Assert.Same(widget, element.Widget);
     }
@@ -63,6 +65,7 @@ public class LeafRenderObjectWidgetTest
 
         public override RenderColoredBox CreateRenderObject() => new() { Color = Color };
 
-        public override void UpdateRenderObject(RenderColoredBox renderObject) => renderObject.Color = Color;
+        public override void UpdateRenderObject(RenderColoredBox renderObject) =>
+            renderObject.Color = Color;
     }
 }

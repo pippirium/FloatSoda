@@ -12,7 +12,8 @@ public sealed class RenderFractionallySizedOverflowBox : RenderBox, IHasSingleCh
     private readonly SingleChildContainer<RenderObject> _child;
 
     /// <summary>子を持たない割合指定RenderObjectを初期化します。</summary>
-    public RenderFractionallySizedOverflowBox() => _child = new SingleChildContainer<RenderObject>(this);
+    public RenderFractionallySizedOverflowBox() =>
+        _child = new SingleChildContainer<RenderObject>(this);
 
     /// <summary>配置する子を取得または設定します。</summary>
     public RenderObject? Child
@@ -30,7 +31,8 @@ public sealed class RenderFractionallySizedOverflowBox : RenderBox, IHasSingleCh
         set
         {
             ValidateFactor(value, nameof(WidthFactor));
-            if (field == value) return;
+            if (field == value)
+                return;
             field = value;
             MarkNeedsLayout();
         }
@@ -45,7 +47,8 @@ public sealed class RenderFractionallySizedOverflowBox : RenderBox, IHasSingleCh
         set
         {
             ValidateFactor(value, nameof(HeightFactor));
-            if (field == value) return;
+            if (field == value)
+                return;
             field = value;
             MarkNeedsLayout();
         }
@@ -59,14 +62,16 @@ public sealed class RenderFractionallySizedOverflowBox : RenderBox, IHasSingleCh
         set
         {
             LayoutOverflowValidation.ValidateAlignment(value, nameof(Alignment));
-            if (field == value) return;
+            if (field == value)
+                return;
             field = value;
             MarkNeedsLayout();
         }
     } = Alignment.Center;
 
     /// <inheritdoc/>
-    public override void SetupParentData(RenderObject child) => child.ParentData = new BoxParentData();
+    public override void SetupParentData(RenderObject child) =>
+        child.ParentData = new BoxParentData();
 
     /// <inheritdoc/>
     public override void PerformLayout()
@@ -87,26 +92,32 @@ public sealed class RenderFractionallySizedOverflowBox : RenderBox, IHasSingleCh
     internal override SKSize ComputeDryLayout(BoxConstraints constraints)
     {
         var innerConstraints = GetInnerConstraints(constraints);
-        if (Child is null) return constraints.Constrain(innerConstraints.Constrain(0, 0));
+        if (Child is null)
+            return constraints.Constrain(innerConstraints.Constrain(0, 0));
         return constraints.Constrain(GetRenderBoxChild().GetDryLayout(innerConstraints));
     }
 
     /// <inheritdoc/>
-    protected override double ComputeMinIntrinsicWidth(double height) => ComputeIntrinsicWidth(height, true);
+    protected override double ComputeMinIntrinsicWidth(double height) =>
+        ComputeIntrinsicWidth(height, true);
 
     /// <inheritdoc/>
-    protected override double ComputeMaxIntrinsicWidth(double height) => ComputeIntrinsicWidth(height, false);
+    protected override double ComputeMaxIntrinsicWidth(double height) =>
+        ComputeIntrinsicWidth(height, false);
 
     /// <inheritdoc/>
-    protected override double ComputeMinIntrinsicHeight(double width) => ComputeIntrinsicHeight(width, true);
+    protected override double ComputeMinIntrinsicHeight(double width) =>
+        ComputeIntrinsicHeight(width, true);
 
     /// <inheritdoc/>
-    protected override double ComputeMaxIntrinsicHeight(double width) => ComputeIntrinsicHeight(width, false);
+    protected override double ComputeMaxIntrinsicHeight(double width) =>
+        ComputeIntrinsicHeight(width, false);
 
     /// <inheritdoc/>
     public override void Paint(PaintingContext context, Offset offset)
     {
-        if (Child is null) return;
+        if (Child is null)
+            return;
         var childOffset = ((BoxParentData)Child.ParentData!).Offset;
         context.PaintChild(Child, offset + childOffset);
     }
@@ -114,10 +125,14 @@ public sealed class RenderFractionallySizedOverflowBox : RenderBox, IHasSingleCh
     /// <inheritdoc/>
     public override bool HitTestChildren(HitTestResult result, Offset position)
     {
-        if (Child is not RenderBox child) return false;
+        if (Child is not RenderBox child)
+            return false;
         var childOffset = ((BoxParentData)Child.ParentData!).Offset;
-        return result.AddWidthPaintOffset(childOffset, position,
-            (testResult, transformed) => child.HitTest(testResult, transformed));
+        return result.AddWidthPaintOffset(
+            childOffset,
+            position,
+            (testResult, transformed) => child.HitTest(testResult, transformed)
+        );
     }
 
     /// <inheritdoc/>
@@ -135,7 +150,8 @@ public sealed class RenderFractionallySizedOverflowBox : RenderBox, IHasSingleCh
     }
 
     /// <inheritdoc/>
-    public override void VisitChildren(Action<RenderObject> visitor) => _child.VisitChildren(visitor);
+    public override void VisitChildren(Action<RenderObject> visitor) =>
+        _child.VisitChildren(visitor);
 
     /// <inheritdoc/>
     public override void RedepthChildren() => VisitChildren(RedepthChild);
@@ -151,17 +167,25 @@ public sealed class RenderFractionallySizedOverflowBox : RenderBox, IHasSingleCh
         return new BoxConstraints(width.Min, width.Max, height.Min, height.Max);
     }
 
-    private static (double Min, double Max) GetFractionalAxis(double maximum, double factor, string axisName)
+    private static (double Min, double Max) GetFractionalAxis(
+        double maximum,
+        double factor,
+        string axisName
+    )
     {
         if (!double.IsFinite(maximum))
         {
-            throw new InvalidOperationException($"FractionallySizedBoxで{axisName}のfactorを使用するには、親の最大{axisName}が有限である必要があります。");
+            throw new InvalidOperationException(
+                $"FractionallySizedBoxで{axisName}のfactorを使用するには、親の最大{axisName}が有限である必要があります。"
+            );
         }
 
         var extent = maximum * factor;
         if (!double.IsFinite(extent))
         {
-            throw new InvalidOperationException($"FractionallySizedBoxで計算した{axisName}が有限値の範囲を超えました。");
+            throw new InvalidOperationException(
+                $"FractionallySizedBoxで計算した{axisName}が有限値の範囲を超えました。"
+            );
         }
 
         return (extent, extent);
@@ -169,8 +193,10 @@ public sealed class RenderFractionallySizedOverflowBox : RenderBox, IHasSingleCh
 
     private double ComputeIntrinsicWidth(double height, bool minimum)
     {
-        if (Child is null) return 0;
-        if (WidthFactor == 0) return 0;
+        if (Child is null)
+            return 0;
+        if (WidthFactor == 0)
+            return 0;
         var adjustedHeight = HeightFactor == 0 ? 0 : height * (HeightFactor ?? 1);
         var result = minimum
             ? GetRenderBoxChild().GetMinIntrinsicWidth(adjustedHeight)
@@ -180,8 +206,10 @@ public sealed class RenderFractionallySizedOverflowBox : RenderBox, IHasSingleCh
 
     private double ComputeIntrinsicHeight(double width, bool minimum)
     {
-        if (Child is null) return 0;
-        if (HeightFactor == 0) return 0;
+        if (Child is null)
+            return 0;
+        if (HeightFactor == 0)
+            return 0;
         var adjustedWidth = WidthFactor == 0 ? 0 : width * (WidthFactor ?? 1);
         var result = minimum
             ? GetRenderBoxChild().GetMinIntrinsicHeight(adjustedWidth)
@@ -189,16 +217,24 @@ public sealed class RenderFractionallySizedOverflowBox : RenderBox, IHasSingleCh
         return result / (HeightFactor ?? 1);
     }
 
-    private RenderBox GetRenderBoxChild() => Child as RenderBox ?? throw new NotSupportedException(
-        $"{GetType().Name}のintrinsic測定にはRenderBoxの子が必要です。");
+    private RenderBox GetRenderBoxChild() =>
+        Child as RenderBox
+        ?? throw new NotSupportedException(
+            $"{GetType().Name}のintrinsic測定にはRenderBoxの子が必要です。"
+        );
 
-    private void AlignChild() => ((BoxParentData)Child!.ParentData!).Offset = Alignment.ComputeOffset(Size, Child.Size);
+    private void AlignChild() =>
+        ((BoxParentData)Child!.ParentData!).Offset = Alignment.ComputeOffset(Size, Child.Size);
 
     internal static void ValidateFactor(double? value, string parameterName)
     {
         if (value is not null && (!double.IsFinite(value.Value) || value.Value < 0))
         {
-            throw new ArgumentOutOfRangeException(parameterName, value, "factorには0以上の有限値を指定してください。");
+            throw new ArgumentOutOfRangeException(
+                parameterName,
+                value,
+                "factorには0以上の有限値を指定してください。"
+            );
         }
     }
 }

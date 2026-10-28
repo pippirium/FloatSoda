@@ -30,14 +30,16 @@ public sealed record Positioned : ParentDataWidget<StackParentData>
     {
         Validate();
 
-        var changed = parentData.Left != Left
+        var changed =
+            parentData.Left != Left
             || parentData.Top != Top
             || parentData.Right != Right
             || parentData.Bottom != Bottom
             || parentData.Width != Width
             || parentData.Height != Height;
 
-        if (!changed) return false;
+        if (!changed)
+            return false;
 
         parentData.Left = Left;
         parentData.Top = Top;
@@ -52,12 +54,16 @@ public sealed record Positioned : ParentDataWidget<StackParentData>
     {
         if (CountSpecified(Left, Right, Width) > 2)
         {
-            throw new InvalidOperationException("PositionedではLeft、Right、Widthのうち同時に指定できるのは2つまでです。");
+            throw new InvalidOperationException(
+                "PositionedではLeft、Right、Widthのうち同時に指定できるのは2つまでです。"
+            );
         }
 
         if (CountSpecified(Top, Bottom, Height) > 2)
         {
-            throw new InvalidOperationException("PositionedではTop、Bottom、Heightのうち同時に指定できるのは2つまでです。");
+            throw new InvalidOperationException(
+                "PositionedではTop、Bottom、Heightのうち同時に指定できるのは2つまでです。"
+            );
         }
 
         ValidateOffset(Left, nameof(Left));
@@ -68,14 +74,18 @@ public sealed record Positioned : ParentDataWidget<StackParentData>
         ValidateDimension(Height, nameof(Height));
     }
 
-    private static int CountSpecified(double? first, double? second, double? third)
-        => (first.HasValue ? 1 : 0) + (second.HasValue ? 1 : 0) + (third.HasValue ? 1 : 0);
+    private static int CountSpecified(double? first, double? second, double? third) =>
+        (first.HasValue ? 1 : 0) + (second.HasValue ? 1 : 0) + (third.HasValue ? 1 : 0);
 
     private static void ValidateOffset(double? value, string name)
     {
         if (value.HasValue && !double.IsFinite(value.Value))
         {
-            throw new ArgumentOutOfRangeException(name, value, "配置値には有限値を指定してください。");
+            throw new ArgumentOutOfRangeException(
+                name,
+                value,
+                "配置値には有限値を指定してください。"
+            );
         }
     }
 
@@ -83,7 +93,11 @@ public sealed record Positioned : ParentDataWidget<StackParentData>
     {
         if (value.HasValue && (!double.IsFinite(value.Value) || value.Value < 0))
         {
-            throw new ArgumentOutOfRangeException(name, value, "寸法には0以上の有限値を指定してください。");
+            throw new ArgumentOutOfRangeException(
+                name,
+                value,
+                "寸法には0以上の有限値を指定してください。"
+            );
         }
     }
 }

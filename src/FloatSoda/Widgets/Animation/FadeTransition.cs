@@ -18,10 +18,7 @@ public record FadeTransition : SingleChildRenderObjectWidget<RenderAnimatedOpaci
     /// 不透明度アニメーションを監視して子要素へ適用するRenderObjectを生成します。
     /// </summary>
     /// <returns>指定されたアニメーションを保持する新しいRenderObject。</returns>
-    public override RenderAnimatedOpacity CreateRenderObject() => new()
-    {
-        Opacity = Opacity
-    };
+    public override RenderAnimatedOpacity CreateRenderObject() => new() { Opacity = Opacity };
 
     /// <summary>
     /// 不透明度を駆動するアニメーションを既存のRenderObjectへ反映します。
@@ -32,5 +29,6 @@ public record FadeTransition : SingleChildRenderObjectWidget<RenderAnimatedOpaci
     /// 現在の不透明度が変化した場合は対象をPaint Dirtyとしてマークし、次のパイプライン更新時に再描画します。
     /// 同じアニメーションが指定された場合、購読とDirty状態は変更されません。
     /// </remarks>
-    public override void UpdateRenderObject(RenderAnimatedOpacity renderObject) => renderObject.Opacity = Opacity;
+    public override void UpdateRenderObject(RenderAnimatedOpacity renderObject) =>
+        renderObject.Opacity = Opacity;
 }

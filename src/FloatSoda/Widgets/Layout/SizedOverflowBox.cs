@@ -32,11 +32,8 @@ public sealed record SizedOverflowBox : SingleChildRenderObjectWidget<RenderSize
     } = Alignment.Center;
 
     /// <inheritdoc/>
-    public override RenderSizedOverflowBox CreateRenderObject() => new()
-    {
-        RequestedSize = Size,
-        Alignment = Alignment
-    };
+    public override RenderSizedOverflowBox CreateRenderObject() =>
+        new() { RequestedSize = Size, Alignment = Alignment };
 
     /// <inheritdoc/>
     public override void UpdateRenderObject(RenderSizedOverflowBox renderObject)

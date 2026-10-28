@@ -13,7 +13,11 @@ public sealed record Spacer : StatelessWidget
         {
             if (value <= 0)
             {
-                throw new ArgumentOutOfRangeException(nameof(Flex), value, "Flex には 1 以上の整数を指定してください。");
+                throw new ArgumentOutOfRangeException(
+                    nameof(Flex),
+                    value,
+                    "Flex には 1 以上の整数を指定してください。"
+                );
             }
 
             field = value;
@@ -21,9 +25,6 @@ public sealed record Spacer : StatelessWidget
     } = 1;
 
     /// <inheritdoc/>
-    public override Widget Build(IBuildContext context) => new Expanded
-    {
-        Flex = Flex,
-        Child = new SizedBox()
-    };
+    public override Widget Build(IBuildContext context) =>
+        new Expanded { Flex = Flex, Child = new SizedBox() };
 }

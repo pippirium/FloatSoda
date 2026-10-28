@@ -17,7 +17,7 @@ public class ColoredBoxTest
         {
             Width = Size.Width,
             Height = Size.Height,
-            Child = new ColoredBox { Color = SKColors.Blue }
+            Child = new ColoredBox { Color = SKColors.Blue },
         };
 
         using var bitmap = Renderer.Render(widget, Size);

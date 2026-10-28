@@ -13,7 +13,7 @@ public abstract record Widget
     /// キーを指定しない場合は、同じ位置にある同一ランタイム型のウィジェットを更新対象として再利用できます。
     /// </summary>
     public IKey? Key { get; init; }
-    
+
     /// <summary>
     /// 既存のElementを維持したまま、古いウィジェットを新しいウィジェットで更新できるかを判定します。
     /// </summary>

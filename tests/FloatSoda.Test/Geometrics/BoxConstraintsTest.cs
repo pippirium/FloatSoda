@@ -162,22 +162,32 @@ public class BoxConstraintsTest
     // ── ConstrainWidth / ConstrainHeight ──────────────────────────
 
     [Theory]
-    [InlineData(50, 100, 200, 100)]   // within bounds
-    [InlineData(10, 100, 200, 100)]   // below min → clamped to min
-    [InlineData(999, 100, 200, 200)]  // above max → clamped to max
+    [InlineData(50, 100, 200, 100)] // within bounds
+    [InlineData(10, 100, 200, 100)] // below min → clamped to min
+    [InlineData(999, 100, 200, 200)] // above max → clamped to max
     public void ConstrainWidth_Clamps(double input, double min, double max, double expected)
     {
-        var c = new BoxConstraints(MinWidth: min, MaxWidth: max, MinHeight: 0, MaxHeight: double.PositiveInfinity);
+        var c = new BoxConstraints(
+            MinWidth: min,
+            MaxWidth: max,
+            MinHeight: 0,
+            MaxHeight: double.PositiveInfinity
+        );
         Assert.Equal(expected, c.ConstrainWidth(input));
     }
 
     [Theory]
-    [InlineData(80, 50, 150, 80)]    // within bounds
-    [InlineData(10, 50, 150, 50)]    // below min → clamped to min
-    [InlineData(999, 50, 150, 150)]  // above max → clamped to max
+    [InlineData(80, 50, 150, 80)] // within bounds
+    [InlineData(10, 50, 150, 50)] // below min → clamped to min
+    [InlineData(999, 50, 150, 150)] // above max → clamped to max
     public void ConstrainHeight_Clamps(double input, double min, double max, double expected)
     {
-        var c = new BoxConstraints(MinWidth: 0, MaxWidth: double.PositiveInfinity, MinHeight: min, MaxHeight: max);
+        var c = new BoxConstraints(
+            MinWidth: 0,
+            MaxWidth: double.PositiveInfinity,
+            MinHeight: min,
+            MaxHeight: max
+        );
         Assert.Equal(expected, c.ConstrainHeight(input));
     }
 

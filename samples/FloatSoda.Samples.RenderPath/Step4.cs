@@ -21,21 +21,23 @@ static class Step4
         using var host = builder.Build();
         var app = host.Services.GetRequiredService<FloatSodaApp>();
 
-        app.CreateWindow(new DashboardWindow
-        {
-            Dpm = new Dpm(100),
-            Title = "RenderPath",
-            Child = new Align
+        app.CreateWindow(
+            new DashboardWindow
             {
-                Alignment = Alignment.Center,
-                Child = new SizedBox
+                Dpm = new Dpm(100),
+                Title = "RenderPath",
+                Child = new Align
                 {
-                    Width = 100,
-                    Height = 100,
-                    Child = new ColoredBox { Color = SKColors.CornflowerBlue }
-                }
+                    Alignment = Alignment.Center,
+                    Child = new SizedBox
+                    {
+                        Width = 100,
+                        Height = 100,
+                        Child = new ColoredBox { Color = SKColors.CornflowerBlue },
+                    },
+                },
             }
-        });
+        );
 
         await host.RunAsync();
     }

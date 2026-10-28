@@ -87,16 +87,17 @@ public sealed record Wrap : MultiChildRenderObjectWidget<RenderWrap>
     } = VerticalDirection.Down;
 
     /// <inheritdoc/>
-    public override RenderWrap CreateRenderObject() => new()
-    {
-        Direction = Direction,
-        Alignment = Alignment,
-        Spacing = Spacing,
-        RunAlignment = RunAlignment,
-        RunSpacing = RunSpacing,
-        CrossAxisAlignment = CrossAxisAlignment,
-        VerticalDirection = VerticalDirection,
-    };
+    public override RenderWrap CreateRenderObject() =>
+        new()
+        {
+            Direction = Direction,
+            Alignment = Alignment,
+            Spacing = Spacing,
+            RunAlignment = RunAlignment,
+            RunSpacing = RunSpacing,
+            CrossAxisAlignment = CrossAxisAlignment,
+            VerticalDirection = VerticalDirection,
+        };
 
     /// <inheritdoc/>
     public override void UpdateRenderObject(RenderWrap renderObject)
@@ -114,15 +115,24 @@ public sealed record Wrap : MultiChildRenderObjectWidget<RenderWrap>
     {
         if (!double.IsFinite(value) || value < 0)
         {
-            throw new ArgumentOutOfRangeException(parameterName, value, "間隔には0以上の有限値を指定してください。");
+            throw new ArgumentOutOfRangeException(
+                parameterName,
+                value,
+                "間隔には0以上の有限値を指定してください。"
+            );
         }
     }
 
-    private static void EnsureDefined<T>(T value, string parameterName) where T : struct, Enum
+    private static void EnsureDefined<T>(T value, string parameterName)
+        where T : struct, Enum
     {
         if (!Enum.IsDefined(value))
         {
-            throw new ArgumentOutOfRangeException(parameterName, value, "定義済みの値を指定してください。");
+            throw new ArgumentOutOfRangeException(
+                parameterName,
+                value,
+                "定義済みの値を指定してください。"
+            );
         }
     }
 }

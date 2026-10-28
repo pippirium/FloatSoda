@@ -21,7 +21,8 @@ public sealed class RenderConstraintsTransformBox : RenderProxyBox
         set
         {
             ArgumentNullException.ThrowIfNull(value);
-            if (field == value) return;
+            if (field == value)
+                return;
             field = value;
             MarkNeedsLayout();
         }
@@ -35,7 +36,8 @@ public sealed class RenderConstraintsTransformBox : RenderProxyBox
         set
         {
             ValidateAlignment(value);
-            if (field == value) return;
+            if (field == value)
+                return;
             field = value;
             MarkNeedsLayout();
         }
@@ -49,7 +51,8 @@ public sealed class RenderConstraintsTransformBox : RenderProxyBox
         set
         {
             ValidateClipBehavior(value);
-            if (field == value) return;
+            if (field == value)
+                return;
             field = value;
             MarkNeedsPaint();
         }
@@ -76,31 +79,44 @@ public sealed class RenderConstraintsTransformBox : RenderProxyBox
     /// <inheritdoc/>
     internal override SKSize ComputeDryLayout(BoxConstraints constraints)
     {
-        if (Child is null) return constraints.Smallest;
+        if (Child is null)
+            return constraints.Smallest;
 
         var childSize = Child.GetDryLayout(TransformAndValidate(constraints));
         return constraints.Constrain(childSize);
     }
 
     /// <inheritdoc/>
-    protected override double ComputeMinIntrinsicWidth(double height) => Child is null
-        ? 0
-        : Child.GetMinIntrinsicWidth(TransformAndValidate(new BoxConstraints(MaxHeight: height)).MaxHeight);
+    protected override double ComputeMinIntrinsicWidth(double height) =>
+        Child is null
+            ? 0
+            : Child.GetMinIntrinsicWidth(
+                TransformAndValidate(new BoxConstraints(MaxHeight: height)).MaxHeight
+            );
 
     /// <inheritdoc/>
-    protected override double ComputeMaxIntrinsicWidth(double height) => Child is null
-        ? 0
-        : Child.GetMaxIntrinsicWidth(TransformAndValidate(new BoxConstraints(MaxHeight: height)).MaxHeight);
+    protected override double ComputeMaxIntrinsicWidth(double height) =>
+        Child is null
+            ? 0
+            : Child.GetMaxIntrinsicWidth(
+                TransformAndValidate(new BoxConstraints(MaxHeight: height)).MaxHeight
+            );
 
     /// <inheritdoc/>
-    protected override double ComputeMinIntrinsicHeight(double width) => Child is null
-        ? 0
-        : Child.GetMinIntrinsicHeight(TransformAndValidate(new BoxConstraints(MaxWidth: width)).MaxWidth);
+    protected override double ComputeMinIntrinsicHeight(double width) =>
+        Child is null
+            ? 0
+            : Child.GetMinIntrinsicHeight(
+                TransformAndValidate(new BoxConstraints(MaxWidth: width)).MaxWidth
+            );
 
     /// <inheritdoc/>
-    protected override double ComputeMaxIntrinsicHeight(double width) => Child is null
-        ? 0
-        : Child.GetMaxIntrinsicHeight(TransformAndValidate(new BoxConstraints(MaxWidth: width)).MaxWidth);
+    protected override double ComputeMaxIntrinsicHeight(double width) =>
+        Child is null
+            ? 0
+            : Child.GetMaxIntrinsicHeight(
+                TransformAndValidate(new BoxConstraints(MaxWidth: width)).MaxWidth
+            );
 
     /// <inheritdoc/>
     public override void Paint(PaintingContext context, Offset offset)
@@ -122,21 +138,25 @@ public sealed class RenderConstraintsTransformBox : RenderProxyBox
         Layer = context.PushClipRect(
             offset,
             SKRect.Create(Size),
-            (childContext, paintOffset) => childContext.PaintChild(Child, paintOffset + childOffset),
+            (childContext, paintOffset) =>
+                childContext.PaintChild(Child, paintOffset + childOffset),
             ClipBehavior,
-            Layer as ClipRectLayer);
+            Layer as ClipRectLayer
+        );
     }
 
     /// <inheritdoc/>
     public override bool HitTestChildren(HitTestResult result, Offset position)
     {
-        if (Child is null) return false;
+        if (Child is null)
+            return false;
 
         var childOffset = ((BoxParentData)Child.ParentData!).Offset;
         return result.AddWidthPaintOffset(
             childOffset,
             position,
-            (testResult, transformed) => Child.HitTest(testResult, transformed));
+            (testResult, transformed) => Child.HitTest(testResult, transformed)
+        );
     }
 
     private BoxConstraints TransformAndValidate(BoxConstraints constraints)
@@ -147,7 +167,8 @@ public sealed class RenderConstraintsTransformBox : RenderProxyBox
     }
 
     private static bool IsOutsideBounds(Offset offset, SKSize childSize, SKSize size) =>
-        offset.X < 0 || offset.Y < 0
+        offset.X < 0
+        || offset.Y < 0
         || offset.X + childSize.Width > size.Width
         || offset.Y + childSize.Height > size.Height;
 
@@ -159,13 +180,18 @@ public sealed class RenderConstraintsTransformBox : RenderProxyBox
 
     private static void ValidateAxis(double minimum, double maximum, string parameterName)
     {
-        if (!double.IsFinite(minimum) || minimum < 0
-            || double.IsNaN(maximum) || double.IsNegativeInfinity(maximum)
-            || maximum < minimum)
+        if (
+            !double.IsFinite(minimum)
+            || minimum < 0
+            || double.IsNaN(maximum)
+            || double.IsNegativeInfinity(maximum)
+            || maximum < minimum
+        )
         {
             throw new ArgumentException(
                 "制約変換の戻り値は、0以上の有限な最小値と、それ以上の最大値または正の無限大を持つ必要があります。",
-                parameterName);
+                parameterName
+            );
         }
     }
 
@@ -173,7 +199,11 @@ public sealed class RenderConstraintsTransformBox : RenderProxyBox
     {
         if (!float.IsFinite(alignment.X) || !float.IsFinite(alignment.Y))
         {
-            throw new ArgumentOutOfRangeException(nameof(alignment), alignment, "配置値には有限値を指定してください。");
+            throw new ArgumentOutOfRangeException(
+                nameof(alignment),
+                alignment,
+                "配置値には有限値を指定してください。"
+            );
         }
     }
 
@@ -181,7 +211,11 @@ public sealed class RenderConstraintsTransformBox : RenderProxyBox
     {
         if (!Enum.IsDefined(clipBehavior))
         {
-            throw new ArgumentOutOfRangeException(nameof(clipBehavior), clipBehavior, "定義済みのクリップ方法を指定してください。");
+            throw new ArgumentOutOfRangeException(
+                nameof(clipBehavior),
+                clipBehavior,
+                "定義済みのクリップ方法を指定してください。"
+            );
         }
     }
 }

@@ -13,18 +13,24 @@ var useDesktop = args.Contains("--desktop");
 var hostArgs = args.Where(argument => argument != "--desktop").ToArray();
 
 var builder = Host.CreateApplicationBuilder(hostArgs);
-builder.Services.AddFloatSoda(new FloatSodaOptions
-{
-    AppKey = new AppKey("FloatSoda.Samples.ListenableBuilder"),
-});
+builder.Services.AddFloatSoda(
+    new FloatSodaOptions { AppKey = new AppKey("FloatSoda.Samples.ListenableBuilder") }
+);
 
 using var host = builder.Build();
 var app = host.Services.GetRequiredService<FloatSodaApp>();
 
 var demo = new ListenableBuilderDemo();
 
-app.CreateWindow(useDesktop
-    ? new DesktopWindow { Title = "ListenableBuilder", Child = demo }
-    : new DashboardWindow { Dpm = new Dpm(1000), Title = "ListenableBuilder", Child = demo });
+app.CreateWindow(
+    useDesktop
+        ? new DesktopWindow { Title = "ListenableBuilder", Child = demo }
+        : new DashboardWindow
+        {
+            Dpm = new Dpm(1000),
+            Title = "ListenableBuilder",
+            Child = demo,
+        }
+);
 
 await host.RunAsync();

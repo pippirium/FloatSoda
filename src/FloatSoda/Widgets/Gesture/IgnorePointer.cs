@@ -14,5 +14,6 @@ public record IgnorePointer : SingleChildRenderObjectWidget<RenderIgnorePointer>
     public override RenderIgnorePointer CreateRenderObject() => new() { Ignoring = Ignoring };
 
     /// <inheritdoc />
-    public override void UpdateRenderObject(RenderIgnorePointer renderObject) => renderObject.Ignoring = Ignoring;
+    public override void UpdateRenderObject(RenderIgnorePointer renderObject) =>
+        renderObject.Ignoring = Ignoring;
 }

@@ -25,11 +25,14 @@ public class ClipRoundRectFlutterParityTest
             Child = new ClipRoundRect
             {
                 BorderRadius = BorderRadius.Zero,
-                Child = new ColoredBox { Color = new Color(255, 0, 0) }
-            }
+                Child = new ColoredBox { Color = new Color(255, 0, 0) },
+            },
         };
-        var root = new RenderObjectToWidgetAdapter { Container = view, Child = initial }
-            .AttachToRenderTree(owner, null);
+        var root = new RenderObjectToWidgetAdapter
+        {
+            Container = view,
+            Child = initial,
+        }.AttachToRenderTree(owner, null);
         view.PrepareInitialFrame();
         pipeline.FlushLayout();
         pipeline.FlushPaint();
@@ -44,9 +47,9 @@ public class ClipRoundRectFlutterParityTest
                 Child = new ClipRoundRect
                 {
                     BorderRadius = BorderRadius.Circular(8),
-                    Child = new ColoredBox { Color = new Color(255, 0, 0) }
-                }
-            }
+                    Child = new ColoredBox { Color = new Color(255, 0, 0) },
+                },
+            },
         }.AttachToRenderTree(owner, root);
         owner.BuildScope();
         pipeline.FlushPaint();

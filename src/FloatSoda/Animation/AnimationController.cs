@@ -5,10 +5,13 @@ public enum AnimationStatus
 {
     /// <summary>値が下限にあり、停止している状態です。</summary>
     Dismissed, // 停止・先頭(LowerBound)
+
     /// <summary>値が上限へ向かって進行している状態です。</summary>
     Forward, // 順方向に進行中
+
     /// <summary>値が下限へ向かって進行している状態です。</summary>
     Reverse, // 逆方向に進行中
+
     /// <summary>値が上限にあり、停止している状態です。</summary>
     Completed, // 停止・末尾(UpperBound)
 }
@@ -25,6 +28,7 @@ public interface IAnimation<out T> : IListenable
 {
     /// <summary>現在のアニメーション値を取得します。</summary>
     T Value { get; }
+
     /// <summary>現在の進行状態を取得します。</summary>
     AnimationStatus Status { get; }
 
@@ -46,8 +50,10 @@ public class AnimationController : IAnimation<double>, IDisposable
 
     /// <summary>アニメーション値の下限を取得します。既定値は0です。</summary>
     public double LowerBound { get; init; } = 0.0;
+
     /// <summary>アニメーション値の上限を取得します。既定値は1です。</summary>
     public double UpperBound { get; init; } = 1.0;
+
     /// <summary>範囲内の進行率へ適用する曲線を取得します。既定では線形に補間します。</summary>
     public ICurve Curve { get; init; } = new LinearCurve(); // Curveに静的プロパティを足す想定
 
@@ -61,11 +67,13 @@ public class AnimationController : IAnimation<double>, IDisposable
 
     /// <inheritdoc />
     public double Value => _value ?? LowerBound;
+
     /// <inheritdoc />
     public AnimationStatus Status { get; private set; } = AnimationStatus.Dismissed;
 
     /// <inheritdoc />
     public event Action? Changed;
+
     /// <inheritdoc />
     public event Action<AnimationStatus>? StatusChanged;
 
@@ -103,7 +111,8 @@ public class AnimationController : IAnimation<double>, IDisposable
         SetStatus(direction);
         StartSimulation(
             new InterpolationSimulation(Value, target, Duration * remainingFraction, Curve),
-            direction);
+            direction
+        );
     }
 
     /// <summary>任意のシミュレーション(スプリング等)で駆動します。完了時のStatusはCompletedになります。</summary>
@@ -124,17 +133,21 @@ public class AnimationController : IAnimation<double>, IDisposable
     }
 
     private static AnimationStatus CompletionStatusOf(AnimationStatus direction) =>
-        direction == AnimationStatus.Reverse ? AnimationStatus.Dismissed : AnimationStatus.Completed;
+        direction == AnimationStatus.Reverse
+            ? AnimationStatus.Dismissed
+            : AnimationStatus.Completed;
 
     private void OnTick(TimeSpan elapsed)
     {
-        if (_simulation is not { } simulation) return;
+        if (_simulation is not { } simulation)
+            return;
 
         var seconds = elapsed.TotalSeconds;
 
         SetValue(simulation.X(seconds));
 
-        if (!simulation.IsDone(seconds)) return;
+        if (!simulation.IsDone(seconds))
+            return;
 
         _simulation = null;
         _ticker?.Stop();
@@ -148,12 +161,14 @@ public class AnimationController : IAnimation<double>, IDisposable
 
         _value = clamped;
 
-        if (changed) Changed?.Invoke();
+        if (changed)
+            Changed?.Invoke();
     }
 
     private void SetStatus(AnimationStatus status)
     {
-        if (Status == status) return;
+        if (Status == status)
+            return;
 
         Status = status;
         StatusChanged?.Invoke(status);

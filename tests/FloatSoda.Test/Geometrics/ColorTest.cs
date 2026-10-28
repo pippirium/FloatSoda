@@ -11,7 +11,8 @@ public class ColorTest
     public void Constructor_RGBを省いた呼び出し_コンパイルできない()
     {
         // new Color(Red: 255) がコンパイルエラーになることを、引数の既定値の有無で確かめる
-        var parameters = typeof(Color).GetConstructor([typeof(byte), typeof(byte), typeof(byte), typeof(byte)])!
+        var parameters = typeof(Color)
+            .GetConstructor([typeof(byte), typeof(byte), typeof(byte), typeof(byte)])!
             .GetParameters();
 
         Assert.False(parameters[0].HasDefaultValue);
@@ -86,7 +87,9 @@ public class ColorTest
     [InlineData(double.NaN)]
     public void FromRgbo_opacityが範囲の外_ArgumentOutOfRangeExceptionを投げる(double opacity)
     {
-        var exception = Assert.Throws<ArgumentOutOfRangeException>(() => Color.FromRgbo(255, 0, 0, opacity));
+        var exception = Assert.Throws<ArgumentOutOfRangeException>(() =>
+            Color.FromRgbo(255, 0, 0, opacity)
+        );
 
         Assert.Equal("opacity", exception.ParamName);
     }

@@ -16,7 +16,8 @@ public class RenderDecoratedBox : RenderProxyBox
         get;
         set
         {
-            if (field == value) return;
+            if (field == value)
+                return;
             field = value;
             MarkNeedsPaint();
         }
@@ -30,7 +31,8 @@ public class RenderDecoratedBox : RenderProxyBox
         get;
         set
         {
-            if (field == value) return;
+            if (field == value)
+                return;
             field = value;
             MarkNeedsPaint();
         }

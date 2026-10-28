@@ -17,14 +17,23 @@ public class PostTaskRunnerTest
         public int ErrorCount { get; private set; }
         public int WarningCount { get; private set; }
 
-        public IDisposable? BeginScope<TState>(TState state) where TState : notnull => null;
+        public IDisposable? BeginScope<TState>(TState state)
+            where TState : notnull => null;
+
         public bool IsEnabled(LogLevel logLevel) => true;
 
-        public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception? exception,
-            Func<TState, Exception?, string> formatter)
+        public void Log<TState>(
+            LogLevel logLevel,
+            EventId eventId,
+            TState state,
+            Exception? exception,
+            Func<TState, Exception?, string> formatter
+        )
         {
-            if (logLevel == LogLevel.Error) ErrorCount++;
-            if (logLevel == LogLevel.Warning) WarningCount++;
+            if (logLevel == LogLevel.Error)
+                ErrorCount++;
+            if (logLevel == LogLevel.Warning)
+                WarningCount++;
         }
     }
 
@@ -32,8 +41,11 @@ public class PostTaskRunnerTest
     /// 更新の途中で停止を要求するためのサブクラス。<see cref="Update"/> に入ったことを通知し、
     /// 渡された処理を実行してから戻る。専用スレッドの終了は <see cref="Stopped"/> で待てる。
     /// </summary>
-    private sealed class BlockingPostTaskRunner(IFramePacer pacer, ILogger logger, Action<BlockingPostTaskRunner> onUpdate)
-        : PostTaskRunner("Test", pacer, logger)
+    private sealed class BlockingPostTaskRunner(
+        IFramePacer pacer,
+        ILogger logger,
+        Action<BlockingPostTaskRunner> onUpdate
+    ) : PostTaskRunner("Test", pacer, logger)
     {
         public ManualResetEventSlim InUpdate { get; } = new();
         public ManualResetEventSlim Stopped { get; } = new();
@@ -67,11 +79,15 @@ public class PostTaskRunnerTest
         using var parent = new CancellationTokenSource();
         // Stop が実行状態を下ろすまで更新に留まり、Stop のロックが外れる(Cancel が終わる)のを待ってから戻る。
         // これで、Stop の処理が更新の途中に必ず重なる。
-        var runner = new BlockingPostTaskRunner(CreateWaitingPacer(), logger, r =>
-        {
-            Assert.True(SpinWait.SpinUntil(() => !r.IsRunning, TimeSpan.FromSeconds(5)));
-            lock (r) { }
-        });
+        var runner = new BlockingPostTaskRunner(
+            CreateWaitingPacer(),
+            logger,
+            r =>
+            {
+                Assert.True(SpinWait.SpinUntil(() => !r.IsRunning, TimeSpan.FromSeconds(5)));
+                lock (r) { }
+            }
+        );
 
         runner.Start(parent.Token);
         Assert.True(runner.InUpdate.Wait(TimeSpan.FromSeconds(5)));
@@ -121,11 +137,16 @@ public class PostTaskRunnerTest
         var logger = new CountingLogger();
         using var release = new ManualResetEventSlim();
         var updates = 0;
-        var runner = new BlockingPostTaskRunner(CreateWaitingPacer(), logger, _ =>
-        {
-            // 最初の更新だけ止め、Stop の終了待機をタイムアウトさせる
-            if (Interlocked.Increment(ref updates) == 1) release.Wait();
-        });
+        var runner = new BlockingPostTaskRunner(
+            CreateWaitingPacer(),
+            logger,
+            _ =>
+            {
+                // 最初の更新だけ止め、Stop の終了待機をタイムアウトさせる
+                if (Interlocked.Increment(ref updates) == 1)
+                    release.Wait();
+            }
+        );
 
         runner.Start(CancellationToken.None);
         Assert.True(runner.InUpdate.Wait(TimeSpan.FromSeconds(5)));
@@ -138,7 +159,12 @@ public class PostTaskRunnerTest
         // 古いスレッドの終了処理が済んだあとも、新しいスレッドは更新を続ける
         Assert.True(runner.Stopped.Wait(TimeSpan.FromSeconds(5)));
         var afterOldStopped = Volatile.Read(ref updates);
-        Assert.True(SpinWait.SpinUntil(() => Volatile.Read(ref updates) > afterOldStopped + 1, TimeSpan.FromSeconds(5)));
+        Assert.True(
+            SpinWait.SpinUntil(
+                () => Volatile.Read(ref updates) > afterOldStopped + 1,
+                TimeSpan.FromSeconds(5)
+            )
+        );
         Assert.True(runner.IsRunning);
 
         runner.Stop();

@@ -7,7 +7,6 @@ using FloatSoda.Widgets.Layout;
 using FloatSoda.Widgets.Paint;
 using SkiaSharp;
 
-
 namespace FloatSoda.Samples.OverlayApp;
 
 public record WatchWidget : StatefulWidget<WatchWidget>
@@ -58,14 +57,14 @@ public class WatchState : State<WatchWidget>
                                     Style = new TextStyle
                                     {
                                         Color = SKColor.FromHsv(0, 0, 10),
-                                        FontSize = 100
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
+                                        FontSize = 100,
+                                    },
+                                },
+                            },
+                        },
+                    },
+                },
+            },
         };
     }
 }

@@ -155,18 +155,21 @@ public class ColorsTest
     public static TheoryData<string, string> CssNamedColorData()
     {
         var data = new TheoryData<string, string>();
-        foreach (var (name, hex) in CssNamedColors) data.Add(name, hex);
+        foreach (var (name, hex) in CssNamedColors)
+            data.Add(name, hex);
         return data;
     }
 
     private static Dictionary<string, Color> PublicColors() =>
-        typeof(Colors).GetFields(BindingFlags.Public | BindingFlags.Static)
+        typeof(Colors)
+            .GetFields(BindingFlags.Public | BindingFlags.Static)
             .ToDictionary(field => field.Name, field => (Color)field.GetValue(null)!);
 
     [Fact]
     public void Colors_名前の集まり_SKColorsの公開フィールドと一致する()
     {
-        var expected = typeof(SKColors).GetFields(BindingFlags.Public | BindingFlags.Static)
+        var expected = typeof(SKColors)
+            .GetFields(BindingFlags.Public | BindingFlags.Static)
             .Select(field => field.Name)
             .Order(StringComparer.Ordinal);
 
@@ -176,14 +179,18 @@ public class ColorsTest
     [Fact]
     public void Colors_Transparent以外_CSSの色名と同じ数だけある()
     {
-        Assert.Equal(CssNamedColors.Count, PublicColors().Keys.Count(name => name != nameof(Colors.Transparent)));
+        Assert.Equal(
+            CssNamedColors.Count,
+            PublicColors().Keys.Count(name => name != nameof(Colors.Transparent))
+        );
     }
 
     [Theory]
     [MemberData(nameof(CssNamedColorData))]
     public void Colors_CSSの色名_CSSと同じ値の不透明な色になる(string cssName, string hex)
     {
-        var colors = PublicColors().ToDictionary(pair => pair.Key.ToLowerInvariant(), pair => pair.Value);
+        var colors = PublicColors()
+            .ToDictionary(pair => pair.Key.ToLowerInvariant(), pair => pair.Value);
         var rgb = Convert.ToUInt32(hex[1..], 16);
 
         var expected = new Color((byte)(rgb >> 16), (byte)(rgb >> 8), (byte)rgb);

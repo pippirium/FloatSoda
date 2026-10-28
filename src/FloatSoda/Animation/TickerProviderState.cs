@@ -15,13 +15,15 @@ public abstract class TickerProviderState<T> : State<T>, ITickerProvider
     // スケジューラはマウント後でないと確定しないため遅延解決にしている。
     private TickerProvider? _tickerProvider;
 
-    private TickerProvider TickerProvider => _tickerProvider ??= new TickerProvider
-    {
-        ResolveScheduler = () => Element?.Owner?.FrameScheduler
-    };
+    private TickerProvider TickerProvider =>
+        _tickerProvider ??= new TickerProvider
+        {
+            ResolveScheduler = () => Element?.Owner?.FrameScheduler,
+        };
 
     /// <inheritdoc />
-    public WidgetTicker CreateTicker(Action<TimeSpan> onTick) => TickerProvider.CreateTicker(onTick);
+    public WidgetTicker CreateTicker(Action<TimeSpan> onTick) =>
+        TickerProvider.CreateTicker(onTick);
 
     /// <inheritdoc />
     public void RemoveTicker(WidgetTicker ticker) => TickerProvider.RemoveTicker(ticker);

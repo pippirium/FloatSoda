@@ -26,5 +26,6 @@ public sealed record IntrinsicHeight : SingleChildRenderObjectWidget<RenderIntri
     public override RenderIntrinsicHeight CreateRenderObject() => new() { StepHeight = StepHeight };
 
     /// <inheritdoc/>
-    public override void UpdateRenderObject(RenderIntrinsicHeight renderObject) => renderObject.StepHeight = StepHeight;
+    public override void UpdateRenderObject(RenderIntrinsicHeight renderObject) =>
+        renderObject.StepHeight = StepHeight;
 }

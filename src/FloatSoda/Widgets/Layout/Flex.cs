@@ -14,6 +14,7 @@ public sealed record Flex : MultiChildRenderObjectWidget<RenderFlex>
     /// 子要素を並べる主軸の方向を取得します。
     /// </summary>
     public Axis Direction { get; init; } = Axis.Vertical;
+
     /// <summary>
     /// 主軸方向における子要素の配置方法を取得します。
     /// </summary>
@@ -23,10 +24,12 @@ public sealed record Flex : MultiChildRenderObjectWidget<RenderFlex>
     /// 主軸方向に確保する領域の大きさを取得します。
     /// </summary>
     public MainAxisSize MainAxisSize { get; init; } = MainAxisSize.Max;
+
     /// <summary>
     /// 交差軸方向における子要素の配置方法を取得します。
     /// </summary>
     public CrossAxisAlignment CrossAxisAlignment { get; init; } = CrossAxisAlignment.Center;
+
     /// <summary>
     /// 垂直方向の始端から終端へ向かう向きを取得します。
     /// </summary>
@@ -79,14 +82,17 @@ public abstract record FlexWrapper(Axis Direction) : StatelessWidget
     /// 主軸に沿って配置する子ウィジェットの一覧を取得します。
     /// </summary>
     public List<Widget> Children { get; init; } = [];
+
     /// <summary>
     /// 主軸方向における子要素の配置方法を取得します。
     /// </summary>
     public MainAxisAlignment MainAxisAlignment { get; init; } = MainAxisAlignment.Start;
+
     /// <summary>
     /// 交差軸方向における子要素の配置方法を取得します。
     /// </summary>
     public CrossAxisAlignment CrossAxisAlignment { get; init; } = CrossAxisAlignment.Center;
+
     /// <summary>
     /// 主軸方向に確保する領域の大きさを取得します。
     /// </summary>

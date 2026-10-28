@@ -44,7 +44,8 @@ public class RenderPointerListener : RenderProxyBox
     /// </remarks>
     public override bool HitTest(HitTestResult result, Offset position)
     {
-        if (!Size.Contains(position)) return false;
+        if (!Size.Contains(position))
+            return false;
 
         var hit = HitTestChildren(result, position) || HitTestSelf(position);
 

@@ -55,14 +55,14 @@ public class CounterState : State<CounterWidget>
                                     {
                                         Color = SKColors.WhiteSmoke,
                                         FontSize = 50,
-                                        FontWeight = 700
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
+                                        FontWeight = 700,
+                                    },
+                                },
+                            },
+                        },
+                    },
+                },
+            },
         };
     }
 
@@ -100,13 +100,12 @@ public class CounterState : State<CounterWidget>
                                             {
                                                 Color = SKColors.Black,
                                                 FontSize = 60,
-                                                FontWeight = 700
-                                            }
-                                        }
-                                    }
-                                }
+                                                FontWeight = 700,
+                                            },
+                                        },
+                                    },
+                                },
                             },
-
                             // カウント表示
                             new SizedBox
                             {
@@ -128,21 +127,16 @@ public class CounterState : State<CounterWidget>
                                                     {
                                                         Color = SKColors.DarkSlateGray,
                                                         FontSize = 120,
-                                                        FontWeight = 700
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
+                                                        FontWeight = 700,
+                                                    },
+                                                },
+                                            },
+                                        },
+                                    },
+                                },
                             },
-
                             // ボタンエリア
-                            new SizedBox
-                            {
-                                Height = 40
-                            },
-
+                            new SizedBox { Height = 40 },
                             new Flex
                             {
                                 Direction = Axis.Horizontal,
@@ -153,9 +147,8 @@ public class CounterState : State<CounterWidget>
                                     BuildButton("-", () => _count--),
                                     new SizedBox { Width = 60 },
                                     BuildButton("+", () => _count++),
-                                }
+                                },
                             },
-
                             // リセットボタン
                             new SizedBox { Height = 40 },
                             new GestureDetector
@@ -181,19 +174,19 @@ public class CounterState : State<CounterWidget>
                                                         {
                                                             Color = SKColors.White,
                                                             FontSize = 40,
-                                                            FontWeight = 700
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
+                                                            FontWeight = 700,
+                                                        },
+                                                    },
+                                                },
+                                            },
+                                        },
+                                    },
+                                },
+                            },
+                        },
+                    },
+                },
+            },
         };
     }
 }

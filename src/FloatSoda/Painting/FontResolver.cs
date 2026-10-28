@@ -16,9 +16,7 @@ internal sealed class FontResolver
     private readonly ConcurrentDictionary<FontProvider, Lazy<FontResource>> _resources = [];
     private long _nextFamilyId;
 
-    private FontResolver()
-    {
-    }
+    private FontResolver() { }
 
     internal string Register(FontProvider provider)
     {
@@ -26,7 +24,8 @@ internal sealed class FontResolver
 
         var family = _families.GetOrAdd(
             provider,
-            _ => FamilyPrefix + Interlocked.Increment(ref _nextFamilyId));
+            _ => FamilyPrefix + Interlocked.Increment(ref _nextFamilyId)
+        );
         _providers.TryAdd(family, provider);
         return family;
     }
@@ -45,7 +44,9 @@ internal sealed class FontResolver
             provider,
             static key => new Lazy<FontResource>(
                 () => key.LoadResource(),
-                LazyThreadSafetyMode.ExecutionAndPublication));
+                LazyThreadSafetyMode.ExecutionAndPublication
+            )
+        );
 
         try
         {
@@ -59,7 +60,9 @@ internal sealed class FontResolver
             //
             // Lazyは例外もキャッシュするため、失敗したエントリを取り除いて次フレーム以降で
             // 再試行できるようにする。取り除かないと、原因を解消しても永久に失敗し続ける。
-            _resources.TryRemove(new KeyValuePair<FontProvider, Lazy<FontResource>>(provider, lazy));
+            _resources.TryRemove(
+                new KeyValuePair<FontProvider, Lazy<FontResource>>(provider, lazy)
+            );
             typeface = null;
             return false;
         }
@@ -71,9 +74,7 @@ internal sealed class FloatSodaFontMapper : FontMapper
 {
     internal static FloatSodaFontMapper Instance { get; } = new();
 
-    private FloatSodaFontMapper()
-    {
-    }
+    private FloatSodaFontMapper() { }
 
     public override SKTypeface TypefaceFromStyle(IStyle style, bool ignoreFontVariants)
     {
