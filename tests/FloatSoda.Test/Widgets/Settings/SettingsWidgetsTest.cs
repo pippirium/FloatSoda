@@ -90,6 +90,41 @@ public class SettingsWidgetsTest
     }
 
     [Fact]
+    public void TrackWidth_狭いトラックの中央を押す_中間値を通知する()
+    {
+        var values = new List<double>();
+        var binding = Mount(new SizedBox
+        {
+            Width = 140,
+            Height = 100,
+            Child = new SettingsSlider
+            {
+                Min = 0,
+                Max = 1,
+                Value = 0,
+                TrackWidth = 140,
+                OnChanged = values.Add
+            }
+        });
+
+        Send(binding, PointerEventPhase.Add, 70, 55);
+        Send(binding, PointerEventPhase.Down, 70, 55);
+        Assert.NotEmpty(values);
+        Assert.InRange(values[^1], 0.45, 0.55);
+    }
+
+    [Fact]
+    public void TrackWidth_不正な幅_例外を投げる()
+    {
+        Assert.Throws<ArgumentOutOfRangeException>(() => Mount(new SizedBox
+        {
+            Width = 140,
+            Height = 100,
+            Child = new SettingsSlider { Min = 0, Max = 1, Value = 0.5, TrackWidth = 0 }
+        }));
+    }
+
+    [Fact]
     public void OnTap_ドロップダウンで候補を選ぶ_選択値を通知する()
     {
         string? selected = null;
