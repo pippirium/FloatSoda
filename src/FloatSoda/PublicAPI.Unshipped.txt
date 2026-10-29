@@ -33,6 +33,8 @@ FloatSoda.Widgets.Settings.SettingsSlider.OnChanged.get -> System.Action<double>
 FloatSoda.Widgets.Settings.SettingsSlider.OnChanged.init -> void
 FloatSoda.Widgets.Settings.SettingsSlider.SettingsSlider() -> void
 FloatSoda.Widgets.Settings.SettingsSlider.SettingsSlider(FloatSoda.Widgets.Settings.SettingsSlider! original) -> void
+FloatSoda.Widgets.Settings.SettingsSlider.TrackWidth.get -> double
+FloatSoda.Widgets.Settings.SettingsSlider.TrackWidth.init -> void
 FloatSoda.Widgets.Settings.SettingsSlider.Value.get -> double
 FloatSoda.Widgets.Settings.SettingsSlider.Value.init -> void
 FloatSoda.Widgets.Settings.SettingsSliderState
