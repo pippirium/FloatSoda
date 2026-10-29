@@ -22,6 +22,9 @@ public sealed record SettingsSlider : StatefulWidget<SettingsSlider>
     /// <summary>選べる最大値。Minより大きい有限値を指定します。</summary>
     public double Max { get; init; } = 1;
 
+    /// <summary>トラックの論理幅。狭いパネルでは小さい値を指定できます（26以上）。</summary>
+    public double TrackWidth { get; init; } = 300;
+
     /// <summary>新しい値を通知します。nullの場合は読み取り専用です。</summary>
     public Action<double>? OnChanged { get; init; }
 
@@ -32,7 +35,6 @@ public sealed record SettingsSlider : StatefulWidget<SettingsSlider>
 /// <summary>スライダー上の押下ポインターを追跡します。</summary>
 public sealed class SettingsSliderState : State<SettingsSlider>
 {
-    private const double TrackWidth = 300;
     private const double TrackHeight = 56;
     private int? _activePointer;
 
@@ -55,9 +57,12 @@ public sealed class SettingsSliderState : State<SettingsSlider>
     public override Widget Build(IBuildContext context)
     {
         var model = Widget!;
+        if (!double.IsFinite(model.TrackWidth) || model.TrackWidth < 26)
+            throw new ArgumentOutOfRangeException(nameof(model.TrackWidth), "TrackWidthは26以上の有限値を指定してください。");
+        var trackWidth = model.TrackWidth;
         var value = ClampValue(model.Value, model.Min, model.Max);
         var ratio = (value - model.Min) / (model.Max - model.Min);
-        var thumbLeft = Math.Clamp(ratio * TrackWidth - 13, 0, TrackWidth - 26);
+        var thumbLeft = Math.Clamp(ratio * trackWidth - 13, 0, trackWidth - 26);
         return new Column
         {
             MainAxisSize = MainAxisSize.Min,
@@ -75,7 +80,7 @@ public sealed class SettingsSliderState : State<SettingsSlider>
                     OnPointerCancel = HandleEnd,
                     Child = new SizedBox
                     {
-                        Width = TrackWidth,
+                        Width = trackWidth,
                         Height = TrackHeight,
                         Child = new Stack
                         {
@@ -155,7 +160,7 @@ public sealed class SettingsSliderState : State<SettingsSlider>
         if (model.OnChanged is null) return;
         var position = new Vector2((float)e.Position.X, (float)e.Position.Y);
         if (e.Transform is { } localTransform) position = Vector2.Transform(position, localTransform);
-        var ratio = Math.Clamp((double)position.X / TrackWidth, 0, 1);
+        var ratio = Math.Clamp((double)position.X / model.TrackWidth, 0, 1);
         var next = model.Min + (model.Max - model.Min) * ratio;
         model.OnChanged(ClampValue(next, model.Min, model.Max));
     }
