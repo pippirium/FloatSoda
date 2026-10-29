@@ -108,6 +108,6 @@ app.CreateWindow(new DashboardWindow
 
 - `SingleChildScrollView`、`ListView`、汎用Popupは現状未実装です。SettingsPageはスクロールせず、Dropdownの候補は下方向に展開します。
 - ページが大きい場合はセクション数を減らすか、アプリ側でページを分割してください。ダッシュボードの最終的な表示範囲はVR環境にも依存します。
-- Sliderトラックの論理幅は300pxで固定です。タイル内の長いラベルや狭い画面幅は目視確認が必要です。
+- Sliderトラックの論理幅は初期値300pxですが、`TrackWidth`で変更可能です（26以上の有限値）。タイル幅やラベル長に応じてアプリ側で幅を指定してください。自動的なレスポンシブ再配置は未実装です。
 - 実機のSteamVRコントローラーレーザーの挙動は、ハードウェア環境で別途検証してください。
 - データ保存はWidgetに含めず、サンプルの`SettingsDemoState`が任意のJSONファイルへ保存します。
