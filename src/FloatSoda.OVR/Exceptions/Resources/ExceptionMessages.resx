@@ -725,7 +725,7 @@
     <value>オーバーレイの名前が長すぎます。</value>
   </data>
   <data name="VROverlayException_KeyInUse" xml:space="preserve">
-    <value>このキー(文字列ID)は既に別のオーバーレイで使用されています。</value>
+    <value>このキーは既に別のオーバーレイで使用されています。別プロセスで同じアプリが動いていないか確認してください。前回の異常終了で残ったオーバーレイなら、SteamVRを再起動してからもう一度起動してください。</value>
   </data>
   <data name="VROverlayException_WrongTransformType" xml:space="preserve">
     <value>このオーバーレイでは、要求された座標変換タイプ(Absolute/TrackedDevice等)はサポートされていません。</value>

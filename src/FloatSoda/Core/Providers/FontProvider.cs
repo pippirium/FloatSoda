@@ -28,7 +28,10 @@ public sealed record SystemFontProvider : FontProvider
     {
         if (string.IsNullOrWhiteSpace(familyName))
         {
-            throw new ArgumentException("フォントファミリ名を指定してください。", nameof(familyName));
+            throw new ArgumentException(
+                "フォントファミリ名を指定してください。",
+                nameof(familyName)
+            );
         }
 
         FamilyName = familyName;
@@ -70,8 +73,10 @@ public sealed class FontResource : IDisposable
 {
     private readonly string? _systemFamilyName;
     private readonly SkiaSharp.SKTypeface? _fixedTypeface;
-    private readonly System.Collections.Concurrent.ConcurrentDictionary<(int Weight, bool IsItalic), SkiaSharp.SKTypeface>
-        _systemTypefaces = [];
+    private readonly System.Collections.Concurrent.ConcurrentDictionary<
+        (int Weight, bool IsItalic),
+        SkiaSharp.SKTypeface
+    > _systemTypefaces = [];
     private readonly Lock _gate = new();
     private bool _disposed;
 
@@ -106,8 +111,12 @@ public sealed class FontResource : IDisposable
         ArgumentOutOfRangeException.ThrowIfNegative(collectionIndex);
 
         using var skData = SkiaSharp.SKData.CreateCopy(data.Span);
-        var typeface = SkiaSharp.SKTypeface.FromData(skData, collectionIndex)
-            ?? throw new ArgumentException("有効なフォントデータを指定してください。", nameof(data));
+        var typeface =
+            SkiaSharp.SKTypeface.FromData(skData, collectionIndex)
+            ?? throw new ArgumentException(
+                "有効なフォントデータを指定してください。",
+                nameof(data)
+            );
 
         return FromTypeface(typeface);
     }
@@ -128,13 +137,21 @@ public sealed class FontResource : IDisposable
                 return _fixedTypeface;
             }
 
-            return _systemTypefaces.GetOrAdd((weight, isItalic), key =>
-                SkiaSharp.SKTypeface.FromFamilyName(
-                    _systemFamilyName!,
-                    key.Weight,
-                    (int)SkiaSharp.SKFontStyleWidth.Normal,
-                    key.IsItalic ? SkiaSharp.SKFontStyleSlant.Italic : SkiaSharp.SKFontStyleSlant.Upright)
-                ?? throw new InvalidOperationException($"フォントファミリを解決できませんでした: {_systemFamilyName}"));
+            return _systemTypefaces.GetOrAdd(
+                (weight, isItalic),
+                key =>
+                    SkiaSharp.SKTypeface.FromFamilyName(
+                        _systemFamilyName!,
+                        key.Weight,
+                        (int)SkiaSharp.SKFontStyleWidth.Normal,
+                        key.IsItalic
+                            ? SkiaSharp.SKFontStyleSlant.Italic
+                            : SkiaSharp.SKFontStyleSlant.Upright
+                    )
+                    ?? throw new InvalidOperationException(
+                        $"フォントファミリを解決できませんでした: {_systemFamilyName}"
+                    )
+            );
         }
     }
 
@@ -143,7 +160,8 @@ public sealed class FontResource : IDisposable
     {
         lock (_gate)
         {
-            if (_disposed) return;
+            if (_disposed)
+                return;
 
             _disposed = true;
             _fixedTypeface?.Dispose();

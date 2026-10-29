@@ -12,8 +12,12 @@ public class AlignTest
     {
         Assert.Throws<ArgumentOutOfRangeException>(() => new Align { WidthFactor = value });
         Assert.Throws<ArgumentOutOfRangeException>(() => new Align { HeightFactor = value });
-        Assert.Throws<ArgumentOutOfRangeException>(() => new RenderPositionedBox { WidthFactor = value });
-        Assert.Throws<ArgumentOutOfRangeException>(() => new RenderPositionedBox { HeightFactor = value });
+        Assert.Throws<ArgumentOutOfRangeException>(() =>
+            new RenderPositionedBox { WidthFactor = value }
+        );
+        Assert.Throws<ArgumentOutOfRangeException>(() =>
+            new RenderPositionedBox { HeightFactor = value }
+        );
     }
 
     [Theory]
@@ -21,7 +25,11 @@ public class AlignTest
     [InlineData(double.PositiveInfinity)]
     public void Factor_0または正の無限大を指定_受け入れる(double value)
     {
-        var renderObject = new Align { WidthFactor = value, HeightFactor = value }.CreateRenderObject();
+        var renderObject = new Align
+        {
+            WidthFactor = value,
+            HeightFactor = value,
+        }.CreateRenderObject();
 
         Assert.Equal(value, renderObject.WidthFactor);
         Assert.Equal(value, renderObject.HeightFactor);

@@ -29,7 +29,8 @@ public sealed class RenderConstrainedOverflowBox : RenderBox, IHasSingleChildRen
         set
         {
             LayoutOverflowValidation.ValidateMinimum(value, nameof(MinWidth));
-            if (field == value) return;
+            if (field == value)
+                return;
             field = value;
             MarkNeedsLayout();
         }
@@ -43,7 +44,8 @@ public sealed class RenderConstrainedOverflowBox : RenderBox, IHasSingleChildRen
         set
         {
             LayoutOverflowValidation.ValidateMaximum(value, nameof(MaxWidth));
-            if (field == value) return;
+            if (field == value)
+                return;
             field = value;
             MarkNeedsLayout();
         }
@@ -57,7 +59,8 @@ public sealed class RenderConstrainedOverflowBox : RenderBox, IHasSingleChildRen
         set
         {
             LayoutOverflowValidation.ValidateMinimum(value, nameof(MinHeight));
-            if (field == value) return;
+            if (field == value)
+                return;
             field = value;
             MarkNeedsLayout();
         }
@@ -71,7 +74,8 @@ public sealed class RenderConstrainedOverflowBox : RenderBox, IHasSingleChildRen
         set
         {
             LayoutOverflowValidation.ValidateMaximum(value, nameof(MaxHeight));
-            if (field == value) return;
+            if (field == value)
+                return;
             field = value;
             MarkNeedsLayout();
         }
@@ -86,10 +90,15 @@ public sealed class RenderConstrainedOverflowBox : RenderBox, IHasSingleChildRen
         {
             if (!Enum.IsDefined(value))
             {
-                throw new ArgumentOutOfRangeException(nameof(value), value, "定義済みのOverflowBoxFitを指定してください。");
+                throw new ArgumentOutOfRangeException(
+                    nameof(value),
+                    value,
+                    "定義済みのOverflowBoxFitを指定してください。"
+                );
             }
 
-            if (field == value) return;
+            if (field == value)
+                return;
             field = value;
             MarkNeedsLayout();
         }
@@ -103,14 +112,16 @@ public sealed class RenderConstrainedOverflowBox : RenderBox, IHasSingleChildRen
         set
         {
             LayoutOverflowValidation.ValidateAlignment(value, nameof(Alignment));
-            if (field == value) return;
+            if (field == value)
+                return;
             field = value;
             MarkNeedsLayout();
         }
     } = Alignment.Center;
 
     /// <inheritdoc/>
-    public override void SetupParentData(RenderObject child) => child.ParentData = new BoxParentData();
+    public override void SetupParentData(RenderObject child) =>
+        child.ParentData = new BoxParentData();
 
     /// <inheritdoc/>
     public override void PerformLayout()
@@ -122,10 +133,11 @@ public sealed class RenderConstrainedOverflowBox : RenderBox, IHasSingleChildRen
         {
             OverflowBoxFit.Max => GetMaximumSize(Constraints),
             OverflowBoxFit.DeferToChild => Constraints.Constrain(Child?.Size ?? SKSize.Empty),
-            _ => throw new ArgumentOutOfRangeException(nameof(Fit), Fit, null)
+            _ => throw new ArgumentOutOfRangeException(nameof(Fit), Fit, null),
         };
 
-        if (Child is not null) AlignChild();
+        if (Child is not null)
+            AlignChild();
     }
 
     /// <inheritdoc/>
@@ -136,8 +148,9 @@ public sealed class RenderConstrainedOverflowBox : RenderBox, IHasSingleChildRen
         {
             OverflowBoxFit.Max => GetMaximumSize(constraints),
             OverflowBoxFit.DeferToChild => constraints.Constrain(
-                Child is null ? SKSize.Empty : GetRenderBoxChild().GetDryLayout(innerConstraints)),
-            _ => throw new ArgumentOutOfRangeException(nameof(Fit), Fit, null)
+                Child is null ? SKSize.Empty : GetRenderBoxChild().GetDryLayout(innerConstraints)
+            ),
+            _ => throw new ArgumentOutOfRangeException(nameof(Fit), Fit, null),
         };
     }
 
@@ -160,7 +173,8 @@ public sealed class RenderConstrainedOverflowBox : RenderBox, IHasSingleChildRen
     /// <inheritdoc/>
     public override void Paint(PaintingContext context, Offset offset)
     {
-        if (Child is null) return;
+        if (Child is null)
+            return;
         var childOffset = ((BoxParentData)Child.ParentData!).Offset;
         context.PaintChild(Child, offset + childOffset);
     }
@@ -168,10 +182,14 @@ public sealed class RenderConstrainedOverflowBox : RenderBox, IHasSingleChildRen
     /// <inheritdoc/>
     public override bool HitTestChildren(HitTestResult result, Offset position)
     {
-        if (Child is not RenderBox child) return false;
+        if (Child is not RenderBox child)
+            return false;
         var childOffset = ((BoxParentData)Child.ParentData!).Offset;
-        return result.AddWidthPaintOffset(childOffset, position,
-            (testResult, transformed) => child.HitTest(testResult, transformed));
+        return result.AddWidthPaintOffset(
+            childOffset,
+            position,
+            (testResult, transformed) => child.HitTest(testResult, transformed)
+        );
     }
 
     /// <inheritdoc/>
@@ -189,7 +207,8 @@ public sealed class RenderConstrainedOverflowBox : RenderBox, IHasSingleChildRen
     }
 
     /// <inheritdoc/>
-    public override void VisitChildren(Action<RenderObject> visitor) => _child.VisitChildren(visitor);
+    public override void VisitChildren(Action<RenderObject> visitor) =>
+        _child.VisitChildren(visitor);
 
     /// <inheritdoc/>
     public override void RedepthChildren() => VisitChildren(RedepthChild);
@@ -209,14 +228,20 @@ public sealed class RenderConstrainedOverflowBox : RenderBox, IHasSingleChildRen
     {
         if (!double.IsFinite(constraints.MaxWidth) || !double.IsFinite(constraints.MaxHeight))
         {
-            throw new InvalidOperationException("OverflowBoxでFit.Maxを使用するには、親の最大幅と最大高さが有限である必要があります。");
+            throw new InvalidOperationException(
+                "OverflowBoxでFit.Maxを使用するには、親の最大幅と最大高さが有限である必要があります。"
+            );
         }
 
         return constraints.Constrain(constraints.MaxWidth, constraints.MaxHeight);
     }
 
-    private RenderBox GetRenderBoxChild() => Child as RenderBox ?? throw new NotSupportedException(
-        $"{GetType().Name}のdry layoutにはRenderBoxの子が必要です。");
+    private RenderBox GetRenderBoxChild() =>
+        Child as RenderBox
+        ?? throw new NotSupportedException(
+            $"{GetType().Name}のdry layoutにはRenderBoxの子が必要です。"
+        );
 
-    private void AlignChild() => ((BoxParentData)Child!.ParentData!).Offset = Alignment.ComputeOffset(Size, Child.Size);
+    private void AlignChild() =>
+        ((BoxParentData)Child!.ParentData!).Offset = Alignment.ComputeOffset(Size, Child.Size);
 }

@@ -23,7 +23,6 @@ public interface ITaskRunner
     /// </summary>
     void Stop();
 
-
     /// <summary>
     /// 専用スレッドに設定される名前を取得します。
     /// </summary>
@@ -120,7 +119,8 @@ public sealed class IOTaskRunner : ITaskRunner, IDisposable
         lock (_gate)
         {
             ObjectDisposedException.ThrowIf(_disposed, this);
-            if (_scheduler is { IsRunning: true }) return;
+            if (_scheduler is { IsRunning: true })
+                return;
         }
 
         // 停止トークンで受付を閉じた前回のスケジューラーがキューを消化中の場合、
@@ -135,12 +135,14 @@ public sealed class IOTaskRunner : ITaskRunner, IDisposable
         {
             // 自スレッドからの停止では終了を待てないため、_stoppingSchedulerが残る。
             // 実際にスレッドが終了していれば、その事実をもって開始を許可する。
-            if (_stoppingScheduler is { IsThreadAlive: false }) _stoppingScheduler = null;
+            if (_stoppingScheduler is { IsThreadAlive: false })
+                _stoppingScheduler = null;
 
             if (!stopped || _stoppingScheduler is not null)
             {
                 throw new InvalidOperationException(
-                    $"{ThreadName}の前回のスレッドが終了していないため、開始できません。投入済みの処理の完了を待ってから再度開始してください。");
+                    $"{ThreadName}の前回のスレッドが終了していないため、開始できません。投入済みの処理の完了を待ってから再度開始してください。"
+                );
             }
         }
 
@@ -148,7 +150,8 @@ public sealed class IOTaskRunner : ITaskRunner, IDisposable
         lock (_gate)
         {
             ObjectDisposedException.ThrowIf(_disposed, this);
-            if (_scheduler is { IsRunning: true }) return;
+            if (_scheduler is { IsRunning: true })
+                return;
 
             scheduler = new DedicatedThreadTaskScheduler(ThreadName);
             _scheduler = scheduler;
@@ -156,17 +159,20 @@ public sealed class IOTaskRunner : ITaskRunner, IDisposable
                 CancellationToken.None,
                 TaskCreationOptions.DenyChildAttach,
                 TaskContinuationOptions.None,
-                scheduler);
+                scheduler
+            );
             scheduler.Start();
         }
 
         var registration = token.UnsafeRegister(
             static state =>
             {
-                var (runner, targetScheduler) = ((IOTaskRunner, DedicatedThreadTaskScheduler))state!;
+                var (runner, targetScheduler) = ((IOTaskRunner, DedicatedThreadTaskScheduler))
+                    state!;
                 runner.RequestStop(targetScheduler);
             },
-            (this, scheduler));
+            (this, scheduler)
+        );
 
         lock (_gate)
         {
@@ -206,17 +212,20 @@ public sealed class IOTaskRunner : ITaskRunner, IDisposable
             registration = _stopRegistration;
             _stopRegistration = default;
             scheduler?.Complete();
-            if (scheduler is not null) _stoppingScheduler = scheduler;
+            if (scheduler is not null)
+                _stoppingScheduler = scheduler;
         }
 
         registration.Dispose();
 
         var exited = WaitForExit(scheduler);
-        if (!exited) return false;
+        if (!exited)
+            return false;
 
         lock (_gate)
         {
-            if (ReferenceEquals(_stoppingScheduler, scheduler)) _stoppingScheduler = null;
+            if (ReferenceEquals(_stoppingScheduler, scheduler))
+                _stoppingScheduler = null;
         }
 
         return true;
@@ -229,14 +238,17 @@ public sealed class IOTaskRunner : ITaskRunner, IDisposable
     /// <returns>終了を確認できた場合は <see langword="true"/>。上限を超えた場合は <see langword="false"/>。</returns>
     private bool WaitForExit(DedicatedThreadTaskScheduler? scheduler)
     {
-        if (scheduler is null) return true;
+        if (scheduler is null)
+            return true;
 
         // 専用スレッド自身からの停止では、自スレッドをJoinするとデッドロックするため待てない。
         // 待てない以上「終了した」とは言えないので、確認できなかったものとして扱う。
         // ここでtrueを返すと、実行中のタスクの中から呼ばれたStartが2本目のスレッドを立ててしまう。
-        if (scheduler.RunsTasksOnCurrentThread) return false;
+        if (scheduler.RunsTasksOnCurrentThread)
+            return false;
 
-        if (scheduler.WaitForExit(StopTimeout)) return true;
+        if (scheduler.WaitForExit(StopTimeout))
+            return true;
 
         _logger?.LogWarning("{ThreadName} の停止がタイムアウトしました", ThreadName);
         return false;
@@ -246,7 +258,8 @@ public sealed class IOTaskRunner : ITaskRunner, IDisposable
     {
         lock (_gate)
         {
-            if (!ReferenceEquals(_scheduler, targetScheduler)) return;
+            if (!ReferenceEquals(_scheduler, targetScheduler))
+                return;
 
             _taskFactory = null;
             targetScheduler.Complete();
@@ -312,7 +325,8 @@ public sealed class IOTaskRunner : ITaskRunner, IDisposable
         CancellationTokenRegistration registration;
         lock (_gate)
         {
-            if (_disposed) return;
+            if (_disposed)
+                return;
 
             _disposed = true;
             scheduler = _scheduler;
@@ -335,11 +349,7 @@ public sealed class IOTaskRunner : ITaskRunner, IDisposable
 
         public DedicatedThreadTaskScheduler(string threadName)
         {
-            _thread = new Thread(Run)
-            {
-                IsBackground = true,
-                Name = threadName
-            };
+            _thread = new Thread(Run) { IsBackground = true, Name = threadName };
         }
 
         public bool IsRunning => _thread.IsAlive && !_tasks.IsAddingCompleted;
@@ -366,7 +376,8 @@ public sealed class IOTaskRunner : ITaskRunner, IDisposable
             }
         }
 
-        protected override bool TryExecuteTaskInline(Task task, bool taskWasPreviouslyQueued) => false;
+        protected override bool TryExecuteTaskInline(Task task, bool taskWasPreviouslyQueued) =>
+            false;
 
         protected override IEnumerable<Task>? GetScheduledTasks() => _tasks.ToArray();
 
@@ -386,8 +397,10 @@ public sealed class IOTaskRunner : ITaskRunner, IDisposable
 /// <param name="threadName">専用スレッドに設定する名前。</param>
 /// <param name="pacer">各更新の間隔を制御するフレーム待機機構。</param>
 /// <param name="logger">専用スレッド上の失敗と停止タイムアウトを記録するロガー。記録しない場合は <see langword="null"/>。</param>
-public abstract class PostTaskRunner(string threadName, IFramePacer pacer, ILogger? logger = null) : ITaskRunner
+public abstract class PostTaskRunner(string threadName, IFramePacer pacer, ILogger? logger = null)
+    : ITaskRunner
 {
+    private static readonly TimeSpan StopTimeout = TimeSpan.FromSeconds(3);
     private Thread? _thread;
 
     /// <summary>
@@ -401,7 +414,6 @@ public abstract class PostTaskRunner(string threadName, IFramePacer pacer, ILogg
     /// <inheritdoc />
     public bool IsRunning => _isRunning && (_thread?.IsAlive ?? false);
 
-
     /// <inheritdoc />
     public string ThreadName => threadName;
 
@@ -410,17 +422,14 @@ public abstract class PostTaskRunner(string threadName, IFramePacer pacer, ILogg
     {
         lock (this)
         {
-            if (_thread is { IsAlive: true }) return;
+            if (_thread is { IsAlive: true })
+                return;
 
             _isRunning = true;
             var cts = CancellationTokenSource.CreateLinkedTokenSource(ct);
             _linkedTokenSource = cts;
 
-            _thread = new Thread(() => RunLoop(cts.Token))
-            {
-                IsBackground = true,
-                Name = ThreadName
-            };
+            _thread = new Thread(() => RunLoop(cts)) { IsBackground = true, Name = ThreadName };
 
             _thread.Start();
         }
@@ -428,6 +437,13 @@ public abstract class PostTaskRunner(string threadName, IFramePacer pacer, ILogg
 
     /// <inheritdoc />
     public void Stop()
+        => StopCore(StopTimeout);
+
+    /// <summary>専用スレッド上の終了処理が完了するまで待機します。</summary>
+    internal void StopAndWait()
+        => StopCore(Timeout.InfiniteTimeSpan);
+
+    private void StopCore(TimeSpan timeout)
     {
         Thread? targetThread;
         lock (this)
@@ -435,16 +451,25 @@ public abstract class PostTaskRunner(string threadName, IFramePacer pacer, ILogg
             targetThread = _thread;
             _thread = null;
             _isRunning = false;
+            // 破棄は専用スレッドが終了時に行う(FinishRun)。ここで破棄すると、まだRunLoopの中にいる
+            // スレッドが破棄済みのトークンに触れてObjectDisposedExceptionを投げる。
             _linkedTokenSource?.Cancel();
-            _linkedTokenSource?.Dispose();
             _linkedTokenSource = null;
         }
 
-        if (targetThread == null) return;
+        if (targetThread is null)
+            return;
 
-        if (Thread.CurrentThread == targetThread) return;
+        if (Thread.CurrentThread == targetThread)
+            return;
 
-        if (!targetThread.Join(3000))
+        if (timeout == Timeout.InfiniteTimeSpan)
+        {
+            targetThread.Join();
+            return;
+        }
+
+        if (!targetThread.Join(timeout))
         {
             Logger?.LogWarning("{ThreadName} の停止がタイムアウトしました", ThreadName);
         }
@@ -478,8 +503,9 @@ public abstract class PostTaskRunner(string threadName, IFramePacer pacer, ILogg
         }
     }
 
-    private void RunLoop(CancellationToken ct)
+    private void RunLoop(CancellationTokenSource cts)
     {
+        var ct = cts.Token;
         try
         {
             OnStart(ct);
@@ -504,8 +530,33 @@ public abstract class PostTaskRunner(string threadName, IFramePacer pacer, ILogg
         }
         finally
         {
-            OnStop();
-            _isRunning = false;
+            try
+            {
+                OnStop();
+            }
+            finally
+            {
+                FinishRun(cts);
+            }
+        }
+    }
+
+    /// <summary>
+    /// 終了した専用スレッドの実行状態を解除し、キャンセルトークンを破棄する。トークンを最後に使うのはこのスレッドなので、
+    /// ここで破棄すれば破棄後に触れられることはない。<see cref="Stop"/> の Cancel と同じロックで行い、
+    /// 破棄済みのトークンへの Cancel を防ぐ。終了待機がタイムアウトした後に再開始されていれば、
+    /// フィールドは新しいスレッドの実行状態とトークンを指しているため、それには触れない。
+    /// </summary>
+    private void FinishRun(CancellationTokenSource cts)
+    {
+        lock (this)
+        {
+            // _thread が別のスレッドを指していれば再開始済み。null なら Stop が _isRunning を下ろし済み。
+            if (ReferenceEquals(_thread, Thread.CurrentThread))
+                _isRunning = false;
+            if (ReferenceEquals(_linkedTokenSource, cts))
+                _linkedTokenSource = null;
+            cts.Dispose();
         }
     }
 
@@ -551,6 +602,10 @@ public abstract class PostTaskRunner(string threadName, IFramePacer pacer, ILogg
 public class RenderPostTaskRunner(string threadName, IFramePacer pacer, ILogger? logger = null)
     : PostTaskRunner(threadName, pacer, logger)
 {
+    internal Action? BeforeGLFWTerminate { get; set; }
+
+    internal void StopAndWaitForShutdown() => StopAndWait();
+
     /// <summary>
     /// 指定したレイヤーツリーをウィンドウへ反映する処理をレンダースレッドへ追加します。
     /// </summary>
@@ -563,7 +618,8 @@ public class RenderPostTaskRunner(string threadName, IFramePacer pacer, ILogger?
     {
         PostTask(() =>
         {
-            if (!IsRunning) return;
+            if (!IsRunning)
+                return;
 
             window.Present(layer);
         });
@@ -581,7 +637,8 @@ public class RenderPostTaskRunner(string threadName, IFramePacer pacer, ILogger?
     protected override void OnStart(CancellationToken ct)
     {
         ct.ThrowIfCancellationRequested();
-        if (!GLFW.Init()) throw new Exception("GLFWの初期化に失敗しました。");
+        if (!GLFW.Init())
+            throw new Exception("GLFWの初期化に失敗しました。");
     }
 
     /// <summary>
@@ -595,5 +652,19 @@ public class RenderPostTaskRunner(string threadName, IFramePacer pacer, ILogger?
     /// <remarks>
     /// GLFWウィンドウとOpenGLリソースは、このメソッドが呼ばれる前に同じレンダースレッド上で解放されている必要があります。
     /// </remarks>
-    protected override void OnStop() => GLFW.Terminate();
+    protected override void OnStop()
+    {
+        try
+        {
+            BeforeGLFWTerminate?.Invoke();
+        }
+        catch (Exception exception)
+        {
+            Logger?.LogError(exception, "{ThreadName} の終了時にリソース解放が失敗しました", ThreadName);
+        }
+        finally
+        {
+            GLFW.Terminate();
+        }
+    }
 }

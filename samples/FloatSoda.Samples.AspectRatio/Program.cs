@@ -13,18 +13,24 @@ var useDesktop = args.Contains("--desktop");
 var hostArgs = args.Where(argument => argument != "--desktop").ToArray();
 
 var builder = Host.CreateApplicationBuilder(hostArgs);
-builder.Services.AddFloatSoda(new FloatSodaOptions
-{
-    AppKey = new AppKey("FloatSoda.Samples.AspectRatio"),
-});
+builder.Services.AddFloatSoda(
+    new FloatSodaOptions { AppKey = new AppKey("FloatSoda.Samples.AspectRatio") }
+);
 
 using var host = builder.Build();
 var app = host.Services.GetRequiredService<FloatSodaApp>();
 
 var demo = new AspectRatioDemo();
 
-app.CreateWindow(useDesktop
-    ? new DesktopWindow { Title = "AspectRatio", Child = demo }
-    : new DashboardWindow { Dpm = new Dpm(1000), Title = "AspectRatio", Child = demo });
+app.CreateWindow(
+    useDesktop
+        ? new DesktopWindow { Title = "AspectRatio", Child = demo }
+        : new DashboardWindow
+        {
+            Dpm = new Dpm(1000),
+            Title = "AspectRatio",
+            Child = demo,
+        }
+);
 
 await host.RunAsync();

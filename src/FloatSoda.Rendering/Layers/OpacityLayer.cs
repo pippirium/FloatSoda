@@ -26,11 +26,7 @@ public class OpacityLayer : ContainerLayer
     /// </remarks>
     public override void Paint(LayerContext context)
     {
-        var paint = new SKPaint()
-        {
-            Color = SKColors.White.WithAlpha(Alpha),
-            IsAntialias = true
-        };
+        var paint = new SKPaint() { Color = SKColors.White.WithAlpha(Alpha), IsAntialias = true };
 
         context.Canvas.SaveLayer(paint);
 

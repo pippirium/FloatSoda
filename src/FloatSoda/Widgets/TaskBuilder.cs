@@ -12,7 +12,7 @@ public enum TaskConnectionState
     Waiting,
 
     /// <summary>Taskが成功、失敗、またはキャンセルによって完了しました。</summary>
-    Done
+    Done,
 }
 
 /// <summary>Taskの接続状態と、完了時の値または失敗を保持します。</summary>
@@ -46,7 +46,11 @@ public sealed record TaskSnapshot<T>
     /// <summary>Taskが失敗したかどうかを取得します。</summary>
     public bool HasError => Error is not null;
 
-    internal TaskSnapshot<T> InState(TaskConnectionState state) => this with { ConnectionState = state };
+    internal TaskSnapshot<T> InState(TaskConnectionState state) =>
+        this with
+        {
+            ConnectionState = state,
+        };
 
     internal static TaskSnapshot<T> FromCompletedTask(Task<T> task)
     {
@@ -58,7 +62,7 @@ public sealed record TaskSnapshot<T>
                 ConnectionState = TaskConnectionState.Done,
                 Data = data,
                 // 参照型でnullが返った場合にHasDataをtrueにすると、Data!の逆参照が呼び出し側で落ちる。
-                HasData = IsNonNullableValueType || data is not null
+                HasData = IsNonNullableValueType || data is not null,
             };
         }
         catch (OperationCanceledException) when (task.IsCanceled)
@@ -66,7 +70,7 @@ public sealed record TaskSnapshot<T>
             return new TaskSnapshot<T>
             {
                 ConnectionState = TaskConnectionState.Done,
-                IsCanceled = true
+                IsCanceled = true,
             };
         }
         catch (Exception exception)
@@ -74,7 +78,7 @@ public sealed record TaskSnapshot<T>
             return new TaskSnapshot<T>
             {
                 ConnectionState = TaskConnectionState.Done,
-                Error = exception
+                Error = exception,
             };
         }
     }
@@ -140,14 +144,15 @@ public record TaskBuilder<T> : StatefulWidget<TaskBuilder<T>>
             {
                 ConnectionState = TaskConnectionState.None,
                 Data = Widget!.InitialData,
-                HasData = Widget.HasInitialData
+                HasData = Widget.HasInitialData,
             };
             Subscribe(Widget.Task);
         }
 
         public override void DidUpdateWidget(TaskBuilder<TValue> oldWidget)
         {
-            if (ReferenceEquals(oldWidget.Task, Widget!.Task)) return;
+            if (ReferenceEquals(oldWidget.Task, Widget!.Task))
+                return;
 
             _generation++;
             _snapshot = _snapshot.InState(TaskConnectionState.None);
@@ -164,7 +169,8 @@ public record TaskBuilder<T> : StatefulWidget<TaskBuilder<T>>
 
         private void Subscribe(Task<TValue>? task)
         {
-            if (task is null) return;
+            if (task is null)
+                return;
 
             var generation = ++_generation;
             if (task.IsCompleted)
@@ -178,12 +184,14 @@ public record TaskBuilder<T> : StatefulWidget<TaskBuilder<T>>
                 completedTask => Complete(completedTask, generation),
                 CancellationToken.None,
                 TaskContinuationOptions.ExecuteSynchronously,
-                Element!.Owner!.TaskScheduler);
+                Element!.Owner!.TaskScheduler
+            );
         }
 
         private void Complete(Task<TValue> task, long generation)
         {
-            if (generation != _generation) return;
+            if (generation != _generation)
+                return;
 
             SetState(() => _snapshot = TaskSnapshot<TValue>.FromCompletedTask(task));
         }

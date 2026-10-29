@@ -24,7 +24,10 @@ public sealed class ControllerPointerSystem(OverlayIntersection intersection)
     /// <param name="device">The logical controller to poll.</param>
     /// <param name="trackingOrigin">The tracking universe used for the pose and intersection ray.</param>
     /// <returns>Pointer data for a hit, or <see langword="null"/> when the device is unavailable or the ray misses.</returns>
-    public PointerData? Poll(TrackedDevice device, ETrackingUniverseOrigin trackingOrigin = ETrackingUniverseOrigin.TrackingUniverseStanding)
+    public PointerData? Poll(
+        TrackedDevice device,
+        ETrackingUniverseOrigin trackingOrigin = ETrackingUniverseOrigin.TrackingUniverseStanding
+    )
     {
         var deviceIndex = device.ResolveIndex();
         if (deviceIndex == OpenVR.k_unTrackedDeviceIndexInvalid)
@@ -48,7 +51,9 @@ public sealed class ControllerPointerSystem(OverlayIntersection intersection)
         var origin = new Vector3(matrix.M41, matrix.M42, matrix.M43);
         var forward = Vector3.Normalize(new Vector3(-matrix.M13, -matrix.M23, -matrix.M33));
 
-        var hit = intersection.TryIntersect(new IntersectionParams(origin, forward, trackingOrigin));
+        var hit = intersection.TryIntersect(
+            new IntersectionParams(origin, forward, trackingOrigin)
+        );
         if (hit is null)
         {
             _wasPressed = false;
@@ -69,8 +74,6 @@ public sealed class ControllerPointerSystem(OverlayIntersection intersection)
 
         return new PointerData(hit.Value.UV.X, hit.Value.UV.Y, change);
     }
-
-
 
     private static readonly ulong TriggerMask = 1UL << (int)EVRButtonId.k_EButton_SteamVR_Trigger;
 }

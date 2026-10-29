@@ -28,9 +28,16 @@ public record Container : StatelessWidget
         get;
         init
         {
-            if (value is { } alignment && (!float.IsFinite(alignment.X) || !float.IsFinite(alignment.Y)))
+            if (
+                value is { } alignment
+                && (!float.IsFinite(alignment.X) || !float.IsFinite(alignment.Y))
+            )
             {
-                throw new ArgumentOutOfRangeException(nameof(value), value, "配置値には有限値を指定してください。");
+                throw new ArgumentOutOfRangeException(
+                    nameof(value),
+                    value,
+                    "配置値には有限値を指定してください。"
+                );
             }
 
             field = value;
@@ -52,7 +59,11 @@ public record Container : StatelessWidget
         {
             if (value is { } padding && !IsValidPadding(padding))
             {
-                throw new ArgumentOutOfRangeException(nameof(value), value, "余白の各辺には0以上の有限値を指定してください。");
+                throw new ArgumentOutOfRangeException(
+                    nameof(value),
+                    value,
+                    "余白の各辺には0以上の有限値を指定してください。"
+                );
             }
 
             field = value;
@@ -131,9 +142,16 @@ public record Container : StatelessWidget
         get;
         init
         {
-            if (value is { } alignment && (!float.IsFinite(alignment.X) || !float.IsFinite(alignment.Y)))
+            if (
+                value is { } alignment
+                && (!float.IsFinite(alignment.X) || !float.IsFinite(alignment.Y))
+            )
             {
-                throw new ArgumentOutOfRangeException(nameof(value), value, "配置値には有限値を指定してください。");
+                throw new ArgumentOutOfRangeException(
+                    nameof(value),
+                    value,
+                    "配置値には有限値を指定してください。"
+                );
             }
 
             field = value;
@@ -146,38 +164,27 @@ public record Container : StatelessWidget
         if (Color is not null && Decoration is not null)
         {
             throw new InvalidOperationException(
-                "ColorとDecorationは同時に指定できません。背景色はBoxDecoration.Colorへ指定してください。");
+                "ColorとDecorationは同時に指定できません。背景色はBoxDecoration.Colorへ指定してください。"
+            );
         }
 
         Widget current = Child ?? new SizedBox();
 
         if (Child is not null && Alignment is { } alignment)
         {
-            current = new Align
-            {
-                Alignment = alignment,
-                Child = current
-            };
+            current = new Align { Alignment = alignment, Child = current };
         }
 
         if (PaddingIncludingDecoration() is { } padding)
         {
-            current = new Padding
-            {
-                Spacing = padding,
-                Child = current
-            };
+            current = new Padding { Spacing = padding, Child = current };
         }
 
-        var effectiveDecoration = Decoration
-                                  ?? (Color is { } color ? new BoxDecoration { Color = color } : null);
+        var effectiveDecoration =
+            Decoration ?? (Color is { } color ? new BoxDecoration { Color = color } : null);
         if (effectiveDecoration is not null)
         {
-            current = new DecoratedBox
-            {
-                Decoration = effectiveDecoration,
-                Child = current
-            };
+            current = new DecoratedBox { Decoration = effectiveDecoration, Child = current };
         }
 
         if (Width is not null || Height is not null)
@@ -186,7 +193,7 @@ public record Container : StatelessWidget
             {
                 Width = Width,
                 Height = Height,
-                Child = current
+                Child = current,
             };
         }
 
@@ -196,7 +203,7 @@ public record Container : StatelessWidget
             {
                 Matrix = transform,
                 Alignment = TransformAlignment,
-                Child = current
+                Child = current,
             };
         }
 
@@ -221,7 +228,8 @@ public record Container : StatelessWidget
             padding.Left + decorationPadding.Left,
             padding.Top + decorationPadding.Top,
             padding.Right + decorationPadding.Right,
-            padding.Bottom + decorationPadding.Bottom);
+            padding.Bottom + decorationPadding.Bottom
+        );
     }
 
     private static bool IsValidPadding(EdgeInsets padding) =>
@@ -230,23 +238,37 @@ public record Container : StatelessWidget
         && IsFiniteAndNonNegative(padding.Right)
         && IsFiniteAndNonNegative(padding.Bottom);
 
-    private static bool IsFiniteAndNonNegative(double value) => double.IsFinite(value) && value >= 0;
+    private static bool IsFiniteAndNonNegative(double value) =>
+        double.IsFinite(value) && value >= 0;
 
     private static void ValidateDimension(double? value)
     {
         if (value is { } dimension && (!double.IsFinite(dimension) || dimension < 0))
         {
-            throw new ArgumentOutOfRangeException(nameof(value), value, "寸法には0以上の有限値を指定してください。");
+            throw new ArgumentOutOfRangeException(
+                nameof(value),
+                value,
+                "寸法には0以上の有限値を指定してください。"
+            );
         }
     }
 
     private static void ValidateMatrix(Matrix3x2 matrix)
     {
-        if (!float.IsFinite(matrix.M11) || !float.IsFinite(matrix.M12)
-            || !float.IsFinite(matrix.M21) || !float.IsFinite(matrix.M22)
-            || !float.IsFinite(matrix.M31) || !float.IsFinite(matrix.M32))
+        if (
+            !float.IsFinite(matrix.M11)
+            || !float.IsFinite(matrix.M12)
+            || !float.IsFinite(matrix.M21)
+            || !float.IsFinite(matrix.M22)
+            || !float.IsFinite(matrix.M31)
+            || !float.IsFinite(matrix.M32)
+        )
         {
-            throw new ArgumentOutOfRangeException(nameof(matrix), matrix, "変換行列の各成分には有限値を指定してください。");
+            throw new ArgumentOutOfRangeException(
+                nameof(matrix),
+                matrix,
+                "変換行列の各成分には有限値を指定してください。"
+            );
         }
     }
 }

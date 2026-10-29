@@ -13,7 +13,6 @@ public record StackWidget : StatelessWidget
     public double Height { get; init; } = 1000;
 
     public override Widget Build(IBuildContext context)
-
     {
         return new Align
         {
@@ -38,8 +37,8 @@ public record StackWidget : StatelessWidget
                                 {
                                     Child = new ColoredBox { Color = SKColors.DarkSeaGreen },
                                     Width = Width / 4,
-                                    Height = Height / 4
-                                }
+                                    Height = Height / 4,
+                                },
                             },
                             new ClipRoundRect
                             {
@@ -48,7 +47,7 @@ public record StackWidget : StatelessWidget
                                 {
                                     Child = new ColoredBox { Color = SKColors.Tomato },
                                     Width = Width / 4,
-                                    Height = Height / 4
+                                    Height = Height / 4,
                                 },
                             },
                             new ClipRoundRect
@@ -58,13 +57,13 @@ public record StackWidget : StatelessWidget
                                 {
                                     Child = new ColoredBox { Color = SKColors.CornflowerBlue },
                                     Width = Width / 4,
-                                    Height = Height / 4
+                                    Height = Height / 4,
                                 },
                             },
-                        }
-                    }
-                }
-            }
+                        },
+                    },
+                },
+            },
         };
     }
 }

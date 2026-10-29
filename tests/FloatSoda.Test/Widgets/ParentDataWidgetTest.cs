@@ -17,26 +17,18 @@ public class ParentDataWidgetTest
         var pipeline = new RenderPipeline
         {
             OnNeedVisualUpdate = () => { },
-            RenderView = renderView
+            RenderView = renderView,
         };
         var owner = new BuildOwner(() => { });
         renderView.PrepareInitialFrame();
 
-        var root = Attach(
-            width: 120,
-            renderView,
-            owner,
-            element: null);
+        var root = Attach(width: 120, renderView, owner, element: null);
 
         pipeline.FlushLayout();
 
         Assert.Equal(new SKSize(120, 20), renderView.Size);
 
-        root = Attach(
-            width: 240,
-            renderView,
-            owner,
-            root);
+        root = Attach(width: 240, renderView, owner, root);
         owner.BuildScope();
         pipeline.FlushLayout();
 
@@ -47,7 +39,8 @@ public class ParentDataWidgetTest
         float width,
         RenderView renderView,
         BuildOwner owner,
-        RenderObjectToWidgetElement<RenderView>? element)
+        RenderObjectToWidgetElement<RenderView>? element
+    )
     {
         return new RenderObjectToWidgetAdapter
         {
@@ -59,10 +52,10 @@ public class ParentDataWidgetTest
                     Width = width,
                     Child = new TestProxyWidget
                     {
-                        Child = new SizedBox { Width = 10, Height = 20 }
-                    }
-                }
-            }
+                        Child = new SizedBox { Width = 10, Height = 20 },
+                    },
+                },
+            },
         }.AttachToRenderTree(owner, element);
     }
 
@@ -84,7 +77,8 @@ public class ParentDataWidgetTest
 
         protected override bool ApplyParentData(TestParentData parentData)
         {
-            if (parentData.Width == Width) return false;
+            if (parentData.Width == Width)
+                return false;
 
             parentData.Width = Width;
             return true;
@@ -114,7 +108,8 @@ public class ParentDataWidgetTest
             set => Child = (RenderBox?)value;
         }
 
-        public override void SetupParentData(RenderObject child) => child.ParentData = new TestParentData();
+        public override void SetupParentData(RenderObject child) =>
+            child.ParentData = new TestParentData();
 
         public override void PerformLayout()
         {
@@ -149,7 +144,8 @@ public class ParentDataWidgetTest
             _child.Detach();
         }
 
-        public override void VisitChildren(Action<RenderObject> visitor) => _child.VisitChildren(visitor);
+        public override void VisitChildren(Action<RenderObject> visitor) =>
+            _child.VisitChildren(visitor);
 
         public override void RedepthChildren() => VisitChildren(RedepthChild);
     }

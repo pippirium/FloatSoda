@@ -14,16 +14,21 @@ public class FlexFlutterParityTest
     [Fact]
     public void CreateRenderObject_配置を省略_子を主軸の開始位置へ配置する()
     {
-        var view = Mount(new SizedBox
-        {
-            Width = 100,
-            Height = 100,
-            Child = new Flex
+        var view = Mount(
+            new SizedBox
             {
-                Direction = Axis.Horizontal,
-                Children = { new SizedBox { Width = 20, Height = 20 } }
+                Width = 100,
+                Height = 100,
+                Child = new Flex
+                {
+                    Direction = Axis.Horizontal,
+                    Children =
+                    {
+                        new SizedBox { Width = 20, Height = 20 },
+                    },
+                },
             }
-        });
+        );
 
         var flex = Find<RenderFlex>(view);
         var child = Assert.Single(flex.Children);
@@ -35,14 +40,17 @@ public class FlexFlutterParityTest
     {
         var view = new RenderView();
         var pipeline = new RenderPipeline { OnNeedVisualUpdate = () => { }, RenderView = view };
-        _ = new RenderObjectToWidgetAdapter { Container = view, Child = widget }
-            .AttachToRenderTree(new BuildOwner(() => { }), null);
+        _ = new RenderObjectToWidgetAdapter { Container = view, Child = widget }.AttachToRenderTree(
+            new BuildOwner(() => { }),
+            null
+        );
         view.PrepareInitialFrame();
         pipeline.FlushLayout();
         return view;
     }
 
-    private static T Find<T>(RenderObject root) where T : RenderObject
+    private static T Find<T>(RenderObject root)
+        where T : RenderObject
     {
         T? found = null;
         Visit(root);
@@ -50,7 +58,8 @@ public class FlexFlutterParityTest
 
         void Visit(RenderObject node)
         {
-            if (found is not null) return;
+            if (found is not null)
+                return;
             if (node is T match)
             {
                 found = match;

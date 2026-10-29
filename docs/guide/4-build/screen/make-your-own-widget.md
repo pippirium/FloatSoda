@@ -33,7 +33,6 @@ using FloatSoda.Painting;
 using FloatSoda.Widgets;
 using FloatSoda.Widgets.Layout;
 using FloatSoda.Widgets.Paint;
-using SkiaSharp;
 ```
 
 押す操作を受け取る部品(手順3から)は、`using FloatSoda.Widgets.Gesture;` も足します。
@@ -53,13 +52,13 @@ public sealed record NameTag : StatelessWidget
     {
         return new ColoredBox
         {
-            Color = SKColors.SeaGreen,
+            Color = Colors.SeaGreen,
             Child = new Padding
             {
                 Spacing = EdgeInsets.All(16),
                 Child = new Text("VRChat")
                 {
-                    Style = new TextStyle { Color = SKColors.White, FontSize = 40 }
+                    Style = new TextStyle { Color = Colors.White, FontSize = 40 }
                 }
             }
         };
@@ -97,7 +96,7 @@ public sealed record NameTag : StatelessWidget
     public required string Label { get; init; }
 
     /// <summary>札の背景の色。</summary>
-    public SKColor Color { get; init; } = SKColors.SeaGreen;
+    public Color Color { get; init; } = Colors.SeaGreen;
 
     public override Widget Build(IBuildContext context)
     {
@@ -109,7 +108,7 @@ public sealed record NameTag : StatelessWidget
                 Spacing = EdgeInsets.All(16),
                 Child = new Text(Label)
                 {
-                    Style = new TextStyle { Color = SKColors.White, FontSize = 40 }
+                    Style = new TextStyle { Color = Colors.White, FontSize = 40 }
                 }
             }
         };
@@ -125,7 +124,7 @@ new Row
     Children =
     {
         new NameTag { Label = "VRChat" },
-        new NameTag { Label = "Booth", Color = SKColors.Tomato },
+        new NameTag { Label = "Booth", Color = Colors.Tomato },
     },
 }
 ```
@@ -172,7 +171,7 @@ public sealed class FoldableTagState : State<FoldableTag>
         {
             children.Add(new Text(Widget.Detail)
             {
-                Style = new TextStyle { Color = SKColors.White, FontSize = 30 }
+                Style = new TextStyle { Color = Colors.White, FontSize = 30 }
             });
         }
 
@@ -260,7 +259,7 @@ public sealed class TagScreenState : State<TagScreen>
                 },
                 new Text($"開いた回数: {_opened}")
                 {
-                    Style = new TextStyle { Color = SKColors.White, FontSize = 30 }
+                    Style = new TextStyle { Color = Colors.White, FontSize = 30 }
                 },
             },
         };

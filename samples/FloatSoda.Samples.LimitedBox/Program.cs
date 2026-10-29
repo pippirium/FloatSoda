@@ -13,18 +13,24 @@ var useDesktop = args.Contains("--desktop");
 var hostArgs = args.Where(argument => argument != "--desktop").ToArray();
 
 var builder = Host.CreateApplicationBuilder(hostArgs);
-builder.Services.AddFloatSoda(new FloatSodaOptions
-{
-    AppKey = new AppKey("FloatSoda.Samples.LimitedBox"),
-});
+builder.Services.AddFloatSoda(
+    new FloatSodaOptions { AppKey = new AppKey("FloatSoda.Samples.LimitedBox") }
+);
 
 using var host = builder.Build();
 var app = host.Services.GetRequiredService<FloatSodaApp>();
 
 var demo = new LimitedBoxDemo();
 
-app.CreateWindow(useDesktop
-    ? new DesktopWindow { Title = "LimitedBox", Child = demo }
-    : new DashboardWindow { Dpm = new Dpm(1000), Title = "LimitedBox", Child = demo });
+app.CreateWindow(
+    useDesktop
+        ? new DesktopWindow { Title = "LimitedBox", Child = demo }
+        : new DashboardWindow
+        {
+            Dpm = new Dpm(1000),
+            Title = "LimitedBox",
+            Child = demo,
+        }
+);
 
 await host.RunAsync();

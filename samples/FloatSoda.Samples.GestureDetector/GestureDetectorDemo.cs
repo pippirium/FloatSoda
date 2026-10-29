@@ -32,113 +32,128 @@ public sealed class GestureDetectorDemoState : State<GestureDetectorDemo>
     private double _boxY = (FieldHeight - BoxSize) / 2;
 
     /// <inheritdoc />
-    public override Widget Build(IBuildContext context) => new SizedBox
-    {
-        Width = 700,
-        Height = 460,
-        Child = new ColoredBox
+    public override Widget Build(IBuildContext context) =>
+        new SizedBox
         {
-            Color = new Color(16, 20, 31),
-            Child = new Padding
+            Width = 700,
+            Height = 460,
+            Child = new ColoredBox
             {
-                Spacing = EdgeInsets.All(32),
-                Child = new Column
+                Color = new Color(16, 20, 31),
+                Child = new Padding
                 {
-                    CrossAxisAlignment = CrossAxisAlignment.Start,
-                    Children =
+                    Spacing = EdgeInsets.All(32),
+                    Child = new Column
                     {
-                        Label("OnTap — 押して離すとタップが成立する"),
-                        new SizedBox { Height = 10 },
-                        // Opaque で領域全体を掴む。押して同じ場所で離すと OnTap が呼ばれる。
-                        new GestureDetectorWidget
+                        CrossAxisAlignment = CrossAxisAlignment.Start,
+                        Children =
                         {
-                            Behaviour = HitTestBehaviour.Opaque,
-                            OnTap = HandleTap,
-                            Child = new ColoredBox
+                            Label("OnTap — 押して離すとタップが成立する"),
+                            new SizedBox { Height = 10 },
+                            // Opaque で領域全体を掴む。押して同じ場所で離すと OnTap が呼ばれる。
+                            new GestureDetectorWidget
                             {
-                                Color = new Color(124, 205, 255),
+                                Behaviour = HitTestBehaviour.Opaque,
+                                OnTap = HandleTap,
+                                Child = new ColoredBox
+                                {
+                                    Color = new Color(124, 205, 255),
+                                    Child = new SizedBox
+                                    {
+                                        Width = 220,
+                                        Height = 64,
+                                        Child = new Center
+                                        {
+                                            Child = new Text($"タップ {_tapCount} 回")
+                                            {
+                                                Style = new TextStyle
+                                                {
+                                                    FontSize = 20,
+                                                    Color = new Color(16, 20, 31),
+                                                },
+                                            },
+                                        },
+                                    },
+                                },
+                            },
+                            new SizedBox { Height = 28 },
+                            Label("OnTap と OnPan の同居 — ドラッグで箱を動かす"),
+                            new SizedBox { Height = 10 },
+                            // OnPanUpdate は前回位置からの移動量(デルタ)で届く。
+                            // 累積して Positioned の座標へ反映し、フィールド内へ収める。
+                            // 同じ検出器へ OnTap も設定し、タップとドラッグの排他をアリーナに裁定させる。
+                            // PanGestureRecognizer は Cancel 時に OnPanEnd を呼ばないため、
+                            // 外側の Listener で生の Cancel を受けてドラッグ状態を解除する。
+                            new ColoredBox
+                            {
+                                Color = new Color(40, 47, 64),
                                 Child = new SizedBox
                                 {
-                                    Width = 220,
-                                    Height = 64,
-                                    Child = new Center
+                                    Width = FieldWidth,
+                                    Height = FieldHeight,
+                                    Child = new Stack
                                     {
-                                        Child = new Text($"タップ {_tapCount} 回")
+                                        Children =
                                         {
-                                            Style = new TextStyle { FontSize = 20, Color = new Color(16, 20, 31) }
-                                        }
-                                    }
-                                }
-                            }
-                        },
-                        new SizedBox { Height = 28 },
-
-                        Label("OnTap と OnPan の同居 — ドラッグで箱を動かす"),
-                        new SizedBox { Height = 10 },
-                        // OnPanUpdate は前回位置からの移動量(デルタ)で届く。
-                        // 累積して Positioned の座標へ反映し、フィールド内へ収める。
-                        // 同じ検出器へ OnTap も設定し、タップとドラッグの排他をアリーナに裁定させる。
-                        // PanGestureRecognizer は Cancel 時に OnPanEnd を呼ばないため、
-                        // 外側の Listener で生の Cancel を受けてドラッグ状態を解除する。
-                        new ColoredBox
-                        {
-                            Color = new Color(40, 47, 64),
-                            Child = new SizedBox
-                            {
-                                Width = FieldWidth,
-                                Height = FieldHeight,
-                                Child = new Stack
-                                {
-                                    Children =
-                                    {
-                                        new Positioned
-                                        {
-                                            Left = _boxX,
-                                            Top = _boxY,
-                                            Child = new Listener
+                                            new Positioned
                                             {
-                                                OnPointerCancel = _ => SetState(() => _dragging = false),
-                                                Child = new GestureDetectorWidget
+                                                Left = _boxX,
+                                                Top = _boxY,
+                                                Child = new Listener
                                                 {
-                                                    Behaviour = HitTestBehaviour.Opaque,
-                                                    OnTap = HandleBoxTap,
-                                                    OnPanStart = _ => SetState(() => _dragging = true),
-                                                    OnPanUpdate = HandlePanUpdate,
-                                                    OnPanEnd = () => SetState(() => _dragging = false),
-                                                    Child = new ColoredBox
+                                                    OnPointerCancel = _ =>
+                                                        SetState(() => _dragging = false),
+                                                    Child = new GestureDetectorWidget
                                                     {
-                                                        Color = _dragging
-                                                            ? new Color(255, 209, 102)
-                                                            : new Color(255, 111, 97),
-                                                        Child = new SizedBox { Width = BoxSize, Height = BoxSize }
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
+                                                        Behaviour = HitTestBehaviour.Opaque,
+                                                        OnTap = HandleBoxTap,
+                                                        OnPanStart = _ =>
+                                                            SetState(() => _dragging = true),
+                                                        OnPanUpdate = HandlePanUpdate,
+                                                        OnPanEnd = () =>
+                                                            SetState(() => _dragging = false),
+                                                        Child = new ColoredBox
+                                                        {
+                                                            Color = _dragging
+                                                                ? new Color(255, 209, 102)
+                                                                : new Color(255, 111, 97),
+                                                            Child = new SizedBox
+                                                            {
+                                                                Width = BoxSize,
+                                                                Height = BoxSize,
+                                                            },
+                                                        },
+                                                    },
+                                                },
+                                            },
+                                        },
+                                    },
+                                },
+                            },
+                            new SizedBox { Height = 16 },
+                            Label(
+                                $"箱の位置: ({_boxX:F0}, {_boxY:F0})  ドラッグ中: {(_dragging ? "はい" : "いいえ")}  箱のタップ {_boxTapCount} 回"
+                            ),
                         },
-                        new SizedBox { Height = 16 },
-                        Label($"箱の位置: ({_boxX:F0}, {_boxY:F0})  ドラッグ中: {(_dragging ? "はい" : "いいえ")}  箱のタップ {_boxTapCount} 回")
-                    }
-                }
-            }
-        }
-    };
+                    },
+                },
+            },
+        };
 
     private void HandleTap() => SetState(() => _tapCount++);
 
     private void HandleBoxTap() => SetState(() => _boxTapCount++);
 
-    private void HandlePanUpdate(Offset delta) => SetState(() =>
-    {
-        _boxX = Math.Clamp(_boxX + delta.X, 0, FieldWidth - BoxSize);
-        _boxY = Math.Clamp(_boxY + delta.Y, 0, FieldHeight - BoxSize);
-    });
+    private void HandlePanUpdate(Offset delta) =>
+        SetState(() =>
+        {
+            _boxX = Math.Clamp(_boxX + delta.X, 0, FieldWidth - BoxSize);
+            _boxY = Math.Clamp(_boxY + delta.Y, 0, FieldHeight - BoxSize);
+        });
 
-    private static Widget Label(string text) => new Text(text)
-    {
-        Style = new TextStyle { FontSize = 18, Color = new Color(169, 180, 204) }
-    };
+    private static Widget Label(string text) =>
+        new Text(text)
+        {
+            Style = new TextStyle { FontSize = 18, Color = new Color(169, 180, 204) },
+        };
 }

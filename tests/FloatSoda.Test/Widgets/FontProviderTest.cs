@@ -18,7 +18,6 @@ public class FontProviderTest
 
     private sealed record CountingFontProvider(Guid Key, LoadCounter Counter) : FontProvider
     {
-
         protected override FontResource Load()
         {
             Counter.Increment();
@@ -59,7 +58,9 @@ public class FontProviderTest
     [Theory]
     [InlineData("")]
     [InlineData("   ")]
-    public void SystemFontProvider_フォントファミリ名が空白_ArgumentExceptionを投げる(string familyName)
+    public void SystemFontProvider_フォントファミリ名が空白_ArgumentExceptionを投げる(
+        string familyName
+    )
     {
         Assert.Throws<ArgumentException>(() => new SystemFontProvider(familyName));
     }
@@ -130,6 +131,7 @@ public class FontProviderTest
     public void IconData_コードポイントが無効_ArgumentOutOfRangeExceptionを投げる(int codePoint)
     {
         Assert.Throws<ArgumentOutOfRangeException>(() =>
-            new IconData(codePoint, new SystemFontProvider("Arial")));
+            new IconData(codePoint, new SystemFontProvider("Arial"))
+        );
     }
 }

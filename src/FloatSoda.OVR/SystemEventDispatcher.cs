@@ -28,7 +28,8 @@ public abstract class VREventDispatcher
     /// <param name="handler">The handler to remove.</param>
     public void Unregister(EVREventType eventType, VREventHandler handler)
     {
-        if (_handlers.TryGetValue(eventType, out var list)) list.Remove(handler);
+        if (_handlers.TryGetValue(eventType, out var list))
+            list.Remove(handler);
     }
 
     /// <summary>Removes every handler registered for an OpenVR event type.</summary>
@@ -40,8 +41,10 @@ public abstract class VREventDispatcher
     protected void Dispatch(VREvent_t vrEvent)
     {
         var eventType = (EVREventType)vrEvent.eventType;
-        if (!_handlers.TryGetValue(eventType, out var list)) return;
-        foreach (var handler in list.ToList()) handler(vrEvent);
+        if (!_handlers.TryGetValue(eventType, out var list))
+            return;
+        foreach (var handler in list.ToList())
+            handler(vrEvent);
     }
 
     /// <summary>Polls and dispatches all events currently waiting in the associated OpenVR queue.</summary>

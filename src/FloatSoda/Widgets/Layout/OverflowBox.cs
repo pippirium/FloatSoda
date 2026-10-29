@@ -80,7 +80,11 @@ public sealed record OverflowBox : SingleChildRenderObjectWidget<RenderConstrain
         {
             if (!Enum.IsDefined(value))
             {
-                throw new ArgumentOutOfRangeException(nameof(value), value, "定義済みのOverflowBoxFitを指定してください。");
+                throw new ArgumentOutOfRangeException(
+                    nameof(value),
+                    value,
+                    "定義済みのOverflowBoxFitを指定してください。"
+                );
             }
 
             field = value;
@@ -110,7 +114,7 @@ public sealed record OverflowBox : SingleChildRenderObjectWidget<RenderConstrain
             MinHeight = MinHeight,
             MaxHeight = MaxHeight,
             Fit = Fit,
-            Alignment = Alignment
+            Alignment = Alignment,
         };
     }
 

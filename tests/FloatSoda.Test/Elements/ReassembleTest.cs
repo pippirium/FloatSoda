@@ -52,21 +52,19 @@ public class ReassembleTest
         }
     }
 
-    private static (RenderObjectToWidgetElement<RenderView> Root, BuildOwner Owner) MountTree(Widget widget)
+    private static (RenderObjectToWidgetElement<RenderView> Root, BuildOwner Owner) MountTree(
+        Widget widget
+    )
     {
         var renderView = new RenderView(100, 100);
-        _ = new RenderPipeline
-        {
-            OnNeedVisualUpdate = () => { },
-            RenderView = renderView
-        };
+        _ = new RenderPipeline { OnNeedVisualUpdate = () => { }, RenderView = renderView };
 
         var owner = new BuildOwner(() => { });
 
         var root = new RenderObjectToWidgetAdapter
         {
             Container = renderView,
-            Child = widget
+            Child = widget,
         }.AttachToRenderTree(owner, null);
 
         return (root, owner);

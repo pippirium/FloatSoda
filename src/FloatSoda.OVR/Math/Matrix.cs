@@ -64,10 +64,22 @@ namespace FloatSoda.OVR.Math
         public static Matrix4x4 ToMatrix4x4(this HmdMatrix34_t matrix)
         {
             return new Matrix4x4(
-                matrix.m0, matrix.m1, matrix.m2, 0,
-                matrix.m4, matrix.m5, matrix.m6, 0,
-                matrix.m8, matrix.m9, matrix.m10, 0,
-                matrix.m3, matrix.m7, matrix.m11, 1
+                matrix.m0,
+                matrix.m1,
+                matrix.m2,
+                0,
+                matrix.m4,
+                matrix.m5,
+                matrix.m6,
+                0,
+                matrix.m8,
+                matrix.m9,
+                matrix.m10,
+                0,
+                matrix.m3,
+                matrix.m7,
+                matrix.m11,
+                1
             );
         }
     }

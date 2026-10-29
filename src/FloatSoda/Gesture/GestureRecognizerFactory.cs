@@ -18,7 +18,8 @@ public abstract class GestureRecognizerFactory
 
 /// <summary>コンストラクタと初期化子のデリゲートで認識器を組み立てる汎用ファクトリ。</summary>
 /// <typeparam name="T">生成する認識器の型。</typeparam>
-public sealed class GestureRecognizerFactory<T> : GestureRecognizerFactory where T : GestureRecognizer
+public sealed class GestureRecognizerFactory<T> : GestureRecognizerFactory
+    where T : GestureRecognizer
 {
     /// <summary>新しい認識器を生成するデリゲート。</summary>
     private readonly Func<T> _constructor;

@@ -1,17 +1,16 @@
-﻿using FloatSoda.OVR;
-using FloatSoda.OVR.Exceptions;
-using System.Collections.Concurrent;
+﻿using System.Collections.Concurrent;
 using FloatSoda.Abstractions.Scheduling;
 using FloatSoda.Core;
 using FloatSoda.Engine;
+using FloatSoda.OVR;
+using FloatSoda.OVR.Exceptions;
 using FloatSoda.OVR.Input;
-using FloatSoda.OVR.Overlay;
 using FloatSoda.Widgets;
 using Microsoft.Extensions.Logging;
-using OverlayWindow = FloatSoda.Widgets.OverlayWindow;
 using DesktopWindow = FloatSoda.Widgets.DesktopWindow;
-using EngineOverlayWindow = FloatSoda.Engine.OverlayWindow;
 using EngineDesktopWindow = FloatSoda.Engine.DesktopWindow;
+using EngineOverlayWindow = FloatSoda.Engine.OverlayWindow;
+using OverlayWindow = FloatSoda.Widgets.OverlayWindow;
 
 namespace FloatSoda;
 
@@ -47,11 +46,15 @@ public class FloatSodaApp : IDisposable
 
     private static readonly ConcurrentDictionary<FloatSodaApp, byte> ActiveApps = new();
 
-    internal FloatSodaApp(IFramePacer mainFramePacer,
+    internal FloatSodaApp(
+        IFramePacer mainFramePacer,
         IFramePacer renderFramePacer,
-        OVRAppInfo appInfo, IOTaskRunner ioTaskRunner, ILoggerFactory? loggerFactory = null,
+        OVRAppInfo appInfo,
+        IOTaskRunner ioTaskRunner,
+        ILoggerFactory? loggerFactory = null,
         TimeProvider? timeProvider = null,
-        IReadOnlyList<InputActionMap>? inputActionMaps = null)
+        IReadOnlyList<InputActionMap>? inputActionMaps = null
+    )
     {
         _mainFramePacer = mainFramePacer;
         _ioTaskRunner = ioTaskRunner;
@@ -62,6 +65,7 @@ public class FloatSodaApp : IDisposable
         _renderPostTaskRunner =
             new RenderPostTaskRunner("RenderThread", renderFramePacer,
                 loggerFactory?.CreateLogger<RenderPostTaskRunner>());
+        _renderPostTaskRunner.BeforeGLFWTerminate = DisposeBindingsOnRenderThread;
         _logger = loggerFactory?.CreateLogger<FloatSodaApp>();
         ActiveApps.TryAdd(this, 0);
     }
@@ -106,8 +110,14 @@ public class FloatSodaApp : IDisposable
     {
         Action<WidgetBinding> initialize = window switch
         {
-            OverlayWindow overlayWindow => binding => binding.EnsureInitialized(window.Title, _renderPostTaskRunner,
-                renderer => new EngineOverlayWindow(overlayWindow.CreateOverlay(), renderer, overlayWindow.Dpm)),
+            OverlayWindow overlayWindow => binding =>
+            {
+                // OpenVR作成時のエラーをメインループへ戻し、レンダースレッドで握りつぶさない。
+                var overlay = overlayWindow.CreateOverlay();
+                binding.SetPendingOverlay(overlay);
+                binding.EnsureInitialized(window.Title, _renderPostTaskRunner,
+                    renderer => new EngineOverlayWindow(overlay, renderer, overlayWindow.Dpm));
+            },
             DesktopWindow => binding => binding.EnsureInitialized(window.Title, _renderPostTaskRunner,
                 renderer => new EngineDesktopWindow(renderer), visible: true),
             _ => throw new NotSupportedException($"{window.GetType().Name} は未対応のウィンドウ種別です。")
@@ -124,14 +134,13 @@ public class FloatSodaApp : IDisposable
         });
     }
 
-
     /// <summary>アプリケーションを初期化し、停止要求を受けるまでメインループを実行します。</summary>
     /// <remarks>メインループ終了時には、このインスタンスが保持するOpenVRおよびレンダースレッドのリソースを解放します。</remarks>
     [STAThread]
     public void Run()
-        => Run(CancellationToken.None, static () => { });
+        => Run(CancellationToken.None, static () => { }, static () => { });
 
-    internal void Run(CancellationToken cancellationToken, Action started)
+    internal void Run(CancellationToken cancellationToken, Action started, Action stopping)
     {
         using var cancellationRegistration = cancellationToken.Register(RequestStop);
 
@@ -145,7 +154,14 @@ public class FloatSodaApp : IDisposable
         }
         finally
         {
-            Dispose();
+            try
+            {
+                stopping();
+            }
+            finally
+            {
+                Dispose();
+            }
         }
     }
 
@@ -160,7 +176,6 @@ public class FloatSodaApp : IDisposable
             // すでに終了処理が完了している場合、追加の停止要求は何もしない。
         }
     }
-
 
     private void MainLoop()
     {
@@ -218,25 +233,35 @@ public class FloatSodaApp : IDisposable
             {
                 // マニフェスト未登録のAppKeyでも起動できるように、識別失敗は致命的エラーにしない
                 // (AutoLaunch/シーン遷移などマニフェスト連携機能のみが動作しなくなる)。
-                _logger?.LogWarning("SteamVRへのアプリケーション識別に失敗しました: {Message}", e.Message);
+                _logger?.LogWarning(
+                    "SteamVRへのアプリケーション識別に失敗しました: {Message}",
+                    e.Message
+                );
             }
 
             _dispatcher = new VRSystemEventDispatcher();
 
-            _dispatcher.Register(EVREventType.VREvent_Quit, (in _) =>
-            {
-                _openVR?.OVRSystem.AcknowledgeQuit_Exiting();
-                _cts.Cancel();
-            });
+            _dispatcher.Register(
+                EVREventType.VREvent_Quit,
+                (in _) =>
+                {
+                    _openVR?.OVRSystem.AcknowledgeQuit_Exiting();
+                    _cts.Cancel();
+                }
+            );
 
             _dispatcher.Register(EVREventType.VREvent_ProcessQuit, (in _) => _cts.Cancel());
 
             // 起動時にコントローラーが未接続だったDeviceTrackedWindowへ、接続/ロール確定を機に再適用する。
-            _dispatcher.Register(EVREventType.VREvent_TrackedDeviceActivated,
-                (in _) => ReapplyPendingDeviceTrackedTransforms());
-            
-            _dispatcher.Register(EVREventType.VREvent_TrackedDeviceRoleChanged,
-                (in _) => ReapplyPendingDeviceTrackedTransforms());
+            _dispatcher.Register(
+                EVREventType.VREvent_TrackedDeviceActivated,
+                (in _) => ReapplyPendingDeviceTrackedTransforms()
+            );
+
+            _dispatcher.Register(
+                EVREventType.VREvent_TrackedDeviceRoleChanged,
+                (in _) => ReapplyPendingDeviceTrackedTransforms()
+            );
 
             if (_inputActionMaps.Count > 0)
             {
@@ -248,7 +273,10 @@ public class FloatSodaApp : IDisposable
                 catch (VRInputException e)
                 {
                     // 入力が使えなくてもオーバーレイの表示は継続できるため、致命的エラーにしない。
-                    _logger?.LogWarning("アクション入力の初期化に失敗しました: {Message}", e.Message);
+                    _logger?.LogWarning(
+                        "アクション入力の初期化に失敗しました: {Message}",
+                        e.Message
+                    );
                 }
             }
 
@@ -277,7 +305,6 @@ public class FloatSodaApp : IDisposable
         }
     }
 
-
     private void DrawFrame()
     {
         // 1フレーム1回だけサンプリングし、全ウィンドウに同一のタイムスタンプを配る
@@ -289,6 +316,23 @@ public class FloatSodaApp : IDisposable
         }
     }
 
+    private void DisposeBindingsOnRenderThread()
+    {
+        foreach (var (title, binding) in _bindings)
+        {
+            try
+            {
+                binding.DisposeResources();
+            }
+            catch (Exception exception)
+            {
+                _logger?.LogError(exception, "{Title}の描画リソース解放に失敗しました", title);
+            }
+        }
+
+        _bindings.Clear();
+    }
+
     /// <summary>メインループへ停止を要求し、レンダースレッドとOpenVRリソースを解放します。</summary>
     public void Dispose()
     {
@@ -298,7 +342,8 @@ public class FloatSodaApp : IDisposable
 
     private void Dispose(bool disposing)
     {
-        if (_disposed) return;
+        if (_disposed)
+            return;
 
         ActiveApps.TryRemove(this, out _);
 
@@ -306,7 +351,7 @@ public class FloatSodaApp : IDisposable
         {
             _cts.Cancel();
 
-            _renderPostTaskRunner.Stop();
+            _renderPostTaskRunner.StopAndWaitForShutdown();
             _ioTaskRunner.Stop();
 
             _cts.Dispose();

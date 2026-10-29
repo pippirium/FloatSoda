@@ -21,11 +21,15 @@ internal sealed class ImageCache
     {
         get
         {
-            lock (_gate) return _entries.Count;
+            lock (_gate)
+                return _entries.Count;
         }
     }
 
-    internal ValueTask<ImageHandle> ResolveAsync(ImageProvider provider, CancellationToken cancellationToken)
+    internal ValueTask<ImageHandle> ResolveAsync(
+        ImageProvider provider,
+        CancellationToken cancellationToken
+    )
     {
         ArgumentNullException.ThrowIfNull(provider);
 
@@ -50,7 +54,11 @@ internal sealed class ImageCache
             : new ValueTask<ImageHandle>(WaitAsync(entry, load, cancellationToken));
     }
 
-    private async Task<ImageHandle> WaitAsync(Entry entry, Task<SKImage> load, CancellationToken cancellationToken)
+    private async Task<ImageHandle> WaitAsync(
+        Entry entry,
+        Task<SKImage> load,
+        CancellationToken cancellationToken
+    )
     {
         try
         {
@@ -64,7 +72,8 @@ internal sealed class ImageCache
         }
     }
 
-    private ImageHandle CreateHandle(Entry entry, SKImage image) => new(image, () => Release(entry));
+    private ImageHandle CreateHandle(Entry entry, SKImage image) =>
+        new(image, () => Release(entry));
 
     /// <summary>
     /// 失敗またはキャンセルされた読み込みを、待機者が参照を返すのを待たずに取り除く。
@@ -72,13 +81,16 @@ internal sealed class ImageCache
     /// </summary>
     private void Evict(Entry entry)
     {
-        lock (_gate) RemoveIfCurrent(entry);
+        lock (_gate)
+            RemoveIfCurrent(entry);
     }
 
     // 取り除かれたあとに同じプロバイダーで新しいエントリが作られている場合がある。自分のエントリだけを取り除く。
     private void RemoveIfCurrent(Entry entry)
     {
-        if (_entries.TryGetValue(entry.Provider, out var current) && ReferenceEquals(current, entry))
+        if (
+            _entries.TryGetValue(entry.Provider, out var current) && ReferenceEquals(current, entry)
+        )
         {
             _entries.Remove(entry.Provider);
         }
@@ -88,7 +100,8 @@ internal sealed class ImageCache
     {
         lock (_gate)
         {
-            if (--entry.ReferenceCount > 0) return;
+            if (--entry.ReferenceCount > 0)
+                return;
 
             RemoveIfCurrent(entry);
         }
@@ -98,14 +111,17 @@ internal sealed class ImageCache
         _ = entry.Load.Value.ContinueWith(
             completed =>
             {
-                if (completed.IsCompletedSuccessfully) completed.Result.Dispose();
-                else _ = completed.Exception;
+                if (completed.IsCompletedSuccessfully)
+                    completed.Result.Dispose();
+                else
+                    _ = completed.Exception;
 
                 entry.Cancellation.Dispose();
             },
             CancellationToken.None,
             TaskContinuationOptions.ExecuteSynchronously,
-            TaskScheduler.Default);
+            TaskScheduler.Default
+        );
     }
 
     private sealed class Entry
@@ -123,11 +139,14 @@ internal sealed class ImageCache
                     _ = load.ContinueWith(
                         _ => onFailed(this),
                         CancellationToken.None,
-                        TaskContinuationOptions.NotOnRanToCompletion | TaskContinuationOptions.ExecuteSynchronously,
-                        TaskScheduler.Default);
+                        TaskContinuationOptions.NotOnRanToCompletion
+                            | TaskContinuationOptions.ExecuteSynchronously,
+                        TaskScheduler.Default
+                    );
                     return load;
                 },
-                LazyThreadSafetyMode.ExecutionAndPublication);
+                LazyThreadSafetyMode.ExecutionAndPublication
+            );
         }
 
         internal ImageProvider Provider { get; }
@@ -139,8 +158,13 @@ internal sealed class ImageCache
         internal int ReferenceCount { get; set; }
 
         // asyncメソッドにすることで、LoadAsyncが同期的に投げた例外もタスクの失敗として扱う。
-        private static async Task<SKImage> StartAsync(ImageProvider provider, CancellationToken cancellationToken) =>
+        private static async Task<SKImage> StartAsync(
+            ImageProvider provider,
+            CancellationToken cancellationToken
+        ) =>
             await provider.LoadCoreAsync(cancellationToken).ConfigureAwait(false)
-            ?? throw new InvalidOperationException($"{provider.GetType().Name}.LoadAsync が null を返しました。");
+            ?? throw new InvalidOperationException(
+                $"{provider.GetType().Name}.LoadAsync が null を返しました。"
+            );
     }
 }

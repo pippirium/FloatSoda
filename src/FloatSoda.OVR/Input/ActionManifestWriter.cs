@@ -13,7 +13,11 @@ public static class ActionManifestWriter
     private static readonly JsonSerializerOptions WriteOptions = new() { WriteIndented = true };
 
     private static readonly ControllerType[] AllControllers =
-        [ControllerType.Index, ControllerType.ViveWand, ControllerType.OculusTouch];
+    [
+        ControllerType.Index,
+        ControllerType.ViveWand,
+        ControllerType.OculusTouch,
+    ];
 
     /// <summary>
     /// マニフェスト一式をディレクトリへ書き出し、アクションマニフェストのフルパスを返します。
@@ -22,10 +26,14 @@ public static class ActionManifestWriter
     /// <param name="maps">書き出すアクションマップの一覧。</param>
     /// <param name="outputDirectory">出力先。省略時は一時ディレクトリ配下(<c>%TEMP%/FloatSoda/{AppKey}/input</c>)。</param>
     /// <returns><c>IVRInput.SetActionManifestPath</c> へ渡すアクションマニフェストの絶対パス。</returns>
-    public static string Write(AppKey appKey, IReadOnlyList<InputActionMap> maps, string? outputDirectory = null)
+    public static string Write(
+        AppKey appKey,
+        IReadOnlyList<InputActionMap> maps,
+        string? outputDirectory = null
+    )
     {
-        var directory = outputDirectory
-                        ?? Path.Combine(Path.GetTempPath(), "FloatSoda", appKey.Value, "input");
+        var directory =
+            outputDirectory ?? Path.Combine(Path.GetTempPath(), "FloatSoda", appKey.Value, "input");
         Directory.CreateDirectory(directory);
 
         foreach (var controller in AllControllers)
@@ -33,7 +41,8 @@ public static class ActionManifestWriter
             var fileName = BindingFileName(controller);
             File.WriteAllText(
                 Path.Combine(directory, fileName),
-                BuildBindings(controller, maps).ToJsonString(WriteOptions));
+                BuildBindings(controller, maps).ToJsonString(WriteOptions)
+            );
         }
 
         var manifestPath = Path.Combine(directory, "actions.json");
@@ -41,8 +50,8 @@ public static class ActionManifestWriter
         return manifestPath;
     }
 
-    private static string BindingFileName(ControllerType controller)
-        => $"bindings_{InputPaths.ControllerName(controller)}.json";
+    private static string BindingFileName(ControllerType controller) =>
+        $"bindings_{InputPaths.ControllerName(controller)}.json";
 
     internal static JsonObject BuildManifest(IReadOnlyList<InputActionMap> maps)
     {
@@ -59,12 +68,14 @@ public static class ActionManifestWriter
             foreach (var action in map.Actions)
             {
                 var actionPath = InputPaths.ActionPath(map.Name, action.Name);
-                actions.Add(new JsonObject
-                {
-                    ["name"] = actionPath,
-                    ["type"] = action.ManifestType,
-                    ["requirement"] = "optional",
-                });
+                actions.Add(
+                    new JsonObject
+                    {
+                        ["name"] = actionPath,
+                        ["type"] = action.ManifestType,
+                        ["requirement"] = "optional",
+                    }
+                );
                 localization[actionPath] = action.LocalizedName ?? action.Name;
             }
         }
@@ -72,11 +83,13 @@ public static class ActionManifestWriter
         var defaultBindings = new JsonArray();
         foreach (var controller in AllControllers)
         {
-            defaultBindings.Add(new JsonObject
-            {
-                ["controller_type"] = InputPaths.ControllerName(controller),
-                ["binding_url"] = BindingFileName(controller),
-            });
+            defaultBindings.Add(
+                new JsonObject
+                {
+                    ["controller_type"] = InputPaths.ControllerName(controller),
+                    ["binding_url"] = BindingFileName(controller),
+                }
+            );
         }
 
         return new JsonObject
@@ -88,7 +101,10 @@ public static class ActionManifestWriter
         };
     }
 
-    internal static JsonObject BuildBindings(ControllerType controller, IReadOnlyList<InputActionMap> maps)
+    internal static JsonObject BuildBindings(
+        ControllerType controller,
+        IReadOnlyList<InputActionMap> maps
+    )
     {
         var bindings = new JsonObject();
 
@@ -101,15 +117,17 @@ public static class ActionManifestWriter
                 foreach (var inputPath in action.BindingPathsFor(controller))
                 {
                     var (source, component, mode) = SplitInputPath(inputPath, action.ManifestType);
-                    sources.Add(new JsonObject
-                    {
-                        ["path"] = source,
-                        ["mode"] = mode,
-                        ["inputs"] = new JsonObject
+                    sources.Add(
+                        new JsonObject
                         {
-                            [component] = new JsonObject { ["output"] = output },
-                        },
-                    });
+                            ["path"] = source,
+                            ["mode"] = mode,
+                            ["inputs"] = new JsonObject
+                            {
+                                [component] = new JsonObject { ["output"] = output },
+                            },
+                        }
+                    );
                 }
             }
 
@@ -129,12 +147,16 @@ public static class ActionManifestWriter
     /// 入力パスをバインディングJSONが要求する (ソースパス, 入力コンポーネント, モード) に分解します。
     /// 末尾が既知のコンポーネント(click/touch/pull/position)ならそれを、無ければアクション型から補完します。
     /// </summary>
-    private static (string Source, string Component, string Mode) SplitInputPath(string inputPath, string manifestType)
+    private static (string Source, string Component, string Mode) SplitInputPath(
+        string inputPath,
+        string manifestType
+    )
     {
         var lastSlash = inputPath.LastIndexOf('/');
         var lastSegment = lastSlash >= 0 ? inputPath[(lastSlash + 1)..] : inputPath;
 
-        string source, component;
+        string source,
+            component;
         if (lastSegment is "click" or "touch" or "pull" or "position")
         {
             source = inputPath[..lastSlash];

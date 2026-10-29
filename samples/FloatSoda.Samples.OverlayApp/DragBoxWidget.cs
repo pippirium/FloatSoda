@@ -55,12 +55,21 @@ public class DragBoxState : State<DragBoxWidget>
                         Alignment = _alignment,
                         Child = new GestureDetector
                         {
-                            OnPanUpdate = delta => SetState(() =>
-                            {
-                                var nx = Math.Clamp(_alignment.X + ((float)delta.X * 2f / Remaining), -1f, 1f);
-                                var ny = Math.Clamp(_alignment.Y + ((float)delta.Y * 2f / Remaining), -1f, 1f);
-                                _alignment = new Alignment(nx, ny);
-                            }),
+                            OnPanUpdate = delta =>
+                                SetState(() =>
+                                {
+                                    var nx = Math.Clamp(
+                                        _alignment.X + ((float)delta.X * 2f / Remaining),
+                                        -1f,
+                                        1f
+                                    );
+                                    var ny = Math.Clamp(
+                                        _alignment.Y + ((float)delta.Y * 2f / Remaining),
+                                        -1f,
+                                        1f
+                                    );
+                                    _alignment = new Alignment(nx, ny);
+                                }),
                             Child = new ClipRoundRect
                             {
                                 BorderRadius = BorderRadius.All(Radius.Circular(20)),
@@ -81,18 +90,18 @@ public class DragBoxState : State<DragBoxWidget>
                                                     {
                                                         Color = SKColors.WhiteSmoke,
                                                         FontSize = 40,
-                                                        FontWeight = 700
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
+                                                        FontWeight = 700,
+                                                    },
+                                                },
+                                            },
+                                        },
+                                    },
+                                },
+                            },
+                        },
+                    },
+                },
+            },
         };
     }
 }

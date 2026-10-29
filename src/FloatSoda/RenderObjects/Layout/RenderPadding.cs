@@ -28,7 +28,8 @@ public class RenderPadding : RenderProxyBox
         {
             Validate(value);
 
-            if (_padding == value) return;
+            if (_padding == value)
+                return;
 
             _padding = value;
             MarkNeedsLayout();
@@ -44,7 +45,10 @@ public class RenderPadding : RenderProxyBox
         if (Child is not null)
         {
             Child.Layout(Deflate(Constraints, horizontal, vertical), parentUseSize: true);
-            Size = Constraints.Constrain(Child.Size.Width + horizontal, Child.Size.Height + vertical);
+            Size = Constraints.Constrain(
+                Child.Size.Width + horizontal,
+                Child.Size.Height + vertical
+            );
 
             if (Child.ParentData is BoxParentData childParentData)
             {
@@ -62,7 +66,8 @@ public class RenderPadding : RenderProxyBox
     {
         var horizontal = Padding.Left + Padding.Right;
         var vertical = Padding.Top + Padding.Bottom;
-        if (Child is null) return constraints.Constrain(horizontal, vertical);
+        if (Child is null)
+            return constraints.Constrain(horizontal, vertical);
 
         var childSize = Child.GetDryLayout(Deflate(constraints, horizontal, vertical));
         return constraints.Constrain(childSize.Width + horizontal, childSize.Height + vertical);
@@ -70,24 +75,41 @@ public class RenderPadding : RenderProxyBox
 
     /// <inheritdoc/>
     protected override double ComputeMinIntrinsicWidth(double height) =>
-        Padding.Left + Padding.Right + (Child?.GetMinIntrinsicWidth(DeflateDimension(height, Padding.Top + Padding.Bottom)) ?? 0);
+        Padding.Left
+        + Padding.Right
+        + (
+            Child?.GetMinIntrinsicWidth(DeflateDimension(height, Padding.Top + Padding.Bottom)) ?? 0
+        );
 
     /// <inheritdoc/>
     protected override double ComputeMaxIntrinsicWidth(double height) =>
-        Padding.Left + Padding.Right + (Child?.GetMaxIntrinsicWidth(DeflateDimension(height, Padding.Top + Padding.Bottom)) ?? 0);
+        Padding.Left
+        + Padding.Right
+        + (
+            Child?.GetMaxIntrinsicWidth(DeflateDimension(height, Padding.Top + Padding.Bottom)) ?? 0
+        );
 
     /// <inheritdoc/>
     protected override double ComputeMinIntrinsicHeight(double width) =>
-        Padding.Top + Padding.Bottom + (Child?.GetMinIntrinsicHeight(DeflateDimension(width, Padding.Left + Padding.Right)) ?? 0);
+        Padding.Top
+        + Padding.Bottom
+        + (
+            Child?.GetMinIntrinsicHeight(DeflateDimension(width, Padding.Left + Padding.Right)) ?? 0
+        );
 
     /// <inheritdoc/>
     protected override double ComputeMaxIntrinsicHeight(double width) =>
-        Padding.Top + Padding.Bottom + (Child?.GetMaxIntrinsicHeight(DeflateDimension(width, Padding.Left + Padding.Right)) ?? 0);
+        Padding.Top
+        + Padding.Bottom
+        + (
+            Child?.GetMaxIntrinsicHeight(DeflateDimension(width, Padding.Left + Padding.Right)) ?? 0
+        );
 
     /// <inheritdoc/>
     public override void Paint(PaintingContext context, Offset offset)
     {
-        if (Child is null) return;
+        if (Child is null)
+            return;
 
         var childParentData = Child.ParentData as BoxParentData;
         context.PaintChild(Child, offset + (childParentData?.Offset ?? Offset.Zero));
@@ -96,22 +118,29 @@ public class RenderPadding : RenderProxyBox
     /// <inheritdoc/>
     public override bool HitTestChildren(HitTestResult result, Offset position)
     {
-        if (Child is null) return false;
+        if (Child is null)
+            return false;
 
         var childParentData = Child.ParentData as BoxParentData;
         return result.AddWidthPaintOffset(
             childParentData?.Offset,
             position,
-            (testResult, transformed) => Child.HitTest(testResult, transformed));
+            (testResult, transformed) => Child.HitTest(testResult, transformed)
+        );
     }
 
-    private static BoxConstraints Deflate(BoxConstraints constraints, double horizontal, double vertical)
+    private static BoxConstraints Deflate(
+        BoxConstraints constraints,
+        double horizontal,
+        double vertical
+    )
     {
         return new BoxConstraints(
             MinWidth: Math.Max(0, constraints.MinWidth - horizontal),
             MaxWidth: Math.Max(0, constraints.MaxWidth - horizontal),
             MinHeight: Math.Max(0, constraints.MinHeight - vertical),
-            MaxHeight: Math.Max(0, constraints.MaxHeight - vertical));
+            MaxHeight: Math.Max(0, constraints.MaxHeight - vertical)
+        );
     }
 
     private static double DeflateDimension(double value, double amount) =>
@@ -119,10 +148,12 @@ public class RenderPadding : RenderProxyBox
 
     private static void Validate(EdgeInsets padding)
     {
-        if (IsFiniteAndNonNegative(padding.Left)
+        if (
+            IsFiniteAndNonNegative(padding.Left)
             && IsFiniteAndNonNegative(padding.Top)
             && IsFiniteAndNonNegative(padding.Right)
-            && IsFiniteAndNonNegative(padding.Bottom))
+            && IsFiniteAndNonNegative(padding.Bottom)
+        )
         {
             return;
         }
@@ -130,8 +161,10 @@ public class RenderPadding : RenderProxyBox
         throw new ArgumentOutOfRangeException(
             nameof(padding),
             padding,
-            "Padding must contain only finite, non-negative values.");
+            "Padding must contain only finite, non-negative values."
+        );
     }
 
-    private static bool IsFiniteAndNonNegative(double value) => double.IsFinite(value) && value >= 0;
+    private static bool IsFiniteAndNonNegative(double value) =>
+        double.IsFinite(value) && value >= 0;
 }

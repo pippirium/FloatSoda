@@ -24,8 +24,8 @@ public record ServiceProvider : InheritedWidget
     /// </exception>
     public static IServiceProvider Of(IBuildContext context)
     {
-        return context.DependOnInheritedWidgetOfExactType<ServiceProvider>()?.Services ??
-               throw new InvalidOperationException("ServiceScopeが祖先に見つかりません。");
+        return context.DependOnInheritedWidgetOfExactType<ServiceProvider>()?.Services
+            ?? throw new InvalidOperationException("ServiceScopeが祖先に見つかりません。");
     }
 
     /// <summary>
@@ -39,7 +39,8 @@ public record ServiceProvider : InheritedWidget
     /// </returns>
     public override bool UpdateShouldNotify(InheritedWidget oldWidget)
     {
-        return oldWidget is ServiceProvider oldScope && !ReferenceEquals(oldScope.Services, Services);
+        return oldWidget is ServiceProvider oldScope
+            && !ReferenceEquals(oldScope.Services, Services);
     }
 }
 
@@ -58,7 +59,8 @@ public static class ServiceScopeExtension
     /// 祖先に<see cref="ServiceProvider"/>が存在しない場合、または要求したサービスが登録されていない場合に
     /// スローされます。
     /// </exception>
-    public static T GetRequiredService<T>(this IBuildContext context) where T : notnull
+    public static T GetRequiredService<T>(this IBuildContext context)
+        where T : notnull
     {
         return ServiceProvider.Of(context).GetRequiredService<T>();
     }

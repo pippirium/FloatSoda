@@ -24,7 +24,11 @@ public record Opacity : SingleChildRenderObjectWidget<RenderOpacity>
         {
             if (!double.IsFinite(value) || value is < 0 or > 1)
             {
-                throw new ArgumentOutOfRangeException(nameof(value), value, "不透明度には0から1までの有限値を指定してください。");
+                throw new ArgumentOutOfRangeException(
+                    nameof(value),
+                    value,
+                    "不透明度には0から1までの有限値を指定してください。"
+                );
             }
 
             field = value;
@@ -35,5 +39,6 @@ public record Opacity : SingleChildRenderObjectWidget<RenderOpacity>
     public override RenderOpacity CreateRenderObject() => new() { Opacity = Value };
 
     /// <inheritdoc/>
-    public override void UpdateRenderObject(RenderOpacity renderObject) => renderObject.Opacity = Value;
+    public override void UpdateRenderObject(RenderOpacity renderObject) =>
+        renderObject.Opacity = Value;
 }

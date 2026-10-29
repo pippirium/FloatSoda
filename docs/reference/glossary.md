@@ -68,7 +68,7 @@ SteamVR での表示場所、入力、大きさ、アプリの識別に使う言
 | 依存性注入(DI) | 必要な部品を、自分で作らず、外から受け取る仕組み | `host.Services.GetRequiredService<FloatSodaApp>()` | [Generic Host の仕組みを使う](../guide/4-build/mechanics/use-generic-host.md) |
 | `AddFloatSoda` | FloatSoda を Generic Host に登録する呼び出し | Generic Host のサービス登録 | [起動と Generic Host](../guide/4-build/mechanics/startup-and-host.md) |
 | `FloatSodaApp` | `CreateWindow` でウィンドウを作る、FloatSoda の入口 | 起動のコード | [起動と Generic Host](../guide/4-build/mechanics/startup-and-host.md) |
-| Skia(SkiaSharp) | 描画のライブラリで、直接は触らないが、`SKColors.White` のような色の指定に名前が出る | `using SkiaSharp;` | [FloatSoda の仕組み](../guide/4-build/mechanics/how-floatsoda-works.md) |
+| Skia(SkiaSharp) | 描画のライブラリ。画面のコードでは直接は触らないが、ウィンドウの大きさの `SKSize` のように、型の名前に出ることがある | `SKSize` のような `SK` で始まる型名 | [FloatSoda の仕組み](../guide/4-build/mechanics/how-floatsoda-works.md) |
 
 ## C# の言葉
 

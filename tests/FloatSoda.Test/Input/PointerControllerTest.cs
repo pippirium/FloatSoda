@@ -14,7 +14,11 @@ public class PointerControllerTest
         public void Dispose() { }
     }
 
-    private static (FakeRawPointerSource Source, PointerController Controller, List<PointerEvent> Events) Build()
+    private static (
+        FakeRawPointerSource Source,
+        PointerController Controller,
+        List<PointerEvent> Events
+    ) Build()
     {
         var source = new FakeRawPointerSource();
         var controller = new PointerController(source);
@@ -43,7 +47,8 @@ public class PointerControllerTest
                 PointerEventPhase.Up,
                 PointerEventPhase.Remove,
             ],
-            events.Select(e => e.Phase));
+            events.Select(e => e.Phase)
+        );
         Assert.All(events, e => Assert.Equal(1, e.PointerId));
         Assert.Equal(new Offset(30, 40), events[2].Position);
     }
@@ -56,9 +61,7 @@ public class PointerControllerTest
         source.Raise(new RawPointerEvent(RawPointerKind.ButtonDown, new Offset(5, 5)));
         controller.Flush();
 
-        Assert.Equal(
-            [PointerEventPhase.Add, PointerEventPhase.Down],
-            events.Select(e => e.Phase));
+        Assert.Equal([PointerEventPhase.Add, PointerEventPhase.Down], events.Select(e => e.Phase));
         Assert.All(events, e => Assert.Equal(new Offset(5, 5), e.Position));
     }
 
@@ -67,8 +70,12 @@ public class PointerControllerTest
     {
         var (source, controller, events) = Build();
 
-        source.Raise(new RawPointerEvent(RawPointerKind.ButtonDown, new Offset(5, 5), PointerButton.Right));
-        source.Raise(new RawPointerEvent(RawPointerKind.ButtonUp, new Offset(5, 5), PointerButton.Middle));
+        source.Raise(
+            new RawPointerEvent(RawPointerKind.ButtonDown, new Offset(5, 5), PointerButton.Right)
+        );
+        source.Raise(
+            new RawPointerEvent(RawPointerKind.ButtonUp, new Offset(5, 5), PointerButton.Middle)
+        );
         controller.Flush();
 
         Assert.Empty(events);
@@ -83,9 +90,7 @@ public class PointerControllerTest
         source.Raise(new RawPointerEvent(RawPointerKind.Move, new Offset(10, 10)));
         controller.Flush();
 
-        Assert.Equal(
-            [PointerEventPhase.Add, PointerEventPhase.Move],
-            events.Select(e => e.Phase));
+        Assert.Equal([PointerEventPhase.Add, PointerEventPhase.Move], events.Select(e => e.Phase));
     }
 
     [Fact]
@@ -106,7 +111,8 @@ public class PointerControllerTest
                 PointerEventPhase.Cancel,
                 PointerEventPhase.Remove,
             ],
-            events.Select(e => e.Phase));
+            events.Select(e => e.Phase)
+        );
     }
 
     [Fact]

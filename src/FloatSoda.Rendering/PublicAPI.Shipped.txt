@@ -1,0 +1,88 @@
+#nullable enable
+FloatSoda.Rendering.LayerBitmapRenderer
+FloatSoda.Rendering.LayerBitmapRenderer.LayerBitmapRenderer() -> void
+FloatSoda.Rendering.LayerBitmapRenderer.Render(FloatSoda.Rendering.Layers.ILayer! root, SkiaSharp.SKSizeI imageSize) -> SkiaSharp.SKBitmap!
+FloatSoda.Rendering.LayerRenderer
+FloatSoda.Rendering.Layers.Clip
+FloatSoda.Rendering.Layers.Clip.Antialias = 2 -> FloatSoda.Rendering.Layers.Clip
+FloatSoda.Rendering.Layers.Clip.HardEdge = 1 -> FloatSoda.Rendering.Layers.Clip
+FloatSoda.Rendering.Layers.Clip.None = 0 -> FloatSoda.Rendering.Layers.Clip
+FloatSoda.Rendering.Layers.ClipPathLayer
+FloatSoda.Rendering.Layers.ClipPathLayer.ClipBehavior.get -> FloatSoda.Rendering.Layers.Clip
+FloatSoda.Rendering.Layers.ClipPathLayer.ClipBehavior.set -> void
+FloatSoda.Rendering.Layers.ClipPathLayer.ClipPath.get -> SkiaSharp.SKPath!
+FloatSoda.Rendering.Layers.ClipPathLayer.ClipPath.set -> void
+FloatSoda.Rendering.Layers.ClipPathLayer.ClipPathLayer(SkiaSharp.SKPath! clipPath) -> void
+FloatSoda.Rendering.Layers.ClipRectLayer
+FloatSoda.Rendering.Layers.ClipRectLayer.ClipBehavior.get -> FloatSoda.Rendering.Layers.Clip
+FloatSoda.Rendering.Layers.ClipRectLayer.ClipBehavior.set -> void
+FloatSoda.Rendering.Layers.ClipRectLayer.ClipRect.get -> SkiaSharp.SKRect
+FloatSoda.Rendering.Layers.ClipRectLayer.ClipRect.set -> void
+FloatSoda.Rendering.Layers.ClipRectLayer.ClipRectLayer(SkiaSharp.SKRect clipRect) -> void
+FloatSoda.Rendering.Layers.ClipRoundRectLayer
+FloatSoda.Rendering.Layers.ClipRoundRectLayer.ClipBehavior.get -> FloatSoda.Rendering.Layers.Clip
+FloatSoda.Rendering.Layers.ClipRoundRectLayer.ClipBehavior.set -> void
+FloatSoda.Rendering.Layers.ClipRoundRectLayer.ClipRect.get -> SkiaSharp.SKRoundRect!
+FloatSoda.Rendering.Layers.ClipRoundRectLayer.ClipRect.set -> void
+FloatSoda.Rendering.Layers.ClipRoundRectLayer.ClipRoundRectLayer(SkiaSharp.SKRoundRect! clipRect) -> void
+FloatSoda.Rendering.Layers.ContainerLayer
+FloatSoda.Rendering.Layers.ContainerLayer.Children.get -> System.Collections.Generic.List<FloatSoda.Rendering.Layers.ILayer!>!
+FloatSoda.Rendering.Layers.ContainerLayer.ContainerLayer() -> void
+FloatSoda.Rendering.Layers.ContainerLayer.HasChildren.get -> bool
+FloatSoda.Rendering.Layers.ContainerLayer.LayoutChildren(FloatSoda.Rendering.Layers.LayerContext context) -> SkiaSharp.SKRect
+FloatSoda.Rendering.Layers.ContainerLayer.PaintBounds.get -> SkiaSharp.SKRect
+FloatSoda.Rendering.Layers.ContainerLayer.PaintBounds.set -> void
+FloatSoda.Rendering.Layers.ILayer
+FloatSoda.Rendering.Layers.ILayer.Clone() -> FloatSoda.Rendering.Layers.ILayer!
+FloatSoda.Rendering.Layers.ILayer.Layout(FloatSoda.Rendering.Layers.LayerContext context) -> void
+FloatSoda.Rendering.Layers.ILayer.Paint(FloatSoda.Rendering.Layers.LayerContext context) -> void
+FloatSoda.Rendering.Layers.ILayer.PaintBounds.get -> SkiaSharp.SKRect
+FloatSoda.Rendering.Layers.LayerContext
+FloatSoda.Rendering.Layers.LayerContext.Canvas.get -> SkiaSharp.SKCanvas!
+FloatSoda.Rendering.Layers.LayerContext.Canvas.init -> void
+FloatSoda.Rendering.Layers.LayerContext.Deconstruct(out SkiaSharp.SKCanvas! Canvas) -> void
+FloatSoda.Rendering.Layers.LayerContext.Equals(FloatSoda.Rendering.Layers.LayerContext other) -> bool
+FloatSoda.Rendering.Layers.LayerContext.LayerContext() -> void
+FloatSoda.Rendering.Layers.LayerContext.LayerContext(SkiaSharp.SKCanvas! Canvas) -> void
+FloatSoda.Rendering.Layers.OpacityLayer
+FloatSoda.Rendering.Layers.OpacityLayer.Alpha.get -> byte
+FloatSoda.Rendering.Layers.OpacityLayer.Alpha.set -> void
+FloatSoda.Rendering.Layers.OpacityLayer.OpacityLayer() -> void
+FloatSoda.Rendering.Layers.PictureLayer
+FloatSoda.Rendering.Layers.PictureLayer.Clone() -> FloatSoda.Rendering.Layers.ILayer!
+FloatSoda.Rendering.Layers.PictureLayer.Layout(FloatSoda.Rendering.Layers.LayerContext context) -> void
+FloatSoda.Rendering.Layers.PictureLayer.Paint(FloatSoda.Rendering.Layers.LayerContext context) -> void
+FloatSoda.Rendering.Layers.PictureLayer.PaintBounds.get -> SkiaSharp.SKRect
+FloatSoda.Rendering.Layers.PictureLayer.Picture.get -> SkiaSharp.SKPicture?
+FloatSoda.Rendering.Layers.PictureLayer.Picture.set -> void
+FloatSoda.Rendering.Layers.PictureLayer.PictureLayer() -> void
+FloatSoda.Rendering.Layers.TransformLayer
+FloatSoda.Rendering.Layers.TransformLayer.Transform.get -> SkiaSharp.SKMatrix
+FloatSoda.Rendering.Layers.TransformLayer.Transform.set -> void
+FloatSoda.Rendering.Layers.TransformLayer.TransformLayer() -> void
+FloatSoda.Rendering.SKBitmapExtensions
+override FloatSoda.Rendering.Layers.ClipPathLayer.Clone() -> FloatSoda.Rendering.Layers.ILayer!
+override FloatSoda.Rendering.Layers.ClipPathLayer.Layout(FloatSoda.Rendering.Layers.LayerContext context) -> void
+override FloatSoda.Rendering.Layers.ClipPathLayer.Paint(FloatSoda.Rendering.Layers.LayerContext context) -> void
+override FloatSoda.Rendering.Layers.ClipRectLayer.Clone() -> FloatSoda.Rendering.Layers.ILayer!
+override FloatSoda.Rendering.Layers.ClipRectLayer.Layout(FloatSoda.Rendering.Layers.LayerContext context) -> void
+override FloatSoda.Rendering.Layers.ClipRectLayer.Paint(FloatSoda.Rendering.Layers.LayerContext context) -> void
+override FloatSoda.Rendering.Layers.ClipRoundRectLayer.Clone() -> FloatSoda.Rendering.Layers.ILayer!
+override FloatSoda.Rendering.Layers.ClipRoundRectLayer.Layout(FloatSoda.Rendering.Layers.LayerContext context) -> void
+override FloatSoda.Rendering.Layers.ClipRoundRectLayer.Paint(FloatSoda.Rendering.Layers.LayerContext context) -> void
+override FloatSoda.Rendering.Layers.LayerContext.GetHashCode() -> int
+override FloatSoda.Rendering.Layers.OpacityLayer.Clone() -> FloatSoda.Rendering.Layers.ILayer!
+override FloatSoda.Rendering.Layers.OpacityLayer.Paint(FloatSoda.Rendering.Layers.LayerContext context) -> void
+override FloatSoda.Rendering.Layers.TransformLayer.Clone() -> FloatSoda.Rendering.Layers.ILayer!
+override FloatSoda.Rendering.Layers.TransformLayer.Layout(FloatSoda.Rendering.Layers.LayerContext context) -> void
+override FloatSoda.Rendering.Layers.TransformLayer.Paint(FloatSoda.Rendering.Layers.LayerContext context) -> void
+static FloatSoda.Rendering.LayerRenderer.Render(FloatSoda.Rendering.Layers.ILayer! root, FloatSoda.Rendering.Layers.LayerContext context) -> void
+static FloatSoda.Rendering.Layers.LayerContext.Create(SkiaSharp.SKSurface! surface) -> FloatSoda.Rendering.Layers.LayerContext
+static FloatSoda.Rendering.Layers.LayerContext.operator !=(FloatSoda.Rendering.Layers.LayerContext left, FloatSoda.Rendering.Layers.LayerContext right) -> bool
+static FloatSoda.Rendering.Layers.LayerContext.operator ==(FloatSoda.Rendering.Layers.LayerContext left, FloatSoda.Rendering.Layers.LayerContext right) -> bool
+static FloatSoda.Rendering.SKBitmapExtensions.Save(this SkiaSharp.SKBitmap! bitmap, string! path, SkiaSharp.SKEncodedImageFormat format = SkiaSharp.SKEncodedImageFormat.Png, int quality = 100) -> void
+virtual FloatSoda.Rendering.Layers.ContainerLayer.Clone() -> FloatSoda.Rendering.Layers.ILayer!
+virtual FloatSoda.Rendering.Layers.ContainerLayer.Layout(FloatSoda.Rendering.Layers.LayerContext context) -> void
+virtual FloatSoda.Rendering.Layers.ContainerLayer.Paint(FloatSoda.Rendering.Layers.LayerContext context) -> void
+~override FloatSoda.Rendering.Layers.LayerContext.Equals(object obj) -> bool
+~override FloatSoda.Rendering.Layers.LayerContext.ToString() -> string

@@ -15,12 +15,14 @@ public class GestureDetectorTest
     public void Dispose_押下中にツリーから外す_離してもOnTapを呼ばない()
     {
         var log = new List<string>();
-        var binding = Mount(new GestureDetector
-        {
-            Behaviour = HitTestBehaviour.Opaque,
-            OnTap = () => log.Add("tap"),
-            Child = new SizedBox { Width = 100, Height = 100 },
-        });
+        var binding = Mount(
+            new GestureDetector
+            {
+                Behaviour = HitTestBehaviour.Opaque,
+                OnTap = () => log.Add("tap"),
+                Child = new SizedBox { Width = 100, Height = 100 },
+            }
+        );
 
         Send(binding, PointerEventPhase.Add, 10, 10);
         Send(binding, PointerEventPhase.Down, 10, 10);
@@ -54,27 +56,31 @@ public class GestureDetectorTest
     public void Dispose_押下中にツリーから外す_次の押下では新しいウィジェットだけが反応する()
     {
         var log = new List<string>();
-        var binding = Mount(new GestureDetector
-        {
-            Behaviour = HitTestBehaviour.Opaque,
-            OnTap = () => log.Add("old-tap"),
-            Child = new SizedBox { Width = 100, Height = 100 },
-        });
+        var binding = Mount(
+            new GestureDetector
+            {
+                Behaviour = HitTestBehaviour.Opaque,
+                OnTap = () => log.Add("old-tap"),
+                Child = new SizedBox { Width = 100, Height = 100 },
+            }
+        );
 
         Send(binding, PointerEventPhase.Add, 10, 10);
         Send(binding, PointerEventPhase.Down, 10, 10);
 
-        binding.AttachRootWidget(new SizedBox
-        {
-            Width = 100,
-            Height = 100,
-            Child = new GestureDetector
+        binding.AttachRootWidget(
+            new SizedBox
             {
-                Behaviour = HitTestBehaviour.Opaque,
-                OnTap = () => log.Add("new-tap"),
-                Child = new SizedBox { Width = 100, Height = 100 },
-            },
-        });
+                Width = 100,
+                Height = 100,
+                Child = new GestureDetector
+                {
+                    Behaviour = HitTestBehaviour.Opaque,
+                    OnTap = () => log.Add("new-tap"),
+                    Child = new SizedBox { Width = 100, Height = 100 },
+                },
+            }
+        );
         binding.FlushBuildAndLayout();
 
         Send(binding, PointerEventPhase.Up, 10, 10);
@@ -84,19 +90,20 @@ public class GestureDetectorTest
         Assert.Equal(["new-tap"], log);
     }
 
-    private static Widget Nested(bool withInner, List<string> log) => new GestureDetector
-    {
-        Behaviour = HitTestBehaviour.Opaque,
-        OnTap = () => log.Add("outer-tap"),
-        Child = withInner
-            ? new GestureDetector
-            {
-                Behaviour = HitTestBehaviour.Opaque,
-                OnTap = () => log.Add("inner-tap"),
-                Child = new SizedBox { Width = 100, Height = 100 },
-            }
-            : new SizedBox { Width = 100, Height = 100 },
-    };
+    private static Widget Nested(bool withInner, List<string> log) =>
+        new GestureDetector
+        {
+            Behaviour = HitTestBehaviour.Opaque,
+            OnTap = () => log.Add("outer-tap"),
+            Child = withInner
+                ? new GestureDetector
+                {
+                    Behaviour = HitTestBehaviour.Opaque,
+                    OnTap = () => log.Add("inner-tap"),
+                    Child = new SizedBox { Width = 100, Height = 100 },
+                }
+                : new SizedBox { Width = 100, Height = 100 },
+        };
 
     private static WidgetBinding Mount(Widget root)
     {
@@ -106,6 +113,6 @@ public class GestureDetectorTest
         return binding;
     }
 
-    private static void Send(WidgetBinding binding, PointerEventPhase phase, double x, double y)
-        => binding.HandlePointerEvent(new PointerEvent(1, phase, new Offset(x, y)));
+    private static void Send(WidgetBinding binding, PointerEventPhase phase, double x, double y) =>
+        binding.HandlePointerEvent(new PointerEvent(1, phase, new Offset(x, y)));
 }

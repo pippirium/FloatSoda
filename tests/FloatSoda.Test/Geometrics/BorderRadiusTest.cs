@@ -138,15 +138,15 @@ public class BorderRadiusTest
     {
         var rect = SKRect.Create(0, 0, 200, 100);
         var borderRadius = new BorderRadius(
-            TopLeft:     new Radius(5, 5),
-            TopRight:    new Radius(10, 10),
+            TopLeft: new Radius(5, 5),
+            TopRight: new Radius(10, 10),
             BottomRight: new Radius(15, 15),
-            BottomLeft:  new Radius(20, 20)
+            BottomLeft: new Radius(20, 20)
         );
 
         var roundRect = borderRadius.ToRoundRect(rect);
 
-        Assert.Equal(new SKPoint(5,  5),  roundRect.GetRadii(SKRoundRectCorner.UpperLeft));
+        Assert.Equal(new SKPoint(5, 5), roundRect.GetRadii(SKRoundRectCorner.UpperLeft));
         Assert.Equal(new SKPoint(10, 10), roundRect.GetRadii(SKRoundRectCorner.UpperRight));
         Assert.Equal(new SKPoint(15, 15), roundRect.GetRadii(SKRoundRectCorner.LowerRight));
         Assert.Equal(new SKPoint(20, 20), roundRect.GetRadii(SKRoundRectCorner.LowerLeft));

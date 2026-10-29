@@ -33,7 +33,8 @@ public class RenderPositionedBox : RenderBox, IHasSingleChildRenderObject
     }
 
     /// <inheritdoc/>
-    public override void SetupParentData(RenderObject child) => child.ParentData = new BoxParentData();
+    public override void SetupParentData(RenderObject child) =>
+        child.ParentData = new BoxParentData();
 
     /// <summary>
     /// 子の幅に乗算して自身の幅を決める係数を取得または設定します。
@@ -51,7 +52,8 @@ public class RenderPositionedBox : RenderBox, IHasSingleChildRenderObject
         set
         {
             ValidateFactor(value, nameof(WidthFactor));
-            if (field == value) return;
+            if (field == value)
+                return;
             field = value;
             MarkNeedsLayout();
         }
@@ -73,12 +75,12 @@ public class RenderPositionedBox : RenderBox, IHasSingleChildRenderObject
         set
         {
             ValidateFactor(value, nameof(HeightFactor));
-            if (field == value) return;
+            if (field == value)
+                return;
             field = value;
             MarkNeedsLayout();
         }
     }
-
 
     /// <summary>
     /// 自身の領域内で子を配置する位置を取得または設定します。
@@ -93,13 +95,13 @@ public class RenderPositionedBox : RenderBox, IHasSingleChildRenderObject
         get;
         set
         {
-            if (field == value) return;
+            if (field == value)
+                return;
 
             field = value;
             MarkNeedsLayout();
         }
     } = default;
-
 
     /// <inheritdoc/>
     public override void PerformLayout()
@@ -107,14 +109,16 @@ public class RenderPositionedBox : RenderBox, IHasSingleChildRenderObject
         var shrinkWrapWidth = WidthFactor.HasValue || IsPositiveInfinity(Constraints.MaxWidth);
         var shrinkWrapHeight = HeightFactor.HasValue || IsPositiveInfinity(Constraints.MaxHeight);
 
-        if (Child != null)
+        if (Child is not null)
         {
             Child.ParentData ??= new BoxParentData();
             Child.Layout(Constraints.Loosen, parentUseSize: true);
 
             Size = Constraints.Constrain(
                 width: shrinkWrapWidth ? Child.Size.Width * (WidthFactor ?? 1) : PositiveInfinity,
-                height: shrinkWrapHeight ? Child.Size.Height * (HeightFactor ?? 1) : PositiveInfinity
+                height: shrinkWrapHeight
+                    ? Child.Size.Height * (HeightFactor ?? 1)
+                    : PositiveInfinity
             );
 
             AlignChild();
@@ -137,14 +141,16 @@ public class RenderPositionedBox : RenderBox, IHasSingleChildRenderObject
         {
             return constraints.Constrain(
                 shrinkWrapWidth ? 0 : PositiveInfinity,
-                shrinkWrapHeight ? 0 : PositiveInfinity);
+                shrinkWrapHeight ? 0 : PositiveInfinity
+            );
         }
 
         var child = GetRenderBoxChild();
         var childSize = child.GetDryLayout(constraints.Loosen);
         return constraints.Constrain(
             shrinkWrapWidth ? childSize.Width * (WidthFactor ?? 1) : PositiveInfinity,
-            shrinkWrapHeight ? childSize.Height * (HeightFactor ?? 1) : PositiveInfinity);
+            shrinkWrapHeight ? childSize.Height * (HeightFactor ?? 1) : PositiveInfinity
+        );
     }
 
     /// <inheritdoc/>
@@ -157,14 +163,19 @@ public class RenderPositionedBox : RenderBox, IHasSingleChildRenderObject
 
     /// <inheritdoc/>
     protected override double ComputeMinIntrinsicHeight(double width) =>
-        (Child is null ? 0 : GetRenderBoxChild().GetMinIntrinsicHeight(width)) * (HeightFactor ?? 1);
+        (Child is null ? 0 : GetRenderBoxChild().GetMinIntrinsicHeight(width))
+        * (HeightFactor ?? 1);
 
     /// <inheritdoc/>
     protected override double ComputeMaxIntrinsicHeight(double width) =>
-        (Child is null ? 0 : GetRenderBoxChild().GetMaxIntrinsicHeight(width)) * (HeightFactor ?? 1);
+        (Child is null ? 0 : GetRenderBoxChild().GetMaxIntrinsicHeight(width))
+        * (HeightFactor ?? 1);
 
-    private RenderBox GetRenderBoxChild() => Child as RenderBox ?? throw new NotSupportedException(
-        $"{GetType().Name}のintrinsic測定にはRenderBoxの子が必要です。");
+    private RenderBox GetRenderBoxChild() =>
+        Child as RenderBox
+        ?? throw new NotSupportedException(
+            $"{GetType().Name}のintrinsic測定にはRenderBoxの子が必要です。"
+        );
 
     /// <summary>寸法係数が0以上であることを検証します。</summary>
     /// <param name="value">検証する係数。</param>
@@ -175,13 +186,18 @@ public class RenderPositionedBox : RenderBox, IHasSingleChildRenderObject
     {
         if (value is { } factor && !(factor >= 0))
         {
-            throw new ArgumentOutOfRangeException(parameterName, value, "factorには0以上の値を指定してください。");
+            throw new ArgumentOutOfRangeException(
+                parameterName,
+                value,
+                "factorには0以上の値を指定してください。"
+            );
         }
     }
 
     private void AlignChild()
     {
-        if (Child?.ParentData is not BoxParentData childParentData) return;
+        if (Child?.ParentData is not BoxParentData childParentData)
+            return;
         var offset = Alignment.ComputeOffset(Size, Child.Size);
         childParentData.Offset = offset;
     }
@@ -189,7 +205,8 @@ public class RenderPositionedBox : RenderBox, IHasSingleChildRenderObject
     /// <inheritdoc/>
     public override void Paint(PaintingContext context, Offset offset)
     {
-        if (Child == null) return;
+        if (Child is null)
+            return;
 
         var childParentData = Child.ParentData as BoxParentData;
         context.PaintChild(Child, offset + (childParentData?.Offset ?? Offset.Zero));
@@ -210,7 +227,8 @@ public class RenderPositionedBox : RenderBox, IHasSingleChildRenderObject
     }
 
     /// <inheritdoc/>
-    public override void VisitChildren(Action<RenderObject> visitor) => _child.VisitChildren(visitor);
+    public override void VisitChildren(Action<RenderObject> visitor) =>
+        _child.VisitChildren(visitor);
 
     /// <inheritdoc/>
     public override void RedepthChildren() => VisitChildren(RedepthChild);
@@ -218,14 +236,16 @@ public class RenderPositionedBox : RenderBox, IHasSingleChildRenderObject
     /// <inheritdoc/>
     public override bool HitTestChildren(HitTestResult result, Offset position)
     {
-        if (Child is null) return false;
+        if (Child is null)
+            return false;
 
         var childParentData = Child.ParentData as BoxParentData;
 
         return result.AddWidthPaintOffset(
             childParentData?.Offset,
             position,
-            (testResult, transformed) => (Child as RenderBox)?.HitTest(testResult, transformed) ?? false
+            (testResult, transformed) =>
+                (Child as RenderBox)?.HitTest(testResult, transformed) ?? false
         );
     }
 }

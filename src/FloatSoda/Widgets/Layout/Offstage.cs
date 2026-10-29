@@ -13,5 +13,6 @@ public sealed record Offstage : SingleChildRenderObjectWidget<RenderOffstage>
     public override RenderOffstage CreateRenderObject() => new() { Offstage = IsOffstage };
 
     /// <inheritdoc/>
-    public override void UpdateRenderObject(RenderOffstage renderObject) => renderObject.Offstage = IsOffstage;
+    public override void UpdateRenderObject(RenderOffstage renderObject) =>
+        renderObject.Offstage = IsOffstage;
 }

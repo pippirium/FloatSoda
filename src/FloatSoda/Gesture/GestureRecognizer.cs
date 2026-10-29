@@ -36,9 +36,11 @@ public abstract class GestureRecognizer : IGestureArenaMember, IDisposable
     /// <remarks>Down以外のイベントを指定した場合は何も行いません。</remarks>
     public void AddPointer(PointerEvent downEvent)
     {
-        if (downEvent.Phase != PointerEventPhase.Down) return;
+        if (downEvent.Phase != PointerEventPhase.Down)
+            return;
 
-        if (_trackedPointers.Add(downEvent.PointerId)) Router.AddRoute(downEvent.PointerId, HandleEvent);
+        if (_trackedPointers.Add(downEvent.PointerId))
+            Router.AddRoute(downEvent.PointerId, HandleEvent);
         Arena.Add(downEvent.PointerId, this);
         AddAllowedPointer(downEvent);
     }
@@ -46,14 +48,15 @@ public abstract class GestureRecognizer : IGestureArenaMember, IDisposable
     /// <summary>アリーナへ勝敗を宣言する。</summary>
     /// <param name="pointer">勝敗を宣言するポインター識別子。</param>
     /// <param name="disposition">宣言する受理または辞退の状態。</param>
-    protected void Resolve(int pointer, GestureDisposition disposition)
-        => Arena.Resolve(pointer, this, disposition);
+    protected void Resolve(int pointer, GestureDisposition disposition) =>
+        Arena.Resolve(pointer, this, disposition);
 
     /// <summary>このポインターの購読を解除する（勝敗確定後の後始末）。</summary>
     /// <param name="pointer">購読を解除するポインター識別子。</param>
     protected void StopTrackingPointer(int pointer)
     {
-        if (_trackedPointers.Remove(pointer)) Router.RemoveRoute(pointer, HandleEvent);
+        if (_trackedPointers.Remove(pointer))
+            Router.RemoveRoute(pointer, HandleEvent);
     }
 
     /// <summary>Down 受理時にサブクラスが初期状態を作る。</summary>

@@ -725,7 +725,7 @@
     <value>The overlay name is too long.</value>
   </data>
   <data name="VROverlayException_KeyInUse" xml:space="preserve">
-    <value>This key (string ID) is already used by another overlay.</value>
+    <value>This key is already used by another overlay. Check whether the same application is running in another process. If an overlay was left behind after an abnormal exit, restart SteamVR and try again.</value>
   </data>
   <data name="VROverlayException_WrongTransformType" xml:space="preserve">
     <value>The requested transform type (Absolute/TrackedDevice, etc.) is not supported for this overlay.</value>
