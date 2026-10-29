@@ -18,7 +18,7 @@ public class RenderFlexTest
         {
             Direction = Axis.Horizontal,
             CrossAxisAlignment = CrossAxisAlignment.Center,
-            Children = { fixedChild, firstFlex, secondFlex }
+            Children = { fixedChild, firstFlex, secondFlex },
         };
         SetFlex(firstFlex, 1, FlexFit.Tight);
         SetFlex(secondFlex, 2, FlexFit.Tight);
@@ -42,7 +42,7 @@ public class RenderFlexTest
         {
             Direction = Axis.Vertical,
             CrossAxisAlignment = CrossAxisAlignment.End,
-            Children = { first, second }
+            Children = { first, second },
         };
         SetFlex(first, 1, FlexFit.Tight);
         SetFlex(second, 2, FlexFit.Tight);
@@ -64,7 +64,7 @@ public class RenderFlexTest
         {
             Direction = Axis.Horizontal,
             MainAxisAlignment = MainAxisAlignment.SpaceBetween,
-            Children = { fixedChild, looseChild }
+            Children = { fixedChild, looseChild },
         };
         SetFlex(looseChild, 1, FlexFit.Loose);
 
@@ -82,7 +82,7 @@ public class RenderFlexTest
         {
             Direction = Axis.Horizontal,
             CrossAxisAlignment = CrossAxisAlignment.Stretch,
-            Children = { child }
+            Children = { child },
         };
         SetFlex(child, 1, FlexFit.Tight);
 
@@ -95,14 +95,17 @@ public class RenderFlexTest
     [Theory]
     [InlineData(Axis.Horizontal)]
     [InlineData(Axis.Vertical)]
-    public void PerformLayout_主軸の最大制約が非有限でFlex子を持つとInvalidOperationExceptionを投げる(Axis direction)
+    public void PerformLayout_主軸の最大制約が非有限でFlex子を持つとInvalidOperationExceptionを投げる(
+        Axis direction
+    )
     {
         var child = Box(20, 10);
         var flex = new RenderFlex { Direction = direction, Children = { child } };
         SetFlex(child, 1, FlexFit.Loose);
-        var constraints = direction == Axis.Horizontal
-            ? new BoxConstraints(MaxHeight: 100)
-            : new BoxConstraints(MaxWidth: 100);
+        var constraints =
+            direction == Axis.Horizontal
+                ? new BoxConstraints(MaxHeight: 100)
+                : new BoxConstraints(MaxWidth: 100);
 
         var exception = Assert.Throws<InvalidOperationException>(() => flex.Layout(constraints));
 
@@ -132,7 +135,7 @@ public class RenderFlexTest
         var flex = new RenderFlex
         {
             Direction = Axis.Horizontal,
-            Children = { fixedChild, firstFlex, secondFlex }
+            Children = { fixedChild, firstFlex, secondFlex },
         };
         SetFlex(firstFlex, 1, FlexFit.Tight);
         SetFlex(secondFlex, 1, FlexFit.Loose);
@@ -150,7 +153,7 @@ public class RenderFlexTest
         var flex = new RenderFlex
         {
             Direction = Axis.Vertical,
-            Children = { fixedChild, firstFlex, secondFlex }
+            Children = { fixedChild, firstFlex, secondFlex },
         };
         SetFlex(firstFlex, 1, FlexFit.Loose);
         SetFlex(secondFlex, 3, FlexFit.Tight);
@@ -208,7 +211,7 @@ public class RenderFlexTest
         var flex = new RenderFlex
         {
             Direction = Axis.Horizontal,
-            Children = { fixedChild, flexChild }
+            Children = { fixedChild, flexChild },
         };
         SetFlex(flexChild, 1, FlexFit.Tight);
 
@@ -222,20 +225,18 @@ public class RenderFlexTest
         Assert.Throws<ArgumentOutOfRangeException>(() => new FlexParentData { Fit = (FlexFit)999 });
     }
 
-    private static RenderConstrainedBox Box(double width, double height) => new()
-    {
-        AdditionalConstraints = BoxConstraints.Tight(width, height)
-    };
+    private static RenderConstrainedBox Box(double width, double height) =>
+        new() { AdditionalConstraints = BoxConstraints.Tight(width, height) };
 
     private static IntrinsicTestBox IntrinsicBox(
         double width,
         double height,
         Func<double, double>? widthForHeight = null,
-        Func<double, double>? heightForWidth = null) =>
-        new(width, height, widthForHeight, heightForWidth);
+        Func<double, double>? heightForWidth = null
+    ) => new(width, height, widthForHeight, heightForWidth);
 
-    private static FlexParentData ParentData(RenderBox child)
-        => Assert.IsType<FlexParentData>(child.ParentData);
+    private static FlexParentData ParentData(RenderBox child) =>
+        Assert.IsType<FlexParentData>(child.ParentData);
 
     private static void SetFlex(RenderBox child, int flex, FlexFit fit)
     {
@@ -248,7 +249,8 @@ public class RenderFlexTest
         double width,
         double height,
         Func<double, double>? widthForHeight,
-        Func<double, double>? heightForWidth) : RenderBox
+        Func<double, double>? heightForWidth
+    ) : RenderBox
     {
         public override void PerformLayout() => Size = Constraints.Constrain(width, height);
 

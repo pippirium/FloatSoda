@@ -17,7 +17,11 @@ public sealed record Flexible : ParentDataWidget<FlexParentData>
         {
             if (value <= 0)
             {
-                throw new ArgumentOutOfRangeException(nameof(Flex), value, "Flex には 1 以上の整数を指定してください。");
+                throw new ArgumentOutOfRangeException(
+                    nameof(Flex),
+                    value,
+                    "Flex には 1 以上の整数を指定してください。"
+                );
             }
 
             field = value;
@@ -32,7 +36,11 @@ public sealed record Flexible : ParentDataWidget<FlexParentData>
         {
             if (!Enum.IsDefined(value))
             {
-                throw new ArgumentOutOfRangeException(nameof(Fit), value, "定義済みの FlexFit を指定してください。");
+                throw new ArgumentOutOfRangeException(
+                    nameof(Fit),
+                    value,
+                    "定義済みの FlexFit を指定してください。"
+                );
             }
 
             field = value;
@@ -43,7 +51,8 @@ public sealed record Flexible : ParentDataWidget<FlexParentData>
     protected override bool ApplyParentData(FlexParentData parentData)
     {
         var changed = parentData.Flex != Flex || parentData.Fit != Fit;
-        if (!changed) return false;
+        if (!changed)
+            return false;
 
         parentData.Flex = Flex;
         parentData.Fit = Fit;

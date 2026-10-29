@@ -32,10 +32,12 @@ public sealed class PointerRouter
     /// <remarks>最後の購読者を解除した場合は、ポインター識別子のエントリも削除します。</remarks>
     public void RemoveRoute(int pointer, Action<PointerEvent> route)
     {
-        if (!_routes.TryGetValue(pointer, out var list)) return;
+        if (!_routes.TryGetValue(pointer, out var list))
+            return;
 
         list.Remove(route);
-        if (list.Count == 0) _routes.Remove(pointer);
+        if (list.Count == 0)
+            _routes.Remove(pointer);
     }
 
     /// <summary>指定したポインターに登録されたすべての購読を破棄します。</summary>
@@ -47,7 +49,8 @@ public sealed class PointerRouter
     /// <remarks>配送開始時の購読者一覧を使用するため、コールバック内で購読を変更できます。</remarks>
     public void Route(PointerEvent pointerEvent)
     {
-        if (!_routes.TryGetValue(pointerEvent.PointerId, out var list)) return;
+        if (!_routes.TryGetValue(pointerEvent.PointerId, out var list))
+            return;
 
         // 配送中に購読が変化（StopTracking 等）しても安全なようスナップショットを走査する。
         foreach (var route in list.ToArray())

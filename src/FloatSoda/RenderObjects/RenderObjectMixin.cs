@@ -30,13 +30,13 @@ public interface IHasMultiChildrenRenderObject
     bool RemoveChild(RenderObject child);
 }
 
-
 /// <summary>
 /// 単一の子の保持をコンポジションで提供するコンテナ。子の差し替え時にownerへのAdopt/Dropを行い、
 /// ライフサイクル(Attach/Detach/Visit)の転送ヘルパーを提供する。
 /// </summary>
 /// <param name="owner">子を所有し、追加と削除の通知を受け取るRenderObject。</param>
-public class SingleChildContainer<T>(RenderObject owner) where T : RenderObject
+public class SingleChildContainer<T>(RenderObject owner)
+    where T : RenderObject
 {
     /// <summary>保持している子。差し替え時は旧子をDropし新子をAdoptする。</summary>
     /// <remarks>
@@ -48,9 +48,11 @@ public class SingleChildContainer<T>(RenderObject owner) where T : RenderObject
         get;
         set
         {
-            if (field != null) owner.DropChild(field);
+            if (field is not null)
+                owner.DropChild(field);
             field = value;
-            if (value != null) owner.AdoptChild(value);
+            if (value is not null)
+                owner.AdoptChild(value);
         }
     }
 
@@ -63,7 +65,8 @@ public class SingleChildContainer<T>(RenderObject owner) where T : RenderObject
     /// <summary>子が存在すればvisitorを適用する。</summary>
     public void VisitChildren(Action<RenderObject> visitor)
     {
-        if (Child != null) visitor(Child);
+        if (Child is not null)
+            visitor(Child);
     }
 }
 
@@ -72,7 +75,8 @@ public class SingleChildContainer<T>(RenderObject owner) where T : RenderObject
 /// ライフサイクル(Attach/Detach/Visit)の転送ヘルパーを提供する。
 /// </summary>
 /// <param name="owner">子を所有し、追加と削除の通知を受け取るRenderObject。</param>
-public class MultiChildrenCollection<T>(RenderObject owner) : ICollection<T> where T : RenderObject
+public class MultiChildrenCollection<T>(RenderObject owner) : ICollection<T>
+    where T : RenderObject
 {
     private readonly List<T> _children = [];
 
@@ -114,22 +118,33 @@ public class MultiChildrenCollection<T>(RenderObject owner) : ICollection<T> whe
     public void Move(T child, T? after)
     {
         var oldIndex = _children.IndexOf(child);
-        if (oldIndex < 0) throw new ArgumentException("このコレクションが保持していない子は移動できません。", nameof(child));
-        if (ReferenceEquals(child, after)) throw new ArgumentException("子を自分自身の次へは移動できません。", nameof(after));
+        if (oldIndex < 0)
+            throw new ArgumentException(
+                "このコレクションが保持していない子は移動できません。",
+                nameof(child)
+            );
+        if (ReferenceEquals(child, after))
+            throw new ArgumentException("子を自分自身の次へは移動できません。", nameof(after));
 
         _children.RemoveAt(oldIndex);
         var newIndex = IndexAfter(after);
         _children.Insert(newIndex, child);
 
-        if (newIndex != oldIndex) owner.MarkNeedsLayout();
+        if (newIndex != oldIndex)
+            owner.MarkNeedsLayout();
     }
 
     private int IndexAfter(T? after)
     {
-        if (after is null) return 0;
+        if (after is null)
+            return 0;
 
         var index = _children.IndexOf(after);
-        if (index < 0) throw new ArgumentException("このコレクションが保持していない子は、挿入位置の基準にできません。", nameof(after));
+        if (index < 0)
+            throw new ArgumentException(
+                "このコレクションが保持していない子は、挿入位置の基準にできません。",
+                nameof(after)
+            );
         return index + 1;
     }
 
@@ -146,7 +161,8 @@ public class MultiChildrenCollection<T>(RenderObject owner) : ICollection<T> whe
     /// </remarks>
     public bool Remove(T child)
     {
-        if (!_children.Remove(child)) return false;
+        if (!_children.Remove(child))
+            return false;
 
         owner.DropChild(child);
         return true;
@@ -236,11 +252,19 @@ public static class MultiChildrenCollectionExtensions
         where T : RenderObject => collection.Add((T)child);
 
     /// <summary><see cref="RenderObject"/>を要素型へ変換して<paramref name="after"/>の次へ挿入する。Element境界の非総称な挿入に使う。</summary>
-    public static void InsertErased<T>(this MultiChildrenCollection<T> collection, RenderObject child, RenderObject? after)
+    public static void InsertErased<T>(
+        this MultiChildrenCollection<T> collection,
+        RenderObject child,
+        RenderObject? after
+    )
         where T : RenderObject => collection.Insert((T)child, (T?)after);
 
     /// <summary><see cref="RenderObject"/>を要素型へ変換して<paramref name="after"/>の次へ移動する。Element境界の非総称な移動に使う。</summary>
-    public static void MoveErased<T>(this MultiChildrenCollection<T> collection, RenderObject child, RenderObject? after)
+    public static void MoveErased<T>(
+        this MultiChildrenCollection<T> collection,
+        RenderObject child,
+        RenderObject? after
+    )
         where T : RenderObject => collection.Move((T)child, (T?)after);
 
     /// <summary><see cref="RenderObject"/>を要素型として取り除く。要素型でない・保持していない場合は false。</summary>
@@ -248,6 +272,9 @@ public static class MultiChildrenCollectionExtensions
     /// 子が削除された場合、コレクションの所有者をLayout Dirtyとしてマークします。
     /// 型が一致しない場合、または子が見つからなかった場合、Dirty状態は変更されません。
     /// </remarks>
-    public static bool RemoveErased<T>(this MultiChildrenCollection<T> collection, RenderObject child)
+    public static bool RemoveErased<T>(
+        this MultiChildrenCollection<T> collection,
+        RenderObject child
+    )
         where T : RenderObject => child is T typed && collection.Remove(typed);
 }

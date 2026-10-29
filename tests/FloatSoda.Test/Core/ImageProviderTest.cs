@@ -45,7 +45,8 @@ public class ImageProviderTest
 
     private sealed record NullImageProvider(Guid Key) : ImageProvider
     {
-        protected override ValueTask<SKImage> LoadAsync(CancellationToken cancellationToken) => new((SKImage)null!);
+        protected override ValueTask<SKImage> LoadAsync(CancellationToken cancellationToken) =>
+            new((SKImage)null!);
     }
 
     private static SKImage CreateImage()
@@ -62,8 +63,14 @@ public class ImageProviderTest
         var key = Guid.NewGuid();
         var cache = new ImageCache();
 
-        var first = cache.ResolveAsync(new ControlledImageProvider(key, control), CancellationToken.None);
-        var second = cache.ResolveAsync(new ControlledImageProvider(key, control), CancellationToken.None);
+        var first = cache.ResolveAsync(
+            new ControlledImageProvider(key, control),
+            CancellationToken.None
+        );
+        var second = cache.ResolveAsync(
+            new ControlledImageProvider(key, control),
+            CancellationToken.None
+        );
         control.Source.SetResult(CreateImage());
 
         using var firstHandle = await first;
@@ -150,7 +157,9 @@ public class ImageProviderTest
         var control = new LoadControl();
         control.Source.SetResult(CreateImage());
         var handle = await new ImageCache().ResolveAsync(
-            new ControlledImageProvider(Guid.NewGuid(), control), CancellationToken.None);
+            new ControlledImageProvider(Guid.NewGuid(), control),
+            CancellationToken.None
+        );
 
         handle.Dispose();
 
@@ -165,7 +174,9 @@ public class ImageProviderTest
         var cache = new ImageCache();
         control.Source.SetException(new IOException("失敗"));
 
-        await Assert.ThrowsAsync<IOException>(async () => await cache.ResolveAsync(provider, CancellationToken.None));
+        await Assert.ThrowsAsync<IOException>(async () =>
+            await cache.ResolveAsync(provider, CancellationToken.None)
+        );
         Assert.Equal(0, cache.Count);
 
         control.Reset();
@@ -200,7 +211,10 @@ public class ImageProviderTest
     [Fact]
     public async Task ResolveAsync_LoadAsyncが同期的に例外を投げる_返すタスクの失敗として通知する()
     {
-        var resolve = new ImageCache().ResolveAsync(new ThrowingImageProvider(Guid.NewGuid()), CancellationToken.None);
+        var resolve = new ImageCache().ResolveAsync(
+            new ThrowingImageProvider(Guid.NewGuid()),
+            CancellationToken.None
+        );
 
         await Assert.ThrowsAsync<InvalidOperationException>(async () => await resolve);
     }
@@ -208,7 +222,10 @@ public class ImageProviderTest
     [Fact]
     public async Task ResolveAsync_LoadAsyncがnullを返す_InvalidOperationExceptionを投げる()
     {
-        var resolve = new ImageCache().ResolveAsync(new NullImageProvider(Guid.NewGuid()), CancellationToken.None);
+        var resolve = new ImageCache().ResolveAsync(
+            new NullImageProvider(Guid.NewGuid()),
+            CancellationToken.None
+        );
 
         await Assert.ThrowsAsync<InvalidOperationException>(async () => await resolve);
     }
@@ -220,8 +237,14 @@ public class ImageProviderTest
         var secondControl = new LoadControl();
         var cache = new ImageCache();
 
-        _ = cache.ResolveAsync(new ControlledImageProvider(Guid.NewGuid(), firstControl), CancellationToken.None);
-        _ = cache.ResolveAsync(new ControlledImageProvider(Guid.NewGuid(), secondControl), CancellationToken.None);
+        _ = cache.ResolveAsync(
+            new ControlledImageProvider(Guid.NewGuid(), firstControl),
+            CancellationToken.None
+        );
+        _ = cache.ResolveAsync(
+            new ControlledImageProvider(Guid.NewGuid(), secondControl),
+            CancellationToken.None
+        );
 
         // どちらも未完了のまま、2件とも読み込みが始まっている。
         Assert.False(firstControl.Source.Task.IsCompleted);
@@ -238,7 +261,10 @@ public class ImageProviderTest
         var control = new LoadControl();
         var cache = new ImageCache();
         using var cancellation = new CancellationTokenSource();
-        var resolve = cache.ResolveAsync(new ControlledImageProvider(Guid.NewGuid(), control), cancellation.Token);
+        var resolve = cache.ResolveAsync(
+            new ControlledImageProvider(Guid.NewGuid(), control),
+            cancellation.Token
+        );
 
         await cancellation.CancelAsync();
 
@@ -273,7 +299,10 @@ public class ImageProviderTest
         var control = new LoadControl();
         var cache = new ImageCache();
         using var cancellation = new CancellationTokenSource();
-        var resolve = cache.ResolveAsync(new ControlledImageProvider(Guid.NewGuid(), control), cancellation.Token);
+        var resolve = cache.ResolveAsync(
+            new ControlledImageProvider(Guid.NewGuid(), control),
+            cancellation.Token
+        );
         await cancellation.CancelAsync();
         await Assert.ThrowsAnyAsync<OperationCanceledException>(async () => await resolve);
         var image = CreateImage();

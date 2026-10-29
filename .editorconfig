@@ -28,3 +28,8 @@ dotnet_diagnostic.CS1591.severity = warning
 # --- コードスタイル (EnforceCodeStyleInBuild でビルド時に検査される) ---
 csharp_style_namespace_declarations = file_scoped:warning
 dotnet_diagnostic.IDE0161.severity = warning
+
+# --- 生成物: OpenVR 公式の C# バインディング (手で編集しない) ---
+# 再生成すると書き換えが消えるため、null 判定の規約 (RCS1248) の対象から外す
+[src/FloatSoda.OVR/openvr_api.cs]
+dotnet_diagnostic.RCS1248.severity = none

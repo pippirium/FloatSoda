@@ -35,22 +35,39 @@ public class DesktopWindow : IEngineWindow
     {
         renderer.Render(layer);
 
-        if (_blitFbo == 0) _blitFbo = GL.GenFramebuffer();
+        if (_blitFbo == 0)
+            _blitFbo = GL.GenFramebuffer();
 
         var size = renderer.GLView.Size;
 
-        int fbWidth, fbHeight;
+        int fbWidth,
+            fbHeight;
         unsafe
         {
             GLFW.GetFramebufferSize(renderer.GLView.WindowHandle, out fbWidth, out fbHeight);
         }
 
         GL.BindFramebuffer(FramebufferTarget.ReadFramebuffer, _blitFbo);
-        GL.FramebufferTexture2D(FramebufferTarget.ReadFramebuffer, FramebufferAttachment.ColorAttachment0,
-            TextureTarget.Texture2D, renderer.GLView.TextureHandle, 0);
+        GL.FramebufferTexture2D(
+            FramebufferTarget.ReadFramebuffer,
+            FramebufferAttachment.ColorAttachment0,
+            TextureTarget.Texture2D,
+            renderer.GLView.TextureHandle,
+            0
+        );
         GL.BindFramebuffer(FramebufferTarget.DrawFramebuffer, 0);
-        GL.BlitFramebuffer(0, 0, size.Width, size.Height, 0, 0, fbWidth, fbHeight,
-            ClearBufferMask.ColorBufferBit, BlitFramebufferFilter.Nearest);
+        GL.BlitFramebuffer(
+            0,
+            0,
+            size.Width,
+            size.Height,
+            0,
+            0,
+            fbWidth,
+            fbHeight,
+            ClearBufferMask.ColorBufferBit,
+            BlitFramebufferFilter.Nearest
+        );
 
         renderer.GLView.SwapBuffers();
     }

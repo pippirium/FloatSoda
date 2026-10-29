@@ -108,9 +108,7 @@ public record Cubic(double A, double B, double C, double D) : Curve
     private const double CubicErrorBound = 0.001;
 
     private static double EvaluateCubic(double a, double b, double m) =>
-        3 * a * (1 - m) * (1 - m) * m +
-        3 * b * (1 - m) * m * m +
-        m * m * m;
+        3 * a * (1 - m) * (1 - m) * m + 3 * b * (1 - m) * m * m + m * m * m;
 
     /// <inheritdoc/>
     protected override double TransformInternal(double t)
@@ -151,14 +149,18 @@ public record ThreePointCubic(Offset A1, Offset B1, Offset Midpoint, Offset A2, 
 
         if (firstCurve)
         {
-            return new Cubic(A1.X / scaleX, A1.Y / scaleY, B1.X / scaleX, B1.Y / scaleY).Transform(scaledT) * scaleY;
+            return new Cubic(A1.X / scaleX, A1.Y / scaleY, B1.X / scaleX, B1.Y / scaleY).Transform(
+                    scaledT
+                ) * scaleY;
         }
 
         return new Cubic(
-            (A2.X - Midpoint.X) / scaleX,
-            (A2.Y - Midpoint.Y) / scaleY,
-            (B2.X - Midpoint.X) / scaleX,
-            (B2.Y - Midpoint.Y) / scaleY).Transform(scaledT) * scaleY + Midpoint.Y;
+                (A2.X - Midpoint.X) / scaleX,
+                (A2.Y - Midpoint.Y) / scaleY,
+                (B2.X - Midpoint.X) / scaleX,
+                (B2.Y - Midpoint.Y) / scaleY
+            ).Transform(scaledT) * scaleY
+            + Midpoint.Y;
     }
 }
 

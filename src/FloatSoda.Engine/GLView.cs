@@ -70,7 +70,8 @@ public class GLView : IDisposable
             GLFW.WindowHint(WindowHintBool.Visible, visible);
 
             _window = GLFW.CreateWindow(Size.Width, Size.Height, title, null, null);
-            if (_window is null) throw new InvalidOperationException("GLFWウィンドウの作成に失敗しました。");
+            if (_window is null)
+                throw new InvalidOperationException("GLFWウィンドウの作成に失敗しました。");
         }
 
         GRContext? grContext = null;
@@ -154,7 +155,10 @@ public class GLView : IDisposable
     public void Resize(int width, int height)
     {
         if (width <= 0 || height <= 0)
-            throw new ArgumentOutOfRangeException(nameof(width), "幅・高さは正の値である必要があります。");
+            throw new ArgumentOutOfRangeException(
+                nameof(width),
+                "幅・高さは正の値である必要があります。"
+            );
 
         if (Size.Width == width && Size.Height == height)
             return; // サイズが変わらないなら何もしない
@@ -225,7 +229,8 @@ public class GLView : IDisposable
     /// </summary>
     public void Dispose()
     {
-        if (_disposed) return;
+        if (_disposed)
+            return;
 
         MakeCurrent();
         _disposed = true;

@@ -34,15 +34,15 @@ public sealed class WidgetBitmapRenderer
         var pipeline = new RenderPipeline
         {
             OnNeedVisualUpdate = () => { },
-            RenderView = renderView
+            RenderView = renderView,
         };
 
         var owner = new BuildOwner(() => { });
-        
+
         var root = new RenderObjectToWidgetAdapter
         {
             Container = renderView,
-            Child = widget
+            Child = widget,
         }.AttachToRenderTree(owner, null);
 
         try
@@ -52,7 +52,7 @@ public sealed class WidgetBitmapRenderer
             pipeline.FlushPaint();
 
             var layer = renderView.Layer?.Clone();
-            return layer == null
+            return layer is null
                 ? new SKBitmap(imageSize.Width, imageSize.Height)
                 : _layerRenderer.Render(layer, imageSize);
         }
@@ -63,7 +63,7 @@ public sealed class WidgetBitmapRenderer
             new RenderObjectToWidgetAdapter
             {
                 Container = renderView,
-                Child = null
+                Child = null,
             }.AttachToRenderTree(owner, root);
             owner.BuildScope();
         }

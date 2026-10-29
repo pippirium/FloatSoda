@@ -22,14 +22,14 @@ public class BuilderFlutterParityTest
         var root = new RenderObjectToWidgetAdapter
         {
             Container = view,
-            Child = new Builder { ChildBuilder = Build }
+            Child = new Builder { ChildBuilder = Build },
         }.AttachToRenderTree(owner, null);
         Assert.Equal(1, buildCount);
 
         _ = new RenderObjectToWidgetAdapter
         {
             Container = view,
-            Child = new Builder { ChildBuilder = Build }
+            Child = new Builder { ChildBuilder = Build },
         }.AttachToRenderTree(owner, root);
         owner.BuildScope();
 

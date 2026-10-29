@@ -7,9 +7,7 @@ using SkiaSharp;
 namespace FloatSoda.RenderObjects.Layout;
 
 /// <summary>Wrap が子ごとの配置位置を保持する ParentData です。</summary>
-public class WrapParentData : BoxParentData
-{
-}
+public class WrapParentData : BoxParentData { }
 
 /// <summary>複数の子を run へ分割し、利用可能な主軸領域で折り返して配置する RenderObject です。</summary>
 public class RenderWrap : RenderBox, IHasMultiChildrenRenderObject
@@ -36,7 +34,8 @@ public class RenderWrap : RenderBox, IHasMultiChildrenRenderObject
         set
         {
             EnsureDefined(value, nameof(Direction));
-            if (field == value) return;
+            if (field == value)
+                return;
             field = value;
             MarkNeedsLayout();
         }
@@ -49,7 +48,8 @@ public class RenderWrap : RenderBox, IHasMultiChildrenRenderObject
         set
         {
             EnsureDefined(value, nameof(Alignment));
-            if (field == value) return;
+            if (field == value)
+                return;
             field = value;
             MarkNeedsLayout();
         }
@@ -63,7 +63,8 @@ public class RenderWrap : RenderBox, IHasMultiChildrenRenderObject
         set
         {
             EnsureFiniteAndNonNegative(value, nameof(Spacing));
-            if (field == value) return;
+            if (field == value)
+                return;
             field = value;
             MarkNeedsLayout();
         }
@@ -76,7 +77,8 @@ public class RenderWrap : RenderBox, IHasMultiChildrenRenderObject
         set
         {
             EnsureDefined(value, nameof(RunAlignment));
-            if (field == value) return;
+            if (field == value)
+                return;
             field = value;
             MarkNeedsLayout();
         }
@@ -90,7 +92,8 @@ public class RenderWrap : RenderBox, IHasMultiChildrenRenderObject
         set
         {
             EnsureFiniteAndNonNegative(value, nameof(RunSpacing));
-            if (field == value) return;
+            if (field == value)
+                return;
             field = value;
             MarkNeedsLayout();
         }
@@ -103,7 +106,8 @@ public class RenderWrap : RenderBox, IHasMultiChildrenRenderObject
         set
         {
             EnsureDefined(value, nameof(CrossAxisAlignment));
-            if (field == value) return;
+            if (field == value)
+                return;
             field = value;
             MarkNeedsLayout();
         }
@@ -116,7 +120,8 @@ public class RenderWrap : RenderBox, IHasMultiChildrenRenderObject
         set
         {
             EnsureDefined(value, nameof(VerticalDirection));
-            if (field == value) return;
+            if (field == value)
+                return;
             field = value;
             MarkNeedsLayout();
         }
@@ -129,12 +134,14 @@ public class RenderWrap : RenderBox, IHasMultiChildrenRenderObject
     /// <summary>指定したRenderObjectを<paramref name="after"/>の次へ挿入します。<paramref name="after"/>が<see langword="null"/>なら先頭へ挿入します。</summary>
     /// <param name="child">挿入するRenderObject。<see cref="RenderBox"/>である必要があります。</param>
     /// <param name="after">挿入位置の基準にする子。</param>
-    public void InsertChild(RenderObject child, RenderObject? after) => Children.Insert((RenderBox)child, (RenderBox?)after);
+    public void InsertChild(RenderObject child, RenderObject? after) =>
+        Children.Insert((RenderBox)child, (RenderBox?)after);
 
     /// <summary>保持している子を<paramref name="after"/>の次へ移動します。<paramref name="after"/>が<see langword="null"/>なら先頭へ移動します。</summary>
     /// <param name="child">移動するRenderObject。</param>
     /// <param name="after">移動先の基準にする子。</param>
-    public void MoveChild(RenderObject child, RenderObject? after) => Children.Move((RenderBox)child, (RenderBox?)after);
+    public void MoveChild(RenderObject child, RenderObject? after) =>
+        Children.Move((RenderBox)child, (RenderBox?)after);
 
     /// <summary>指定した RenderObject を子のコレクションから削除します。</summary>
     /// <param name="child">削除する RenderObject。</param>
@@ -142,7 +149,8 @@ public class RenderWrap : RenderBox, IHasMultiChildrenRenderObject
     public bool RemoveChild(RenderObject child) => Children.Remove((RenderBox)child);
 
     /// <inheritdoc/>
-    public override void SetupParentData(RenderObject child) => child.ParentData = new WrapParentData();
+    public override void SetupParentData(RenderObject child) =>
+        child.ParentData = new WrapParentData();
 
     /// <inheritdoc/>
     public override void PerformLayout()
@@ -159,7 +167,8 @@ public class RenderWrap : RenderBox, IHasMultiChildrenRenderObject
             {
                 child.Layout(constraints, parentUseSize: true);
                 return child.Size;
-            });
+            }
+        );
 
         Size = ConstrainAxisSize(Constraints, childrenMainExtent, childrenCrossExtent);
         PositionChildren(runs, GetMainExtent(Size), GetCrossExtent(Size), childrenCrossExtent);
@@ -168,61 +177,73 @@ public class RenderWrap : RenderBox, IHasMultiChildrenRenderObject
     /// <inheritdoc/>
     internal override SKSize ComputeDryLayout(BoxConstraints constraints)
     {
-        if (Children.Count == 0) return constraints.Smallest;
+        if (Children.Count == 0)
+            return constraints.Smallest;
 
         var (_, mainExtent, crossExtent) = ComputeRuns(
             constraints,
-            static (child, childConstraints) => child.GetDryLayout(childConstraints));
+            static (child, childConstraints) => child.GetDryLayout(childConstraints)
+        );
         return ConstrainAxisSize(constraints, mainExtent, crossExtent);
     }
 
     /// <inheritdoc/>
-    protected override double ComputeMinIntrinsicWidth(double height) => Direction switch
-    {
-        Axis.Horizontal => Children.Count == 0
-            ? 0
-            : Children.Max(child => child.GetMinIntrinsicWidth(double.PositiveInfinity)),
-        Axis.Vertical => GetDryLayout(new BoxConstraints(MaxHeight: height)).Width,
-        _ => throw new ArgumentOutOfRangeException(nameof(Direction), Direction, null)
-    };
+    protected override double ComputeMinIntrinsicWidth(double height) =>
+        Direction switch
+        {
+            Axis.Horizontal => Children.Count == 0
+                ? 0
+                : Children.Max(child => child.GetMinIntrinsicWidth(double.PositiveInfinity)),
+            Axis.Vertical => GetDryLayout(new BoxConstraints(MaxHeight: height)).Width,
+            _ => throw new ArgumentOutOfRangeException(nameof(Direction), Direction, null),
+        };
 
     /// <inheritdoc/>
-    protected override double ComputeMaxIntrinsicWidth(double height) => Direction switch
-    {
-        Axis.Horizontal => Children.Sum(child => child.GetMaxIntrinsicWidth(double.PositiveInfinity)),
-        Axis.Vertical => GetDryLayout(new BoxConstraints(MaxHeight: height)).Width,
-        _ => throw new ArgumentOutOfRangeException(nameof(Direction), Direction, null)
-    };
+    protected override double ComputeMaxIntrinsicWidth(double height) =>
+        Direction switch
+        {
+            Axis.Horizontal => Children.Sum(child =>
+                child.GetMaxIntrinsicWidth(double.PositiveInfinity)
+            ),
+            Axis.Vertical => GetDryLayout(new BoxConstraints(MaxHeight: height)).Width,
+            _ => throw new ArgumentOutOfRangeException(nameof(Direction), Direction, null),
+        };
 
     /// <inheritdoc/>
-    protected override double ComputeMinIntrinsicHeight(double width) => Direction switch
-    {
-        Axis.Horizontal => GetDryLayout(new BoxConstraints(MaxWidth: width)).Height,
-        Axis.Vertical => Children.Count == 0
-            ? 0
-            : Children.Max(child => child.GetMinIntrinsicHeight(double.PositiveInfinity)),
-        _ => throw new ArgumentOutOfRangeException(nameof(Direction), Direction, null)
-    };
+    protected override double ComputeMinIntrinsicHeight(double width) =>
+        Direction switch
+        {
+            Axis.Horizontal => GetDryLayout(new BoxConstraints(MaxWidth: width)).Height,
+            Axis.Vertical => Children.Count == 0
+                ? 0
+                : Children.Max(child => child.GetMinIntrinsicHeight(double.PositiveInfinity)),
+            _ => throw new ArgumentOutOfRangeException(nameof(Direction), Direction, null),
+        };
 
     /// <inheritdoc/>
-    protected override double ComputeMaxIntrinsicHeight(double width) => Direction switch
-    {
-        Axis.Horizontal => GetDryLayout(new BoxConstraints(MaxWidth: width)).Height,
-        Axis.Vertical => Children.Sum(child => child.GetMaxIntrinsicHeight(double.PositiveInfinity)),
-        _ => throw new ArgumentOutOfRangeException(nameof(Direction), Direction, null)
-    };
+    protected override double ComputeMaxIntrinsicHeight(double width) =>
+        Direction switch
+        {
+            Axis.Horizontal => GetDryLayout(new BoxConstraints(MaxWidth: width)).Height,
+            Axis.Vertical => Children.Sum(child =>
+                child.GetMaxIntrinsicHeight(double.PositiveInfinity)
+            ),
+            _ => throw new ArgumentOutOfRangeException(nameof(Direction), Direction, null),
+        };
 
     private (List<RunMetrics> Runs, double MainExtent, double CrossExtent) ComputeRuns(
         BoxConstraints constraints,
-        Func<RenderBox, BoxConstraints, SKSize> layoutChild)
+        Func<RenderBox, BoxConstraints, SKSize> layoutChild
+    )
     {
         var childConstraints = Direction switch
         {
             Axis.Horizontal => new BoxConstraints(MaxWidth: constraints.MaxWidth),
             Axis.Vertical => new BoxConstraints(MaxHeight: constraints.MaxHeight),
-            _ => throw new ArgumentOutOfRangeException(nameof(Direction), Direction, null)
+            _ => throw new ArgumentOutOfRangeException(nameof(Direction), Direction, null),
         };
-        var mainAxisLimit = Direction == Axis.Horizontal ? constraints.MaxWidth : constraints.MaxHeight;
+        var mainAxisLimit =
+            Direction == Axis.Horizontal ? constraints.MaxWidth : constraints.MaxHeight;
         var runs = new List<RunMetrics>();
         RunMetrics? currentRun = null;
         double mainExtent = 0;
@@ -233,7 +254,8 @@ public class RenderWrap : RenderBox, IHasMultiChildrenRenderObject
             var childSize = layoutChild(child, childConstraints);
             var childMainExtent = GetMainExtent(childSize);
             var childCrossExtent = GetCrossExtent(childSize);
-            var needsNewRun = currentRun is not null
+            var needsNewRun =
+                currentRun is not null
                 && currentRun.MainExtent + Spacing + childMainExtent - mainAxisLimit > 1e-10;
 
             if (currentRun is null || needsNewRun)
@@ -248,7 +270,8 @@ public class RenderWrap : RenderBox, IHasMultiChildrenRenderObject
                 runs.Add(currentRun);
             }
 
-            if (currentRun.Children.Count > 0) currentRun.MainExtent += Spacing;
+            if (currentRun.Children.Count > 0)
+                currentRun.MainExtent += Spacing;
             currentRun.Children.Add(child);
             currentRun.MainExtent += childMainExtent;
             currentRun.CrossExtent = Math.Max(currentRun.CrossExtent, childCrossExtent);
@@ -263,10 +286,12 @@ public class RenderWrap : RenderBox, IHasMultiChildrenRenderObject
         List<RunMetrics> runs,
         double containerMainExtent,
         double containerCrossExtent,
-        double childrenCrossExtent)
+        double childrenCrossExtent
+    )
     {
         var flipMainAxis = Direction == Axis.Vertical && VerticalDirection == VerticalDirection.Up;
-        var flipCrossAxis = Direction == Axis.Horizontal && VerticalDirection == VerticalDirection.Up;
+        var flipCrossAxis =
+            Direction == Axis.Horizontal && VerticalDirection == VerticalDirection.Up;
         var effectiveCrossAlignment = flipCrossAxis ? Flip(CrossAxisAlignment) : CrossAxisAlignment;
         var crossFreeSpace = Math.Max(0, containerCrossExtent - childrenCrossExtent);
         var (runLeadingSpace, runBetweenSpace) = DistributeSpace(
@@ -274,7 +299,8 @@ public class RenderWrap : RenderBox, IHasMultiChildrenRenderObject
             crossFreeSpace,
             RunSpacing,
             runs.Count,
-            flipCrossAxis);
+            flipCrossAxis
+        );
         var crossOffset = runLeadingSpace;
         var orderedRuns = flipCrossAxis ? runs.AsEnumerable().Reverse() : runs;
 
@@ -286,9 +312,12 @@ public class RenderWrap : RenderBox, IHasMultiChildrenRenderObject
                 mainFreeSpace,
                 Spacing,
                 run.Children.Count,
-                flipMainAxis);
+                flipMainAxis
+            );
             var mainOffset = childLeadingSpace;
-            var orderedChildren = flipMainAxis ? run.Children.AsEnumerable().Reverse() : run.Children;
+            var orderedChildren = flipMainAxis
+                ? run.Children.AsEnumerable().Reverse()
+                : run.Children;
 
             foreach (var child in orderedChildren)
             {
@@ -299,9 +328,16 @@ public class RenderWrap : RenderBox, IHasMultiChildrenRenderObject
                     WrapCrossAlignment.Start => 0,
                     WrapCrossAlignment.End => run.CrossExtent - childCrossExtent,
                     WrapCrossAlignment.Center => (run.CrossExtent - childCrossExtent) / 2,
-                    _ => throw new ArgumentOutOfRangeException(nameof(CrossAxisAlignment), CrossAxisAlignment, null)
+                    _ => throw new ArgumentOutOfRangeException(
+                        nameof(CrossAxisAlignment),
+                        CrossAxisAlignment,
+                        null
+                    ),
                 };
-                ((WrapParentData)child.ParentData!).Offset = ToOffset(mainOffset, crossOffset + childCrossOffset);
+                ((WrapParentData)child.ParentData!).Offset = ToOffset(
+                    mainOffset,
+                    crossOffset + childCrossOffset
+                );
                 mainOffset += childMainExtent + childBetweenSpace;
             }
 
@@ -314,57 +350,83 @@ public class RenderWrap : RenderBox, IHasMultiChildrenRenderObject
         double freeSpace,
         double itemSpacing,
         int itemCount,
-        bool flipped) => alignment switch
-    {
-        WrapAlignment.Start => (flipped ? freeSpace : 0, itemSpacing),
-        WrapAlignment.End => (flipped ? 0 : freeSpace, itemSpacing),
-        WrapAlignment.Center => (freeSpace / 2, itemSpacing),
-        WrapAlignment.SpaceBetween when itemCount < 2 => (flipped ? freeSpace : 0, itemSpacing),
-        WrapAlignment.SpaceBetween => (0, freeSpace / (itemCount - 1) + itemSpacing),
-        WrapAlignment.SpaceAround => (freeSpace / itemCount / 2, freeSpace / itemCount + itemSpacing),
-        WrapAlignment.SpaceEvenly => (freeSpace / (itemCount + 1), freeSpace / (itemCount + 1) + itemSpacing),
-        _ => throw new ArgumentOutOfRangeException(nameof(alignment), alignment, null)
-    };
+        bool flipped
+    ) =>
+        alignment switch
+        {
+            WrapAlignment.Start => (flipped ? freeSpace : 0, itemSpacing),
+            WrapAlignment.End => (flipped ? 0 : freeSpace, itemSpacing),
+            WrapAlignment.Center => (freeSpace / 2, itemSpacing),
+            WrapAlignment.SpaceBetween when itemCount < 2 => (flipped ? freeSpace : 0, itemSpacing),
+            WrapAlignment.SpaceBetween => (0, freeSpace / (itemCount - 1) + itemSpacing),
+            WrapAlignment.SpaceAround => (
+                freeSpace / itemCount / 2,
+                freeSpace / itemCount + itemSpacing
+            ),
+            WrapAlignment.SpaceEvenly => (
+                freeSpace / (itemCount + 1),
+                freeSpace / (itemCount + 1) + itemSpacing
+            ),
+            _ => throw new ArgumentOutOfRangeException(nameof(alignment), alignment, null),
+        };
 
-    private double GetMainExtent(SKSize size) => Direction == Axis.Horizontal ? size.Width : size.Height;
+    private double GetMainExtent(SKSize size) =>
+        Direction == Axis.Horizontal ? size.Width : size.Height;
 
-    private double GetCrossExtent(SKSize size) => Direction == Axis.Horizontal ? size.Height : size.Width;
+    private double GetCrossExtent(SKSize size) =>
+        Direction == Axis.Horizontal ? size.Height : size.Width;
 
-    private Offset ToOffset(double mainOffset, double crossOffset) => Direction switch
-    {
-        Axis.Horizontal => new Offset(mainOffset, crossOffset),
-        Axis.Vertical => new Offset(crossOffset, mainOffset),
-        _ => throw new ArgumentOutOfRangeException(nameof(Direction), Direction, null)
-    };
+    private Offset ToOffset(double mainOffset, double crossOffset) =>
+        Direction switch
+        {
+            Axis.Horizontal => new Offset(mainOffset, crossOffset),
+            Axis.Vertical => new Offset(crossOffset, mainOffset),
+            _ => throw new ArgumentOutOfRangeException(nameof(Direction), Direction, null),
+        };
 
-    private SKSize ConstrainAxisSize(BoxConstraints constraints, double mainExtent, double crossExtent) => Direction switch
-    {
-        Axis.Horizontal => constraints.Constrain(mainExtent, crossExtent),
-        Axis.Vertical => constraints.Constrain(crossExtent, mainExtent),
-        _ => throw new ArgumentOutOfRangeException(nameof(Direction), Direction, null)
-    };
+    private SKSize ConstrainAxisSize(
+        BoxConstraints constraints,
+        double mainExtent,
+        double crossExtent
+    ) =>
+        Direction switch
+        {
+            Axis.Horizontal => constraints.Constrain(mainExtent, crossExtent),
+            Axis.Vertical => constraints.Constrain(crossExtent, mainExtent),
+            _ => throw new ArgumentOutOfRangeException(nameof(Direction), Direction, null),
+        };
 
-    private static WrapCrossAlignment Flip(WrapCrossAlignment alignment) => alignment switch
-    {
-        WrapCrossAlignment.Start => WrapCrossAlignment.End,
-        WrapCrossAlignment.End => WrapCrossAlignment.Start,
-        WrapCrossAlignment.Center => WrapCrossAlignment.Center,
-        _ => throw new ArgumentOutOfRangeException(nameof(alignment), alignment, null)
-    };
+    private static WrapCrossAlignment Flip(WrapCrossAlignment alignment) =>
+        alignment switch
+        {
+            WrapCrossAlignment.Start => WrapCrossAlignment.End,
+            WrapCrossAlignment.End => WrapCrossAlignment.Start,
+            WrapCrossAlignment.Center => WrapCrossAlignment.Center,
+            _ => throw new ArgumentOutOfRangeException(nameof(alignment), alignment, null),
+        };
 
     private static void EnsureFiniteAndNonNegative(double value, string parameterName)
     {
         if (!double.IsFinite(value) || value < 0)
         {
-            throw new ArgumentOutOfRangeException(parameterName, value, "間隔には0以上の有限値を指定してください。");
+            throw new ArgumentOutOfRangeException(
+                parameterName,
+                value,
+                "間隔には0以上の有限値を指定してください。"
+            );
         }
     }
 
-    private static void EnsureDefined<T>(T value, string parameterName) where T : struct, Enum
+    private static void EnsureDefined<T>(T value, string parameterName)
+        where T : struct, Enum
     {
         if (!Enum.IsDefined(value))
         {
-            throw new ArgumentOutOfRangeException(parameterName, value, "定義済みの値を指定してください。");
+            throw new ArgumentOutOfRangeException(
+                parameterName,
+                value,
+                "定義済みの値を指定してください。"
+            );
         }
     }
 
@@ -383,10 +445,13 @@ public class RenderWrap : RenderBox, IHasMultiChildrenRenderObject
         foreach (var child in Children.Reverse())
         {
             var parentData = (WrapParentData)child.ParentData!;
-            if (result.AddWidthPaintOffset(
+            if (
+                result.AddWidthPaintOffset(
                     parentData.Offset,
                     position,
-                    (testResult, transformed) => child.HitTest(testResult, transformed)))
+                    (testResult, transformed) => child.HitTest(testResult, transformed)
+                )
+            )
             {
                 return true;
             }
@@ -410,7 +475,8 @@ public class RenderWrap : RenderBox, IHasMultiChildrenRenderObject
     }
 
     /// <inheritdoc/>
-    public override void VisitChildren(Action<RenderObject> visitor) => Children.VisitChildren(visitor);
+    public override void VisitChildren(Action<RenderObject> visitor) =>
+        Children.VisitChildren(visitor);
 
     /// <inheritdoc/>
     public override void RedepthChildren() => VisitChildren(RedepthChild);

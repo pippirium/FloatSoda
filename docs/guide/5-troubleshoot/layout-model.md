@@ -37,7 +37,7 @@ app.CreateWindow(new DashboardWindow
     {
         Width = 100,
         Height = 100,
-        Child = new ColoredBox { Color = SKColors.Tomato },
+        Child = new ColoredBox { Color = Colors.Tomato },
     },
 });
 ```
@@ -51,7 +51,7 @@ Child = new Center
     {
         Width = 100,
         Height = 100,
-        Child = new ColoredBox { Color = SKColors.Tomato },
+        Child = new ColoredBox { Color = Colors.Tomato },
     },
 },
 ```

@@ -8,8 +8,10 @@ public interface IOverlayIdentity : IDisposable
 {
     /// <summary>Gets the stable key used to identify the overlay in SteamVR.</summary>
     string Key { get; }
+
     /// <summary>Gets the user-facing overlay name.</summary>
     string Name { get; }
+
     /// <summary>Gets the native OpenVR overlay handle.</summary>
     ulong Handle { get; }
 }
@@ -18,8 +20,10 @@ public interface IOverlayIdentity : IDisposable
 public class OverlayIdentity : IOverlayIdentity
 {
     private ulong _handle;
+
     /// <inheritdoc />
     public string Key { get; protected init; }
+
     /// <inheritdoc />
     public string Name { get; protected init; }
 
@@ -34,7 +38,11 @@ public class OverlayIdentity : IOverlayIdentity
     /// <param name="key">The stable key used to identify the overlay in SteamVR.</param>
     /// <param name="name">The user-facing overlay name.</param>
     /// <param name="overlayHandle">An existing handle to adopt, or the invalid handle to create a new overlay.</param>
-    public OverlayIdentity(string key, string name, ulong overlayHandle = OpenVR.k_ulOverlayHandleInvalid)
+    public OverlayIdentity(
+        string key,
+        string name,
+        ulong overlayHandle = OpenVR.k_ulOverlayHandleInvalid
+    )
     {
         Key = key;
         Name = name;
@@ -129,10 +137,13 @@ public class DashboardOverlayIdentity : IOverlayIdentity
 {
     /// <inheritdoc />
     public string Key { get; init; }
+
     /// <inheritdoc />
     public string Name { get; init; }
+
     /// <inheritdoc />
     public ulong Handle { get; private set; }
+
     /// <summary>Gets the native handle for the dashboard thumbnail.</summary>
     public ulong ThumbnailHandle { get; private set; }
 

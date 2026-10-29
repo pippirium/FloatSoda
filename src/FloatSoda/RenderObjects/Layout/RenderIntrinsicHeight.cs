@@ -19,7 +19,8 @@ public sealed class RenderIntrinsicHeight : RenderProxyBox
         set
         {
             RenderIntrinsicWidth.ValidateStep(value, nameof(StepHeight));
-            if (field == value) return;
+            if (field == value)
+                return;
             field = value;
             MarkNeedsLayout();
         }
@@ -45,20 +46,30 @@ public sealed class RenderIntrinsicHeight : RenderProxyBox
 
     /// <inheritdoc/>
     protected override double ComputeMinIntrinsicHeight(double width) =>
-        Child is null ? 0 : RenderIntrinsicWidth.RoundUp(Child.GetMinIntrinsicHeight(width), StepHeight);
+        Child is null
+            ? 0
+            : RenderIntrinsicWidth.RoundUp(Child.GetMinIntrinsicHeight(width), StepHeight);
 
     /// <inheritdoc/>
     protected override double ComputeMaxIntrinsicHeight(double width) =>
-        Child is null ? 0 : RenderIntrinsicWidth.RoundUp(Child.GetMaxIntrinsicHeight(width), StepHeight);
+        Child is null
+            ? 0
+            : RenderIntrinsicWidth.RoundUp(Child.GetMaxIntrinsicHeight(width), StepHeight);
 
     private BoxConstraints CreateChildConstraints(BoxConstraints constraints)
     {
-        if (constraints.HasTightHeight) return constraints;
+        if (constraints.HasTightHeight)
+            return constraints;
 
-        var height = RenderIntrinsicWidth.RoundUp(Child!.GetMaxIntrinsicHeight(constraints.MaxWidth), StepHeight);
+        var height = RenderIntrinsicWidth.RoundUp(
+            Child!.GetMaxIntrinsicHeight(constraints.MaxWidth),
+            StepHeight
+        );
         if (!double.IsFinite(height))
         {
-            throw new InvalidOperationException("IntrinsicHeightで使用する子の最大intrinsic高さは有限値である必要があります。");
+            throw new InvalidOperationException(
+                "IntrinsicHeightで使用する子の最大intrinsic高さは有限値である必要があります。"
+            );
         }
 
         height = constraints.ConstrainHeight(height);

@@ -14,11 +14,7 @@ public sealed record Stack : MultiChildRenderObjectWidget<RenderStack>
     public StackFit Fit { get; init; } = StackFit.Loose;
 
     /// <inheritdoc/>
-    public override RenderStack CreateRenderObject() => new()
-    {
-        Alignment = Alignment,
-        Fit = Fit,
-    };
+    public override RenderStack CreateRenderObject() => new() { Alignment = Alignment, Fit = Fit };
 
     /// <inheritdoc/>
     public override void UpdateRenderObject(RenderStack renderObject)

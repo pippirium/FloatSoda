@@ -44,13 +44,16 @@ public sealed class GestureArenaEntry
     /// <param name="arena">参加を管理するジェスチャアリーナ。</param>
     /// <param name="pointer">参加対象のポインター識別子。</param>
     /// <param name="member">参加するアリーナメンバー。</param>
-    internal GestureArenaEntry(GestureArenaManager arena, int pointer, IGestureArenaMember member)
-        => (_arena, _pointer, _member) = (arena, pointer, member);
+    internal GestureArenaEntry(
+        GestureArenaManager arena,
+        int pointer,
+        IGestureArenaMember member
+    ) => (_arena, _pointer, _member) = (arena, pointer, member);
 
     /// <summary>このメンバーとして勝敗を宣言する。</summary>
     /// <param name="disposition">宣言する受理または辞退の状態。</param>
-    public void Resolve(GestureDisposition disposition)
-        => _arena.Resolve(_pointer, _member, disposition);
+    public void Resolve(GestureDisposition disposition) =>
+        _arena.Resolve(_pointer, _member, disposition);
 }
 
 /// <summary>
@@ -100,7 +103,8 @@ public sealed class GestureArenaManager
     /// <remarks>対象のアリーナが存在しない場合は何も行いません。</remarks>
     public void Close(int pointer)
     {
-        if (!_arenas.TryGetValue(pointer, out var state)) return;
+        if (!_arenas.TryGetValue(pointer, out var state))
+            return;
 
         state.IsOpen = false;
         TryToResolveArena(pointer, state);
@@ -113,11 +117,13 @@ public sealed class GestureArenaManager
     /// <remarks>対象のアリーナを削除し、先頭以外の残存メンバーへ敗北を通知します。</remarks>
     public void Sweep(int pointer)
     {
-        if (!_arenas.TryGetValue(pointer, out var state)) return;
+        if (!_arenas.TryGetValue(pointer, out var state))
+            return;
 
         _arenas.Remove(pointer);
 
-        if (state.Members.Count == 0) return;
+        if (state.Members.Count == 0)
+            return;
 
         state.Members[0].AcceptGesture(pointer);
         for (var i = 1; i < state.Members.Count; i++)
@@ -130,7 +136,8 @@ public sealed class GestureArenaManager
     /// <param name="pointer">中断するポインター識別子。</param>
     internal void Cancel(int pointer)
     {
-        if (!_arenas.Remove(pointer, out var state)) return;
+        if (!_arenas.Remove(pointer, out var state))
+            return;
 
         foreach (var member in state.Members)
         {
@@ -148,14 +155,16 @@ public sealed class GestureArenaManager
     /// </remarks>
     public void Resolve(int pointer, IGestureArenaMember member, GestureDisposition disposition)
     {
-        if (!_arenas.TryGetValue(pointer, out var state)) return;
+        if (!_arenas.TryGetValue(pointer, out var state))
+            return;
 
         if (disposition == GestureDisposition.Rejected)
         {
             state.Members.Remove(member);
             member.RejectGesture(pointer);
 
-            if (!state.IsOpen) TryToResolveArena(pointer, state);
+            if (!state.IsOpen)
+                TryToResolveArena(pointer, state);
         }
         else if (state.IsOpen)
         {
@@ -183,7 +192,8 @@ public sealed class GestureArenaManager
                 state.Members[0].AcceptGesture(pointer);
                 break;
             default:
-                if (state.EagerWinner is { } winner) ResolveInFavorOf(pointer, state, winner);
+                if (state.EagerWinner is { } winner)
+                    ResolveInFavorOf(pointer, state, winner);
                 break;
         }
     }
@@ -198,7 +208,8 @@ public sealed class GestureArenaManager
 
         foreach (var m in state.Members)
         {
-            if (!ReferenceEquals(m, member)) m.RejectGesture(pointer);
+            if (!ReferenceEquals(m, member))
+                m.RejectGesture(pointer);
         }
 
         member.AcceptGesture(pointer);

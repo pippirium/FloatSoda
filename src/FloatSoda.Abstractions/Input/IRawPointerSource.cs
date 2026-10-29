@@ -12,7 +12,7 @@ public enum PointerButton
     Middle,
 
     /// <summary>右ボタン。</summary>
-    Right
+    Right,
 }
 
 /// <summary>生ポインタイベントの種別。</summary>
@@ -34,7 +34,7 @@ public enum RawPointerKind
     ButtonUp,
 
     /// <summary>スクロールした。</summary>
-    Scroll
+    Scroll,
 }
 
 /// <summary>
@@ -49,7 +49,8 @@ public readonly record struct RawPointerEvent(
     RawPointerKind Kind,
     Offset Position,
     PointerButton Button = PointerButton.Left,
-    Offset ScrollDelta = default);
+    Offset ScrollDelta = default
+);
 
 /// <summary>
 /// ウィンドウ／オーバーレイ 1 枚に対応する生ポインタ入力源。

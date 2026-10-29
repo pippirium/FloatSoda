@@ -10,9 +10,7 @@ namespace FloatSoda.OVR.Input;
 /// </summary>
 public abstract class InputAction
 {
-    private protected InputAction()
-    {
-    }
+    private protected InputAction() { }
 
     /// <summary>
     /// アクション名を取得します(例: <c>grab</c>)。
@@ -57,7 +55,8 @@ public abstract class InputAction
     {
         foreach (var binding in DefaultBindings)
         {
-            if (binding.Controller == controller) yield return binding.Path;
+            if (binding.Controller == controller)
+                yield return binding.Path;
         }
 
         if (DefaultBindings.Count == 0 && SuggestedPath is not null)
@@ -74,7 +73,8 @@ public abstract class InputAction
 /// 宣言(初期化プロパティ)とランタイム状態(<see cref="Value"/>・イベント)を1つのインスタンスが担います。
 /// </summary>
 /// <typeparam name="T">アクション値の型(bool / float / Vector2)。</typeparam>
-public sealed class InputAction<T> : InputAction where T : struct
+public sealed class InputAction<T> : InputAction
+    where T : struct
 {
     private static readonly uint DigitalSize = (uint)Marshal.SizeOf<InputDigitalActionData_t>();
     private static readonly uint AnalogSize = (uint)Marshal.SizeOf<InputAnalogActionData_t>();
@@ -84,7 +84,8 @@ public sealed class InputAction<T> : InputAction where T : struct
         if (typeof(T) != typeof(bool) && typeof(T) != typeof(float) && typeof(T) != typeof(Vector2))
         {
             throw new NotSupportedException(
-                $"InputAction<{typeof(T).Name}> は未対応です。bool / float / Vector2 を使用してください。");
+                $"InputAction<{typeof(T).Name}> は未対応です。bool / float / Vector2 を使用してください。"
+            );
         }
     }
 
@@ -105,34 +106,49 @@ public sealed class InputAction<T> : InputAction where T : struct
     public event Action? OnReleased;
 
     internal override string ManifestType =>
-        typeof(T) == typeof(bool) ? "boolean" :
-        typeof(T) == typeof(float) ? "vector1" : "vector2";
+        typeof(T) == typeof(bool) ? "boolean"
+        : typeof(T) == typeof(float) ? "vector1"
+        : "vector2";
 
     internal override void Update()
     {
-        if (Handle == OpenVR.k_ulInvalidActionHandle) return;
+        if (Handle == OpenVR.k_ulInvalidActionHandle)
+            return;
 
         if (typeof(T) == typeof(bool))
         {
             var data = default(InputDigitalActionData_t);
             var error = OpenVR.Input.GetDigitalActionData(
-                Handle, ref data, DigitalSize, OpenVR.k_ulInvalidInputValueHandle);
-            if (error != EVRInputError.None) return;
+                Handle,
+                ref data,
+                DigitalSize,
+                OpenVR.k_ulInvalidInputValueHandle
+            );
+            if (error != EVRInputError.None)
+                return;
 
             IsActive = data.bActive;
             var state = data.bState;
             Value = Unsafe.As<bool, T>(ref state);
 
-            if (!data.bChanged) return;
-            if (data.bState) OnPerformed?.Invoke(Value);
-            else OnReleased?.Invoke();
+            if (!data.bChanged)
+                return;
+            if (data.bState)
+                OnPerformed?.Invoke(Value);
+            else
+                OnReleased?.Invoke();
         }
         else
         {
             var data = default(InputAnalogActionData_t);
             var error = OpenVR.Input.GetAnalogActionData(
-                Handle, ref data, AnalogSize, OpenVR.k_ulInvalidInputValueHandle);
-            if (error != EVRInputError.None) return;
+                Handle,
+                ref data,
+                AnalogSize,
+                OpenVR.k_ulInvalidInputValueHandle
+            );
+            if (error != EVRInputError.None)
+                return;
 
             IsActive = data.bActive;
 
@@ -140,13 +156,15 @@ public sealed class InputAction<T> : InputAction where T : struct
             {
                 var x = data.x;
                 Value = Unsafe.As<float, T>(ref x);
-                if (data.deltaX != 0f) OnPerformed?.Invoke(Value);
+                if (data.deltaX != 0f)
+                    OnPerformed?.Invoke(Value);
             }
             else
             {
                 var xy = new Vector2(data.x, data.y);
                 Value = Unsafe.As<Vector2, T>(ref xy);
-                if (data.deltaX != 0f || data.deltaY != 0f) OnPerformed?.Invoke(Value);
+                if (data.deltaX != 0f || data.deltaY != 0f)
+                    OnPerformed?.Invoke(Value);
             }
         }
     }

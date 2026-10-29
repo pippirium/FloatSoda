@@ -14,6 +14,7 @@ public record Align : SingleChildRenderObjectWidget<RenderPositionedBox>
     /// 子要素を親の領域内へ配置する基準位置を取得します。
     /// </summary>
     public Alignment Alignment { get; init; } = Alignment.Center;
+
     /// <summary>
     /// 子要素の幅に乗算して自身の幅を決める係数を取得します。
     /// <see langword="null"/>の場合は、制約で許可された最大幅を使用します。
@@ -28,6 +29,7 @@ public record Align : SingleChildRenderObjectWidget<RenderPositionedBox>
             field = value;
         }
     }
+
     /// <summary>
     /// 子要素の高さに乗算して自身の高さを決める係数を取得します。
     /// <see langword="null"/>の場合は、制約で許可された最大高さを使用します。
@@ -43,7 +45,6 @@ public record Align : SingleChildRenderObjectWidget<RenderPositionedBox>
         }
     }
 
-
     /// <summary>
     /// このウィジェットの配置設定を保持するRenderObjectを生成します。
     /// </summary>
@@ -54,7 +55,7 @@ public record Align : SingleChildRenderObjectWidget<RenderPositionedBox>
         {
             Alignment = Alignment,
             WidthFactor = WidthFactor,
-            HeightFactor = HeightFactor
+            HeightFactor = HeightFactor,
         };
     }
 
@@ -95,10 +96,6 @@ public record Center : StatelessWidget
     /// <returns>中央配置を指定した<see cref="Align"/>。</returns>
     public override Widget Build(IBuildContext context)
     {
-        return new Align()
-        {
-            Child = Child,
-            Alignment = Alignment.Center
-        };
+        return new Align() { Child = Child, Alignment = Alignment.Center };
     }
 }

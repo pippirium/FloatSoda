@@ -19,7 +19,7 @@ static class Step2
 
         var root = new ContainerLayer
         {
-            Children = { new PictureLayer { Picture = recorder.EndRecording() } }
+            Children = { new PictureLayer { Picture = recorder.EndRecording() } },
         };
 
         using var bitmap = new LayerBitmapRenderer().Render(root, size);

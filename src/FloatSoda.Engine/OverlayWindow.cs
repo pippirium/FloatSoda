@@ -1,7 +1,6 @@
 using FloatSoda.Abstractions.Engine;
 using FloatSoda.Abstractions.Geometries;
 using FloatSoda.Abstractions.Input;
-using FloatSoda.Rendering.Layers;
 using FloatSoda.OVR;
 using FloatSoda.OVR.Overlay;
 using SkiaSharp;
@@ -85,7 +84,7 @@ public class OverlayWindow : IEngineWindow
         renderer.Resize(size.Width, size.Height);
         Overlay.WidthInMeters.Value = dpm.ToMeters(size.Width);
 
-        if (PointerSource != null)
+        if (PointerSource is not null)
         {
             Overlay.Input.SetMouseScale(size.Width, size.Height);
         }
@@ -102,7 +101,8 @@ public class OverlayWindow : IEngineWindow
     /// </summary>
     public void PollInputEvents()
     {
-        if (PointerSource == null) return;
+        if (PointerSource is null)
+            return;
 
         Overlay.EventDispatcher.PollEvents();
 

@@ -11,11 +11,7 @@ public class RenderViewTest
     private static (RenderView View, RenderPipeline Pipeline) Build(RenderBox child)
     {
         var view = new RenderView { Child = child };
-        var pipeline = new RenderPipeline
-        {
-            OnNeedVisualUpdate = () => { },
-            RenderView = view
-        };
+        var pipeline = new RenderPipeline { OnNeedVisualUpdate = () => { }, RenderView = view };
         view.PrepareInitialFrame();
         return (view, pipeline);
     }
@@ -24,10 +20,9 @@ public class RenderViewTest
     public void Size_ShrinkWrapsToChild()
     {
         // Loosen(unbounded)制約により、RenderView.Size は子のレイアウト結果に収縮する。
-        var (view, pipeline) = Build(new RenderConstrainedBox
-        {
-            AdditionalConstraints = BoxConstraints.Tight(320, 240)
-        });
+        var (view, pipeline) = Build(
+            new RenderConstrainedBox { AdditionalConstraints = BoxConstraints.Tight(320, 240) }
+        );
 
         pipeline.FlushLayout();
 
@@ -39,7 +34,7 @@ public class RenderViewTest
     {
         var box = new RenderConstrainedBox
         {
-            AdditionalConstraints = BoxConstraints.Tight(100, 100)
+            AdditionalConstraints = BoxConstraints.Tight(100, 100),
         };
         var (view, pipeline) = Build(box);
 

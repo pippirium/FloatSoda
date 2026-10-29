@@ -1,9 +1,9 @@
 using System.Reflection;
 using FloatSoda.Abstractions.Geometries;
 using FloatSoda.Geometrics;
+using FloatSoda.Rendering.Layers;
 using FloatSoda.RenderObjects;
 using FloatSoda.RenderObjects.Layout;
-using FloatSoda.Rendering.Layers;
 using SkiaSharp;
 
 namespace FloatSoda.Test.RenderObjects;
@@ -14,7 +14,9 @@ public class IntrinsicLayoutTest
     [InlineData(-1)]
     [InlineData(double.NaN)]
     [InlineData(double.NegativeInfinity)]
-    public void GetIntrinsicDimension_負値NaN負の無限大_ArgumentOutOfRangeExceptionを投げる(double value)
+    public void GetIntrinsicDimension_負値NaN負の無限大_ArgumentOutOfRangeExceptionを投げる(
+        double value
+    )
     {
         var box = new TestIntrinsicBox(20, 10);
 
@@ -27,24 +29,39 @@ public class IntrinsicLayoutTest
     [Fact]
     public void GetIntrinsicDimension_未実装RenderBox_NotSupportedExceptionを投げる()
     {
-        Assert.Throws<NotSupportedException>(() => new UnsupportedBox().GetMaxIntrinsicWidth(double.PositiveInfinity));
+        Assert.Throws<NotSupportedException>(() =>
+            new UnsupportedBox().GetMaxIntrinsicWidth(double.PositiveInfinity)
+        );
     }
 
     [Fact]
     public void PublicApi_RenderBoxのintrinsic表面_スカラー値のみを公開しdryLayoutを内部に保つ()
     {
-        var methods = typeof(RenderBox).GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly)
-            .Where(method => method.Name.StartsWith("Get", StringComparison.Ordinal) && method.Name.Contains("Intrinsic", StringComparison.Ordinal))
+        var methods = typeof(RenderBox)
+            .GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly)
+            .Where(method =>
+                method.Name.StartsWith("Get", StringComparison.Ordinal)
+                && method.Name.Contains("Intrinsic", StringComparison.Ordinal)
+            )
             .ToArray();
 
         Assert.Equal(4, methods.Length);
-        Assert.All(methods, method =>
-        {
-            Assert.Equal(typeof(double), method.ReturnType);
-            Assert.Single(method.GetParameters(), parameter => parameter.ParameterType == typeof(double));
-        });
+        Assert.All(
+            methods,
+            method =>
+            {
+                Assert.Equal(typeof(double), method.ReturnType);
+                Assert.Single(
+                    method.GetParameters(),
+                    parameter => parameter.ParameterType == typeof(double)
+                );
+            }
+        );
 
-        var dryLayout = typeof(RenderBox).GetMethod("ComputeDryLayout", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly);
+        var dryLayout = typeof(RenderBox).GetMethod(
+            "ComputeDryLayout",
+            BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly
+        );
         Assert.NotNull(dryLayout);
         Assert.True(dryLayout!.IsAssembly);
         Assert.False(dryLayout.IsFamily);
@@ -91,7 +108,10 @@ public class IntrinsicLayoutTest
     [Fact]
     public void GetIntrinsicDimension_SizedBox相当の固定制約_四種類すべて固定寸法を返す()
     {
-        var box = new RenderConstrainedBox { AdditionalConstraints = BoxConstraints.Tight(120, 45) };
+        var box = new RenderConstrainedBox
+        {
+            AdditionalConstraints = BoxConstraints.Tight(120, 45),
+        };
 
         Assert.Equal(120, box.GetMinIntrinsicWidth(double.PositiveInfinity));
         Assert.Equal(120, box.GetMaxIntrinsicWidth(double.PositiveInfinity));
@@ -105,7 +125,7 @@ public class IntrinsicLayoutTest
         var box = new RenderConstrainedBox
         {
             AdditionalConstraints = new BoxConstraints(40, 80, 20, 60),
-            Child = new TestIntrinsicBox(100, 10)
+            Child = new TestIntrinsicBox(100, 10),
         };
 
         Assert.Equal(80, box.GetMaxIntrinsicWidth(double.PositiveInfinity));
@@ -130,13 +150,9 @@ public class IntrinsicLayoutTest
         var height = new RenderIntrinsicHeight
         {
             StepHeight = 10,
-            Child = new TestIntrinsicBox(53, 17)
+            Child = new TestIntrinsicBox(53, 17),
         };
-        var width = new RenderIntrinsicWidth
-        {
-            StepWidth = 20,
-            Child = height
-        };
+        var width = new RenderIntrinsicWidth { StepWidth = 20, Child = height };
 
         Assert.Equal(60, width.GetMaxIntrinsicWidth(double.PositiveInfinity));
         Assert.Equal(20, height.GetMaxIntrinsicHeight(60));
@@ -180,8 +196,12 @@ public class IntrinsicLayoutTest
     [InlineData(double.PositiveInfinity)]
     public void Step_0以下または非有限値_ArgumentOutOfRangeExceptionを投げる(double value)
     {
-        Assert.Throws<ArgumentOutOfRangeException>(() => new RenderIntrinsicWidth { StepWidth = value });
-        Assert.Throws<ArgumentOutOfRangeException>(() => new RenderIntrinsicHeight { StepHeight = value });
+        Assert.Throws<ArgumentOutOfRangeException>(() =>
+            new RenderIntrinsicWidth { StepWidth = value }
+        );
+        Assert.Throws<ArgumentOutOfRangeException>(() =>
+            new RenderIntrinsicHeight { StepHeight = value }
+        );
     }
 
     private static RenderFlex CreateFlex(Axis direction)

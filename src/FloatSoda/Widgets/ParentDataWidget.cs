@@ -12,7 +12,8 @@ namespace FloatSoda.Widgets;
 /// <typeparamref name="T"/>を設定する位置で使用します。
 /// </remarks>
 /// <seealso cref="ParentDataElement{T}"/>
-public abstract record ParentDataWidget<T> : ProxyWidget where T : class, IParentData
+public abstract record ParentDataWidget<T> : ProxyWidget
+    where T : class, IParentData
 {
     /// <inheritdoc/>
     public override Element CreateElement() => new ParentDataElement<T> { Widget = this };
@@ -29,8 +30,9 @@ public abstract record ParentDataWidget<T> : ProxyWidget where T : class, IParen
         if (renderObject.ParentData is not T parentData)
         {
             throw new InvalidOperationException(
-                $"{GetType().Name} requires parent data of type {typeof(T).Name}, " +
-                $"but {renderObject.GetType().Name} has {renderObject.ParentData?.GetType().Name ?? "no parent data"}.");
+                $"{GetType().Name} requires parent data of type {typeof(T).Name}, "
+                    + $"but {renderObject.GetType().Name} has {renderObject.ParentData?.GetType().Name ?? "no parent data"}."
+            );
         }
 
         if (ApplyParentData(parentData))

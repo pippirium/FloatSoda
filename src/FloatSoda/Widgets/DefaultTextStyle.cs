@@ -20,7 +20,7 @@ public sealed record DefaultTextStyle : InheritedWidget
     private static readonly DefaultTextStyle Fallback = new()
     {
         Style = new TextStyle(),
-        Child = new NullWidget()
+        Child = new NullWidget(),
     };
 
     /// <summary>
@@ -55,7 +55,8 @@ public sealed record DefaultTextStyle : InheritedWidget
     {
         public override Widget Build(IBuildContext context) =>
             throw new InvalidOperationException(
-                "DefaultTextStyle.Of(context)が返すフォールバックはウィジェットツリーへ組み込めません。" +
-                "ツリーへ配置するDefaultTextStyleは、StyleとChildを指定して生成してください。");
+                "DefaultTextStyle.Of(context)が返すフォールバックはウィジェットツリーへ組み込めません。"
+                    + "ツリーへ配置するDefaultTextStyleは、StyleとChildを指定して生成してください。"
+            );
     }
 }

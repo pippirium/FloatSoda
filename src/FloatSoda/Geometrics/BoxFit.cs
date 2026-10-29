@@ -44,7 +44,8 @@ internal static class BoxFitExtensions
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="fit"/>が定義されていない値です。</exception>
     internal static FittedSizes Apply(this BoxFit fit, SKSize input, SKSize output)
     {
-        if (input.IsEmpty || output.IsEmpty) return new FittedSizes(SKSize.Empty, SKSize.Empty);
+        if (input.IsEmpty || output.IsEmpty)
+            return new FittedSizes(SKSize.Empty, SKSize.Empty);
 
         var inputAspectRatio = input.Width / input.Height;
         var outputAspectRatio = output.Width / output.Height;
@@ -53,22 +54,57 @@ internal static class BoxFitExtensions
         {
             BoxFit.Fill => new FittedSizes(input, output),
             BoxFit.Contain => outputAspectRatio > inputAspectRatio
-                ? new FittedSizes(input, new SKSize(input.Width * output.Height / input.Height, output.Height))
-                : new FittedSizes(input, new SKSize(output.Width, input.Height * output.Width / input.Width)),
+                ? new FittedSizes(
+                    input,
+                    new SKSize(input.Width * output.Height / input.Height, output.Height)
+                )
+                : new FittedSizes(
+                    input,
+                    new SKSize(output.Width, input.Height * output.Width / input.Width)
+                ),
             BoxFit.Cover => outputAspectRatio > inputAspectRatio
-                ? new FittedSizes(new SKSize(input.Width, input.Width * output.Height / output.Width), output)
-                : new FittedSizes(new SKSize(input.Height * output.Width / output.Height, input.Height), output),
+                ? new FittedSizes(
+                    new SKSize(input.Width, input.Width * output.Height / output.Width),
+                    output
+                )
+                : new FittedSizes(
+                    new SKSize(input.Height * output.Width / output.Height, input.Height),
+                    output
+                ),
             BoxFit.FitWidth => outputAspectRatio > inputAspectRatio
-                ? new FittedSizes(new SKSize(input.Width, input.Width * output.Height / output.Width), output)
-                : new FittedSizes(input, new SKSize(output.Width, input.Height * output.Width / input.Width)),
+                ? new FittedSizes(
+                    new SKSize(input.Width, input.Width * output.Height / output.Width),
+                    output
+                )
+                : new FittedSizes(
+                    input,
+                    new SKSize(output.Width, input.Height * output.Width / input.Width)
+                ),
             BoxFit.FitHeight => outputAspectRatio > inputAspectRatio
-                ? new FittedSizes(input, new SKSize(input.Width * output.Height / input.Height, output.Height))
-                : new FittedSizes(new SKSize(input.Height * output.Width / output.Height, input.Height), output),
+                ? new FittedSizes(
+                    input,
+                    new SKSize(input.Width * output.Height / input.Height, output.Height)
+                )
+                : new FittedSizes(
+                    new SKSize(input.Height * output.Width / output.Height, input.Height),
+                    output
+                ),
             BoxFit.None => new FittedSizes(
-                new SKSize(Math.Min(input.Width, output.Width), Math.Min(input.Height, output.Height)),
-                new SKSize(Math.Min(input.Width, output.Width), Math.Min(input.Height, output.Height))),
+                new SKSize(
+                    Math.Min(input.Width, output.Width),
+                    Math.Min(input.Height, output.Height)
+                ),
+                new SKSize(
+                    Math.Min(input.Width, output.Width),
+                    Math.Min(input.Height, output.Height)
+                )
+            ),
             BoxFit.ScaleDown => ScaleDown(input, output),
-            _ => throw new ArgumentOutOfRangeException(nameof(fit), fit, "定義済みのBoxFitを指定してください。"),
+            _ => throw new ArgumentOutOfRangeException(
+                nameof(fit),
+                fit,
+                "定義済みのBoxFitを指定してください。"
+            ),
         };
     }
 
@@ -80,7 +116,11 @@ internal static class BoxFitExtensions
     {
         if (!Enum.IsDefined(value))
         {
-            throw new ArgumentOutOfRangeException(parameterName, value, "定義済みのBoxFitを指定してください。");
+            throw new ArgumentOutOfRangeException(
+                parameterName,
+                value,
+                "定義済みのBoxFitを指定してください。"
+            );
         }
     }
 

@@ -16,11 +16,13 @@ public record RenderObjectToWidgetAdapter : RenderObjectWidget<RenderView>
     /// このアダプターは新しいRenderViewを生成せず、指定されたインスタンスを使用します。
     /// </summary>
     public required RenderView Container { get; init; }
+
     /// <summary>
     /// ルートRenderViewの子として構築するウィジェットを取得します。
     /// <see langword="null"/>の場合、ルートは子を持ちません。
     /// </summary>
     public Widget? Child { get; init; }
+
     /// <inheritdoc/>
     public override Element CreateElement() => new RenderObjectToWidgetElement<RenderView>();
 
@@ -45,10 +47,13 @@ public record RenderObjectToWidgetAdapter : RenderObjectWidget<RenderView>
     /// 新しいElementをマウントします。既存のElementを指定した場合は、このアダプターを次の構成として保持し、
     /// Elementを再ビルド対象としてスケジュールします。
     /// </remarks>
-    public RenderObjectToWidgetElement<RenderView> AttachToRenderTree(BuildOwner owner, RenderObjectToWidgetElement<RenderView>? element)
+    public RenderObjectToWidgetElement<RenderView> AttachToRenderTree(
+        BuildOwner owner,
+        RenderObjectToWidgetElement<RenderView>? element
+    )
     {
         RenderObjectToWidgetElement<RenderView> result;
-        if (element == null)
+        if (element is null)
         {
             result = (RenderObjectToWidgetElement<RenderView>)CreateElement();
             result.Widget = this;

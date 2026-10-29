@@ -1,0 +1,7 @@
+{"id": "visibility-1", "source": "VisibilityDemo.cs:37-43", "flutter_ref": "indexed_stack.dart:236", "question": "1段目の左で、Visible = false の赤い四角が消え、青と黄の四角が隙間なく並んでいるか", "read_aloud": "1段目の左、青と黄が隙間なくくっついてるか見て"}
+{"id": "visibility-2", "source": "VisibilityDemo.cs:47-52", "flutter_ref": "indexed_stack.dart:236", "question": "1段目の中央に、赤ではなく Replacement の灰色の四角が出ているか", "read_aloud": "1段目の真ん中、灰色の四角が出てるか見て"}
+{"id": "visibility-3", "source": "VisibilityDemo.cs:55-59", "flutter_ref": "indexed_stack.dart:236", "question": "1段目の右に、Visible = true の赤い四角が出ているか", "read_aloud": "1段目の右に赤い四角が出てるか見て"}
+{"id": "visibility-4", "source": "VisibilityDemo.cs:70-76", "flutter_ref": "basic.dart:3623", "question": "2段目の左で、IsOffstage = true の赤い四角が消え、青と黄の四角が隙間なく並んでいるか", "read_aloud": "2段目の左、青と黄が隙間なくくっついてるか見て"}
+{"id": "visibility-5", "source": "VisibilityDemo.cs:79-83", "flutter_ref": "basic.dart:3623", "question": "2段目の右に、IsOffstage = false の赤い四角が出ているか", "read_aloud": "2段目の右に赤い四角が出てるか見て"}
+{"id": "visibility-6", "source": "VisibilityDemo.cs:92-117", "flutter_ref": "indexed_stack.dart:41", "question": "3段目で、灰色の背景が赤い四角の4倍の面積(一番大きい子の大きさ)になり、その左上に赤い四角だけが描かれているか", "read_aloud": "3段目、灰色の大きい枠の左上に赤だけ出てるか見て"}
+{"id": "visibility-7", "source": "VisibilityDemo.cs:128-134", "flutter_ref": "basic.dart:2247", "question": "4段目で、0回は横書き、1回は上から下へ読む縦長、2回は上下逆さ、3回は下から上へ読む縦長になっているか", "read_aloud": "4段目、横、縦、逆さ、逆向きの縦の順か見て"}

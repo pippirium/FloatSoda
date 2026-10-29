@@ -13,7 +13,8 @@ internal interface IParentDataElement
 /// </summary>
 /// <typeparam name="T">親RenderObjectが子ごとに用意するParentDataの型。</typeparam>
 /// <seealso cref="ParentDataWidget{T}"/>
-public class ParentDataElement<T> : ProxyElement, IParentDataElement where T : class, IParentData
+public class ParentDataElement<T> : ProxyElement, IParentDataElement
+    where T : class, IParentData
 {
     /// <summary>
     /// Widget更新後の構成を子孫RenderObjectのParentDataへ反映します。
@@ -29,8 +30,9 @@ public class ParentDataElement<T> : ProxyElement, IParentDataElement where T : c
         }
     }
 
-    void IParentDataElement.ApplyParentData(RenderObject renderObject) => ApplyParentData(renderObject);
+    void IParentDataElement.ApplyParentData(RenderObject renderObject) =>
+        ApplyParentData(renderObject);
 
-    private void ApplyParentData(RenderObject renderObject)
-        => ((ParentDataWidget<T>)Widget!).ApplyParentData(renderObject);
+    private void ApplyParentData(RenderObject renderObject) =>
+        ((ParentDataWidget<T>)Widget!).ApplyParentData(renderObject);
 }

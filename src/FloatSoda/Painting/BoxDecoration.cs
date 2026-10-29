@@ -17,7 +17,7 @@ public enum DecorationPosition
     /// <summary>
     /// 子要素の前面へ描画します。
     /// </summary>
-    Foreground
+    Foreground,
 }
 
 /// <summary>
@@ -28,9 +28,7 @@ public readonly record struct BorderSide
     /// <summary>
     /// 既定の色と1論理ピクセルの太さでボーダーを初期化します。
     /// </summary>
-    public BorderSide()
-    {
-    }
+    public BorderSide() { }
 
     /// <summary>
     /// ボーダーを描画しない辺を取得します。
@@ -55,7 +53,11 @@ public readonly record struct BorderSide
         {
             if (!double.IsFinite(value) || value < 0)
             {
-                throw new ArgumentOutOfRangeException(nameof(value), value, "ボーダーの太さには0以上の有限値を指定してください。");
+                throw new ArgumentOutOfRangeException(
+                    nameof(value),
+                    value,
+                    "ボーダーの太さには0以上の有限値を指定してください。"
+                );
             }
 
             field = value;
@@ -93,13 +95,14 @@ public sealed record Border
     /// </summary>
     /// <param name="side">四辺へ適用する設定。</param>
     /// <returns>四辺が同じ設定のボーダー。</returns>
-    public static Border All(BorderSide side) => new()
-    {
-        Top = side,
-        Right = side,
-        Bottom = side,
-        Left = side
-    };
+    public static Border All(BorderSide side) =>
+        new()
+        {
+            Top = side,
+            Right = side,
+            Bottom = side,
+            Left = side,
+        };
 
     internal bool IsUniform => Top == Right && Top == Bottom && Top == Left;
 
@@ -156,7 +159,7 @@ public sealed record BoxDecoration
             {
                 Color = color,
                 IsAntialias = true,
-                Style = SKPaintStyle.Fill
+                Style = SKPaintStyle.Fill,
             };
             canvas.DrawRoundRect(roundRect, backgroundPaint);
         }
@@ -176,10 +179,41 @@ public sealed record BoxDecoration
         using var clipPath = new SKPath();
         clipPath.AddRoundRect(roundRect);
         canvas.ClipPath(clipPath, antialias: true);
-        PaintSide(canvas, new SKRect(bounds.Left, bounds.Top, bounds.Right, bounds.Top + (float)border.Top.Width), border.Top);
-        PaintSide(canvas, new SKRect(bounds.Right - (float)border.Right.Width, bounds.Top, bounds.Right, bounds.Bottom), border.Right);
-        PaintSide(canvas, new SKRect(bounds.Left, bounds.Bottom - (float)border.Bottom.Width, bounds.Right, bounds.Bottom), border.Bottom);
-        PaintSide(canvas, new SKRect(bounds.Left, bounds.Top, bounds.Left + (float)border.Left.Width, bounds.Bottom), border.Left);
+        PaintSide(
+            canvas,
+            new SKRect(bounds.Left, bounds.Top, bounds.Right, bounds.Top + (float)border.Top.Width),
+            border.Top
+        );
+        PaintSide(
+            canvas,
+            new SKRect(
+                bounds.Right - (float)border.Right.Width,
+                bounds.Top,
+                bounds.Right,
+                bounds.Bottom
+            ),
+            border.Right
+        );
+        PaintSide(
+            canvas,
+            new SKRect(
+                bounds.Left,
+                bounds.Bottom - (float)border.Bottom.Width,
+                bounds.Right,
+                bounds.Bottom
+            ),
+            border.Bottom
+        );
+        PaintSide(
+            canvas,
+            new SKRect(
+                bounds.Left,
+                bounds.Top,
+                bounds.Left + (float)border.Left.Width,
+                bounds.Bottom
+            ),
+            border.Left
+        );
         canvas.Restore();
     }
 
@@ -206,7 +240,7 @@ public sealed record BoxDecoration
             {
                 Color = side.Color,
                 IsAntialias = true,
-                Style = SKPaintStyle.Fill
+                Style = SKPaintStyle.Fill,
             };
             canvas.DrawRoundRect(BorderRadius.ToRoundRect(bounds), fillPaint);
             return;
@@ -221,7 +255,7 @@ public sealed record BoxDecoration
             Color = side.Color,
             IsAntialias = true,
             Style = SKPaintStyle.Stroke,
-            StrokeWidth = (float)side.Width
+            StrokeWidth = (float)side.Width,
         };
         canvas.DrawRoundRect(BorderRadius.ToRoundRect(borderBounds), paint);
     }
@@ -237,7 +271,7 @@ public sealed record BoxDecoration
         {
             Color = side.Color,
             IsAntialias = true,
-            Style = SKPaintStyle.Fill
+            Style = SKPaintStyle.Fill,
         };
         canvas.DrawRect(bounds, paint);
     }
@@ -246,7 +280,11 @@ public sealed record BoxDecoration
     {
         if (!float.IsFinite(radius.X) || radius.X < 0 || !float.IsFinite(radius.Y) || radius.Y < 0)
         {
-            throw new ArgumentOutOfRangeException(nameof(radius), radius, "角丸半径には0以上の有限値を指定してください。");
+            throw new ArgumentOutOfRangeException(
+                nameof(radius),
+                radius,
+                "角丸半径には0以上の有限値を指定してください。"
+            );
         }
     }
 }

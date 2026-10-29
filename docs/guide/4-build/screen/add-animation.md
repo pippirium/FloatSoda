@@ -32,13 +32,13 @@ public class BlinkBoxState : TickerProviderState<BlinkBox>
         {
             Width = 200,
             Height = 200,
-            Child = new ColoredBox { Color = SKColors.MediumSlateBlue },
+            Child = new ColoredBox { Color = Colors.MediumSlateBlue },
         },
     };
 }
 ```
 
-`using` には、`FloatSoda.Animation`、`FloatSoda.Elements`、`FloatSoda.Geometrics`、`FloatSoda.Widgets`、`FloatSoda.Widgets.Animation`、`FloatSoda.Widgets.Layout`、`FloatSoda.Widgets.Paint`、`SkiaSharp` を足します。
+`using` には、`FloatSoda.Animation`、`FloatSoda.Elements`、`FloatSoda.Geometrics`、`FloatSoda.Widgets`、`FloatSoda.Widgets.Animation`、`FloatSoda.Widgets.Layout`、`FloatSoda.Widgets.Paint` を足します。
 
 起動のコードで、ウィンドウの `Child` を `new BlinkBox()` に置き換えます。
 
@@ -112,7 +112,7 @@ public override Widget Build(IBuildContext context) => new FadeTransition
         {
             Width = 200,
             Height = 200,
-            Child = new ColoredBox { Color = SKColors.MediumSlateBlue },
+            Child = new ColoredBox { Color = Colors.MediumSlateBlue },
         },
     },
 };

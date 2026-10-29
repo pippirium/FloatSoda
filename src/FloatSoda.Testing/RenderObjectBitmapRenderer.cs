@@ -25,10 +25,7 @@ public sealed class RenderObjectBitmapRenderer
         var pipeline = new RenderPipeline
         {
             OnNeedVisualUpdate = () => { },
-            RenderView = new RenderView(imageSize.Width, imageSize.Height)
-            {
-                Child = renderObject
-            }
+            RenderView = new RenderView(imageSize.Width, imageSize.Height) { Child = renderObject },
         };
 
         pipeline.RenderView.PrepareInitialFrame();
@@ -36,7 +33,7 @@ public sealed class RenderObjectBitmapRenderer
         pipeline.FlushPaint();
 
         var layer = pipeline.RenderView.Layer?.Clone();
-        return layer == null
+        return layer is null
             ? new SKBitmap(imageSize.Width, imageSize.Height)
             : _layerRenderer.Render(layer, imageSize);
     }

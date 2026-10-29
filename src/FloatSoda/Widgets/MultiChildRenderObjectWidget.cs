@@ -7,7 +7,8 @@ namespace FloatSoda.Widgets;
 /// 順序を持つ複数の子ウィジェットをRenderObjectへ接続する構成を宣言するウィジェットの基底型です。
 /// </summary>
 /// <typeparam name="T">このウィジェットが構成するRenderObjectの型。</typeparam>
-public abstract record MultiChildRenderObjectWidget<T> : RenderObjectWidget<T> where T : RenderObject
+public abstract record MultiChildRenderObjectWidget<T> : RenderObjectWidget<T>
+    where T : RenderObject
 {
     /// <summary>
     /// RenderObjectへ先頭から順に接続する子ウィジェットの一覧を取得します。
@@ -22,9 +23,6 @@ public abstract record MultiChildRenderObjectWidget<T> : RenderObjectWidget<T> w
     /// <inheritdoc/>
     public override Element CreateElement()
     {
-        return new MultiChildRenderObjectElement<T>
-        {
-            Widget = this
-        };
+        return new MultiChildRenderObjectElement<T> { Widget = this };
     }
 }

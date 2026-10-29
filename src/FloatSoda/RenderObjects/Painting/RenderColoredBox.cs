@@ -1,4 +1,5 @@
 ﻿using FloatSoda.Abstractions.Geometries;
+using FloatSoda.Geometrics;
 using FloatSoda.Gesture;
 using SkiaSharp;
 
@@ -17,16 +18,17 @@ public class RenderColoredBox : RenderProxyBox
     /// 次のパイプライン更新時に背景と子を再描画します。
     /// 値が変更されなかった場合、Dirty状態は変更されません。
     /// </remarks>
-    public SKColor Color
+    public Color Color
     {
         get;
         set
         {
-            if (field == value) return;
+            if (field == value)
+                return;
             field = value;
             MarkNeedsPaint();
         }
-    } = SKColors.Black;
+    } = new(0, 0, 0);
 
     /// <inheritdoc/>
     public override void Paint(PaintingContext context, Offset offset)
@@ -36,15 +38,16 @@ public class RenderColoredBox : RenderProxyBox
             context.Canvas.DrawRect(SKRect.Create(offset, Size), new SKPaint { Color = Color });
         }
 
-        if (Child is not null) context.PaintChild(Child, offset);
+        if (Child is not null)
+            context.PaintChild(Child, offset);
     }
-
 
     /// <inheritdoc/>
     public override bool HitTest(HitTestResult result, Offset position)
     {
-        if (!Size.Contains(position)) return false;
-        
+        if (!Size.Contains(position))
+            return false;
+
         var hitTarget = HitTestChildren(result, position) || HitTestSelf(position);
 
         if (hitTarget)

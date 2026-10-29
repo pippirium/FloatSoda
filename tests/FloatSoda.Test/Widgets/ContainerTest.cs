@@ -29,9 +29,9 @@ public class ContainerTest
                 {
                     Width = 10,
                     Height = 10,
-                    Child = new ColoredBox { Color = new Color(255, 0, 0) }
-                }
-            }
+                    Child = new ColoredBox { Color = new Color(255, 0, 0) },
+                },
+            },
         };
 
         using var bitmap = Renderer.Render(widget, Size);
@@ -54,10 +54,10 @@ public class ContainerTest
                 Decoration = new BoxDecoration
                 {
                     Color = new Color(0, 0, 255),
-                    BorderRadius = BorderRadius.Circular(5)
+                    BorderRadius = BorderRadius.Circular(5),
                 },
-                Transform = Matrix3x2.CreateTranslation(25, 10)
-            }
+                Transform = Matrix3x2.CreateTranslation(25, 10),
+            },
         };
 
         using var bitmap = Renderer.Render(widget, Size);
@@ -78,8 +78,8 @@ public class ContainerTest
                 Height = 60,
                 Decoration = new BoxDecoration { Color = new Color(0, 0, 255) },
                 Padding = EdgeInsets.All(10),
-                Child = new ColoredBox { Color = new Color(255, 0, 0) }
-            }
+                Child = new ColoredBox { Color = new Color(255, 0, 0) },
+            },
         };
 
         using var bitmap = Renderer.Render(widget, Size);
@@ -104,10 +104,12 @@ public class ContainerTest
                 Height = 60,
                 Decoration = new BoxDecoration
                 {
-                    Border = Border.All(new BorderSide { Color = new Color(0, 0, 255), Width = 10 })
+                    Border = Border.All(
+                        new BorderSide { Color = new Color(0, 0, 255), Width = 10 }
+                    ),
                 },
-                Child = new ColoredBox { Color = new Color(255, 0, 0) }
-            }
+                Child = new ColoredBox { Color = new Color(255, 0, 0) },
+            },
         };
 
         using var bitmap = Renderer.Render(widget, Size);
@@ -132,11 +134,11 @@ public class ContainerTest
                 Decoration = new BoxDecoration
                 {
                     Color = new Color(0, 255, 0),
-                    Border = Border.All(new BorderSide { Color = new Color(0, 0, 255), Width = 5 })
+                    Border = Border.All(new BorderSide { Color = new Color(0, 0, 255), Width = 5 }),
                 },
                 Padding = EdgeInsets.All(10),
-                Child = new ColoredBox { Color = new Color(255, 0, 0) }
-            }
+                Child = new ColoredBox { Color = new Color(255, 0, 0) },
+            },
         };
 
         using var bitmap = Renderer.Render(widget, Size);
@@ -161,10 +163,13 @@ public class ContainerTest
                 Height = 60,
                 Decoration = new BoxDecoration
                 {
-                    Border = new Border { Top = new BorderSide { Color = new Color(0, 0, 255), Width = 10 } }
+                    Border = new Border
+                    {
+                        Top = new BorderSide { Color = new Color(0, 0, 255), Width = 10 },
+                    },
                 },
-                Child = new ColoredBox { Color = new Color(255, 0, 0) }
-            }
+                Child = new ColoredBox { Color = new Color(255, 0, 0) },
+            },
         };
 
         using var bitmap = Renderer.Render(widget, Size);
@@ -186,8 +191,8 @@ public class ContainerTest
                 Width = 60,
                 Height = 60,
                 Color = new Color(0, 0, 255),
-                Child = new ColoredBox { Color = new Color(255, 0, 0) }
-            }
+                Child = new ColoredBox { Color = new Color(255, 0, 0) },
+            },
         };
 
         using var bitmap = Renderer.Render(widget, Size);
@@ -201,9 +206,13 @@ public class ContainerTest
     [InlineData(-1)]
     [InlineData(double.NaN)]
     [InlineData(double.PositiveInfinity)]
-    public void Container_Paddingが負数または非有限値_ArgumentOutOfRangeExceptionを投げる(double value)
+    public void Container_Paddingが負数または非有限値_ArgumentOutOfRangeExceptionを投げる(
+        double value
+    )
     {
-        Assert.Throws<ArgumentOutOfRangeException>(() => new Container { Padding = EdgeInsets.All(value) });
+        Assert.Throws<ArgumentOutOfRangeException>(() =>
+            new Container { Padding = EdgeInsets.All(value) }
+        );
     }
 
     [Fact]
@@ -212,7 +221,7 @@ public class ContainerTest
         var container = new Container
         {
             Color = new Color(0, 0, 255),
-            Decoration = new BoxDecoration { Color = new Color(255, 0, 0) }
+            Decoration = new BoxDecoration { Color = new Color(255, 0, 0) },
         };
 
         Assert.Throws<InvalidOperationException>(() => Renderer.Render(container, Size));
@@ -222,7 +231,9 @@ public class ContainerTest
     [InlineData(-1)]
     [InlineData(double.NaN)]
     [InlineData(double.PositiveInfinity)]
-    public void Container_WidthとHeightが負数または非有限値_ArgumentOutOfRangeExceptionを投げる(double value)
+    public void Container_WidthとHeightが負数または非有限値_ArgumentOutOfRangeExceptionを投げる(
+        double value
+    )
     {
         Assert.Throws<ArgumentOutOfRangeException>(() => new Container { Width = value });
         Assert.Throws<ArgumentOutOfRangeException>(() => new Container { Height = value });

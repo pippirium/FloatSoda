@@ -18,10 +18,7 @@ public record Padding : SingleChildRenderObjectWidget<RenderPadding>
     /// このウィジェットの余白を適用するRenderObjectを生成します。
     /// </summary>
     /// <returns>指定された余白を保持する新しいRenderObject。</returns>
-    public override RenderPadding CreateRenderObject() => new()
-    {
-        Padding = Spacing
-    };
+    public override RenderPadding CreateRenderObject() => new() { Padding = Spacing };
 
     /// <summary>
     /// 余白を既存のRenderObjectへ反映します。

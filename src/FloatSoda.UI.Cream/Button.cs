@@ -37,7 +37,7 @@ public record Button : StatelessWidget
                 {
                     { IsDisabled: true } => style.DisabledBackgroundColor,
                     { IsPressed: true } => style.PressedBackgroundColor,
-                    _ => style.BackgroundColor
+                    _ => style.BackgroundColor,
                 };
                 return new ColoredBox
                 {
@@ -46,10 +46,10 @@ public record Button : StatelessWidget
                     {
                         WidthFactor = 1.5,
                         HeightFactor = 1.5,
-                        Child = Child
-                    }
+                        Child = Child,
+                    },
                 };
-            }
+            },
         };
     }
 }

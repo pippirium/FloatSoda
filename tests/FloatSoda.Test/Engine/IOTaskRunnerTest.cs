@@ -41,12 +41,14 @@ public class IOTaskRunnerTest
         var callerThreadId = Environment.CurrentManagedThreadId;
         runner.Start();
 
-        var result = await runner.RunAsync(() => new
-        {
-            ThreadId = Environment.CurrentManagedThreadId,
-            ThreadName = Thread.CurrentThread.Name,
-            IsRunnerThread = runner.RunsTasksOnCurrentThread
-        });
+        var result = await runner.RunAsync(() =>
+            new
+            {
+                ThreadId = Environment.CurrentManagedThreadId,
+                ThreadName = Thread.CurrentThread.Name,
+                IsRunnerThread = runner.RunsTasksOnCurrentThread,
+            }
+        );
 
         Assert.NotEqual(callerThreadId, result.ThreadId);
         Assert.Equal("TestIOThread", result.ThreadName);

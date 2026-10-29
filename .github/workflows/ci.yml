@@ -16,6 +16,12 @@ jobs:
         with:
           dotnet-version: '10.x'
 
+      - name: Restore tools
+        run: dotnet tool restore
+
+      - name: Check formatting (CSharpier)
+        run: dotnet csharpier check .
+
       - name: Build
         run: dotnet build --configuration Release
 

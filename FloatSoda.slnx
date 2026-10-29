@@ -14,11 +14,13 @@
     <Folder Name="/samples/">
         <Project Path="samples/FloatSoda.Samples.Align/FloatSoda.Samples.Align.csproj" />
         <Project Path="samples/FloatSoda.Samples.AspectRatio/FloatSoda.Samples.AspectRatio.csproj" />
+        <Project Path="samples/FloatSoda.Samples.Builder/FloatSoda.Samples.Builder.csproj" />
         <Project Path="samples/FloatSoda.Samples.Clip/FloatSoda.Samples.Clip.csproj" />
         <Project Path="samples/FloatSoda.Samples.ColoredBox/FloatSoda.Samples.ColoredBox.csproj" />
         <Project Path="samples/FloatSoda.Samples.Container/FloatSoda.Samples.Container.csproj" />
         <Project Path="samples/FloatSoda.Samples.ConstraintsTransformBox/FloatSoda.Samples.ConstraintsTransformBox.csproj" />
         <Project Path="samples/FloatSoda.Samples.DecoratedBox/FloatSoda.Samples.DecoratedBox.csproj" />
+        <Project Path="samples/FloatSoda.Samples.DefaultTextStyle/FloatSoda.Samples.DefaultTextStyle.csproj" />
         <Project Path="samples/FloatSoda.Samples.Expanded/FloatSoda.Samples.Expanded.csproj" />
         <Project Path="samples/FloatSoda.Samples.ExperimentFramework/FloatSoda.Samples.ExperimentFramework.csproj" />
         <Project Path="samples/FloatSoda.Samples.ExperimentRendering/FloatSoda.Samples.ExperimentRendering.csproj" />
@@ -27,8 +29,11 @@
         <Project Path="samples/FloatSoda.Samples.FractionallySizedBox/FloatSoda.Samples.FractionallySizedBox.csproj" />
         <Project Path="samples/FloatSoda.Samples.GestureDetector/FloatSoda.Samples.GestureDetector.csproj" />
         <Project Path="samples/FloatSoda.Samples.GettingStarted/FloatSoda.Samples.GettingStarted.csproj" />
+        <Project Path="samples/FloatSoda.Samples.Icon/FloatSoda.Samples.Icon.csproj" />
         <Project Path="samples/FloatSoda.Samples.Image/FloatSoda.Samples.Image.csproj" />
+        <Project Path="samples/FloatSoda.Samples.IntrinsicWidth/FloatSoda.Samples.IntrinsicWidth.csproj" />
         <Project Path="samples/FloatSoda.Samples.LimitedBox/FloatSoda.Samples.LimitedBox.csproj" />
+        <Project Path="samples/FloatSoda.Samples.ListenableBuilder/FloatSoda.Samples.ListenableBuilder.csproj" />
         <Project Path="samples/FloatSoda.Samples.Listener/FloatSoda.Samples.Listener.csproj" />
         <Project Path="samples/FloatSoda.Samples.Opacity/FloatSoda.Samples.Opacity.csproj" />
         <Project Path="samples/FloatSoda.Samples.OverflowBox/FloatSoda.Samples.OverflowBox.csproj" />
@@ -42,6 +47,7 @@
         <Project Path="samples/FloatSoda.Samples.Stack/FloatSoda.Samples.Stack.csproj" />
         <Project Path="samples/FloatSoda.Samples.Text/FloatSoda.Samples.Text.csproj" />
         <Project Path="samples/FloatSoda.Samples.Transform/FloatSoda.Samples.Transform.csproj" />
+        <Project Path="samples/FloatSoda.Samples.Visibility/FloatSoda.Samples.Visibility.csproj" />
         <Project Path="samples/FloatSoda.Samples.Wrap/FloatSoda.Samples.Wrap.csproj" />
     </Folder>
     <Folder Name="/tests/">

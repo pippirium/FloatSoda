@@ -21,50 +21,70 @@ public class ConstraintsTransformBoxTest
 {
     private static readonly WidgetBitmapRenderer BitmapRenderer = new();
 
-    public static TheoryData<BoxConstraintsTransform, BoxConstraints> StandardTransforms => new()
-    {
-        { ConstraintsTransformBox.Unmodified, new BoxConstraints(10, 100, 20, 200) },
-        { ConstraintsTransformBox.Unconstrained, BoxConstraints.Unbounded },
-        { ConstraintsTransformBox.WidthUnconstrained, new BoxConstraints(0, double.PositiveInfinity, 20, 200) },
-        { ConstraintsTransformBox.HeightUnconstrained, new BoxConstraints(10, 100, 0, double.PositiveInfinity) },
-        { ConstraintsTransformBox.MaxWidthUnconstrained, new BoxConstraints(10, double.PositiveInfinity, 20, 200) },
-        { ConstraintsTransformBox.MaxHeightUnconstrained, new BoxConstraints(10, 100, 20, double.PositiveInfinity) },
-        { ConstraintsTransformBox.MaxUnconstrained, new BoxConstraints(10, double.PositiveInfinity, 20, double.PositiveInfinity) },
-    };
+    public static TheoryData<BoxConstraintsTransform, BoxConstraints> StandardTransforms =>
+        new()
+        {
+            { ConstraintsTransformBox.Unmodified, new BoxConstraints(10, 100, 20, 200) },
+            { ConstraintsTransformBox.Unconstrained, BoxConstraints.Unbounded },
+            {
+                ConstraintsTransformBox.WidthUnconstrained,
+                new BoxConstraints(0, double.PositiveInfinity, 20, 200)
+            },
+            {
+                ConstraintsTransformBox.HeightUnconstrained,
+                new BoxConstraints(10, 100, 0, double.PositiveInfinity)
+            },
+            {
+                ConstraintsTransformBox.MaxWidthUnconstrained,
+                new BoxConstraints(10, double.PositiveInfinity, 20, 200)
+            },
+            {
+                ConstraintsTransformBox.MaxHeightUnconstrained,
+                new BoxConstraints(10, 100, 20, double.PositiveInfinity)
+            },
+            {
+                ConstraintsTransformBox.MaxUnconstrained,
+                new BoxConstraints(10, double.PositiveInfinity, 20, double.PositiveInfinity)
+            },
+        };
 
-    public static TheoryData<BoxConstraints> InvalidConstraints => new()
-    {
-        new BoxConstraints(MinWidth: double.NaN),
-        new BoxConstraints(MinWidth: -1),
-        new BoxConstraints(MinWidth: double.PositiveInfinity, MaxWidth: double.PositiveInfinity),
-        new BoxConstraints(MaxWidth: double.NaN),
-        new BoxConstraints(MaxWidth: double.NegativeInfinity),
-        new BoxConstraints(MinWidth: 20, MaxWidth: 10),
-        new BoxConstraints(MinHeight: double.NaN),
-        new BoxConstraints(MinHeight: -1),
-        new BoxConstraints(MinHeight: double.PositiveInfinity, MaxHeight: double.PositiveInfinity),
-        new BoxConstraints(MaxHeight: double.NaN),
-        new BoxConstraints(MaxHeight: double.NegativeInfinity),
-        new BoxConstraints(MinHeight: 20, MaxHeight: 10),
-    };
+    public static TheoryData<BoxConstraints> InvalidConstraints =>
+        new()
+        {
+            new BoxConstraints(MinWidth: double.NaN),
+            new BoxConstraints(MinWidth: -1),
+            new BoxConstraints(
+                MinWidth: double.PositiveInfinity,
+                MaxWidth: double.PositiveInfinity
+            ),
+            new BoxConstraints(MaxWidth: double.NaN),
+            new BoxConstraints(MaxWidth: double.NegativeInfinity),
+            new BoxConstraints(MinWidth: 20, MaxWidth: 10),
+            new BoxConstraints(MinHeight: double.NaN),
+            new BoxConstraints(MinHeight: -1),
+            new BoxConstraints(
+                MinHeight: double.PositiveInfinity,
+                MaxHeight: double.PositiveInfinity
+            ),
+            new BoxConstraints(MaxHeight: double.NaN),
+            new BoxConstraints(MaxHeight: double.NegativeInfinity),
+            new BoxConstraints(MinHeight: 20, MaxHeight: 10),
+        };
 
     private static (
         RenderPipeline Pipeline,
         RenderView View,
-        RenderObjectToWidgetElement<RenderView> Root) Mount(Widget widget, int width = 40, int height = 40)
+        RenderObjectToWidgetElement<RenderView> Root
+    ) Mount(Widget widget, int width = 40, int height = 40)
     {
         var view = new RenderView(width, height) { FixedSize = new SKSize(width, height) };
-        var pipeline = new RenderPipeline
-        {
-            OnNeedVisualUpdate = () => { },
-            RenderView = view
-        };
+        var pipeline = new RenderPipeline { OnNeedVisualUpdate = () => { }, RenderView = view };
         view.PrepareInitialFrame();
 
         var root = new RenderObjectToWidgetAdapter
         {
             Container = view,
-            Child = widget
+            Child = widget,
         }.AttachToRenderTree(new BuildOwner(() => { }), null);
 
         return (pipeline, view, root);
@@ -84,7 +104,7 @@ public class ConstraintsTransformBoxTest
                 received = constraints;
                 return transformedConstraints;
             },
-            Child = child
+            Child = child,
         };
 
         renderObject.Layout(parentConstraints);
@@ -98,7 +118,8 @@ public class ConstraintsTransformBoxTest
     [MemberData(nameof(StandardTransforms))]
     public void StandardTransform_親制約を指定_期待する境界だけを外す(
         BoxConstraintsTransform transform,
-        BoxConstraints expected)
+        BoxConstraints expected
+    )
     {
         var constraints = new BoxConstraints(10, 100, 20, 200);
 
@@ -114,7 +135,8 @@ public class ConstraintsTransformBoxTest
         double minWidth,
         double maxWidth,
         double minHeight,
-        double maxHeight)
+        double maxHeight
+    )
     {
         var widget = new UnconstrainedBox { ConstrainedAxis = axis };
 
@@ -131,12 +153,13 @@ public class ConstraintsTransformBoxTest
     public void UnconstrainedBox_両軸または指定軸を維持_子の自然サイズを対応する軸へ反映する(
         Axis? axis,
         float expectedWidth,
-        float expectedHeight)
+        float expectedHeight
+    )
     {
         var widget = new UnconstrainedBox
         {
             ConstrainedAxis = axis,
-            Child = new SizedBox { Width = 80, Height = 20 }
+            Child = new SizedBox { Width = 80, Height = 20 },
         };
         var (pipeline, view, _) = Mount(widget);
 
@@ -155,31 +178,41 @@ public class ConstraintsTransformBoxTest
         float alignmentX,
         float alignmentY,
         double expectedX,
-        double expectedY)
+        double expectedY
+    )
     {
-        var child = new RenderConstrainedBox { AdditionalConstraints = BoxConstraints.Tight(150, 50) };
+        var child = new RenderConstrainedBox
+        {
+            AdditionalConstraints = BoxConstraints.Tight(150, 50),
+        };
         var renderObject = new RenderConstraintsTransformBox
         {
             ConstraintsTransform = ConstraintsTransformBox.Unconstrained,
             Alignment = new Alignment(alignmentX, alignmentY),
-            Child = child
+            Child = child,
         };
 
         renderObject.Layout(BoxConstraints.Tight(100, 100));
 
         Assert.Equal(new SKSize(100, 100), renderObject.Size);
-        Assert.Equal(new Offset(expectedX, expectedY), Assert.IsType<BoxParentData>(child.ParentData).Offset);
+        Assert.Equal(
+            new Offset(expectedX, expectedY),
+            Assert.IsType<BoxParentData>(child.ParentData).Offset
+        );
     }
 
     [Fact]
     public void PerformLayout_子が親より小さい_Alignmentに応じたオフセットを設定する()
     {
-        var child = new RenderConstrainedBox { AdditionalConstraints = BoxConstraints.Tight(40, 20) };
+        var child = new RenderConstrainedBox
+        {
+            AdditionalConstraints = BoxConstraints.Tight(40, 20),
+        };
         var renderObject = new RenderConstraintsTransformBox
         {
             ConstraintsTransform = ConstraintsTransformBox.Unconstrained,
             Alignment = Alignment.BottomRight,
-            Child = child
+            Child = child,
         };
 
         renderObject.Layout(BoxConstraints.Tight(100, 100));
@@ -192,7 +225,7 @@ public class ConstraintsTransformBoxTest
     {
         var renderObject = new RenderConstraintsTransformBox
         {
-            ConstraintsTransform = ConstraintsTransformBox.Unconstrained
+            ConstraintsTransform = ConstraintsTransformBox.Unconstrained,
         };
 
         renderObject.Layout(new BoxConstraints(10, 100, 20, 200));
@@ -203,7 +236,10 @@ public class ConstraintsTransformBoxTest
     [Fact]
     public void Paint_ClipNoneで横方向へoverflow_親領域外も描画する()
     {
-        using var bitmap = BitmapRenderer.Render(CreateOverflowWidget(Clip.None), new SKSizeI(100, 100));
+        using var bitmap = BitmapRenderer.Render(
+            CreateOverflowWidget(Clip.None),
+            new SKSizeI(100, 100)
+        );
 
         Assert.Equal(SKColors.Red, bitmap.GetPixel(20, 50));
         Assert.Equal(SKColors.Red, bitmap.GetPixel(35, 50));
@@ -214,7 +250,10 @@ public class ConstraintsTransformBoxTest
     [InlineData(Clip.Antialias)]
     public void Paint_Clip有効で横方向へoverflow_自身の矩形境界で切り抜く(Clip clipBehavior)
     {
-        using var bitmap = BitmapRenderer.Render(CreateOverflowWidget(clipBehavior), new SKSizeI(100, 100));
+        using var bitmap = BitmapRenderer.Render(
+            CreateOverflowWidget(clipBehavior),
+            new SKSizeI(100, 100)
+        );
 
         Assert.Equal(0, bitmap.GetPixel(20, 50).Alpha);
         Assert.Equal(SKColors.Red, bitmap.GetPixel(35, 50));
@@ -226,13 +265,16 @@ public class ConstraintsTransformBoxTest
     {
         var child = new RenderColoredBox
         {
-            Child = new RenderConstrainedBox { AdditionalConstraints = BoxConstraints.Tight(80, 20) }
+            Child = new RenderConstrainedBox
+            {
+                AdditionalConstraints = BoxConstraints.Tight(80, 20),
+            },
         };
         var renderObject = new RenderConstraintsTransformBox
         {
             ConstraintsTransform = ConstraintsTransformBox.Unconstrained,
             Alignment = Alignment.Center,
-            Child = child
+            Child = child,
         };
         renderObject.Layout(BoxConstraints.Tight(40, 40));
 
@@ -250,7 +292,7 @@ public class ConstraintsTransformBoxTest
             ConstrainedAxis = Axis.Horizontal,
             Alignment = Alignment.TopLeft,
             ClipBehavior = Clip.None,
-            Child = new SizedBox { Width = 80, Height = 20 }
+            Child = new SizedBox { Width = 80, Height = 20 },
         };
         var (pipeline, view, root) = Mount(initial);
         pipeline.FlushLayout();
@@ -261,20 +303,22 @@ public class ConstraintsTransformBoxTest
         {
             ConstrainedAxis = Axis.Vertical,
             Alignment = Alignment.BottomRight,
-            ClipBehavior = Clip.HardEdge
+            ClipBehavior = Clip.HardEdge,
         };
-        new RenderObjectToWidgetAdapter
-        {
-            Container = view,
-            Child = updated
-        }.AttachToRenderTree(root.Owner!, root);
+        new RenderObjectToWidgetAdapter { Container = view, Child = updated }.AttachToRenderTree(
+            root.Owner!,
+            root
+        );
         root.Owner!.BuildScope();
         pipeline.FlushLayout();
 
         Assert.Same(renderObject, view.Child);
         Assert.Equal(Alignment.BottomRight, renderObject.Alignment);
         Assert.Equal(Clip.HardEdge, renderObject.ClipBehavior);
-        Assert.Equal(new BoxConstraints(0, double.PositiveInfinity, 40, 40), renderObject.Child!.Constraints);
+        Assert.Equal(
+            new BoxConstraints(0, double.PositiveInfinity, 40, 40),
+            renderObject.Child!.Constraints
+        );
     }
 
     [Fact]
@@ -284,7 +328,7 @@ public class ConstraintsTransformBoxTest
         {
             ConstraintsTransform = ConstraintsTransformBox.Unconstrained,
             ClipBehavior = Clip.None,
-            Child = new SizedBox { Width = 80, Height = 20 }
+            Child = new SizedBox { Width = 80, Height = 20 },
         };
         var (pipeline, view, root) = Mount(initial);
         pipeline.FlushLayout();
@@ -294,7 +338,7 @@ public class ConstraintsTransformBoxTest
         new RenderObjectToWidgetAdapter
         {
             Container = view,
-            Child = initial with { ClipBehavior = Clip.HardEdge }
+            Child = initial with { ClipBehavior = Clip.HardEdge },
         }.AttachToRenderTree(root.Owner!, root);
         root.Owner!.BuildScope();
 
@@ -304,12 +348,14 @@ public class ConstraintsTransformBoxTest
 
     [Theory]
     [MemberData(nameof(InvalidConstraints))]
-    public void PerformLayout_変換結果がBoxConstraints契約外_ArgumentExceptionを投げる(BoxConstraints invalid)
+    public void PerformLayout_変換結果がBoxConstraints契約外_ArgumentExceptionを投げる(
+        BoxConstraints invalid
+    )
     {
         var renderObject = new RenderConstraintsTransformBox
         {
             ConstraintsTransform = _ => invalid,
-            Child = new RenderConstrainedBox { AdditionalConstraints = BoxConstraints.Unbounded }
+            Child = new RenderConstrainedBox { AdditionalConstraints = BoxConstraints.Unbounded },
         };
 
         Assert.Throws<ArgumentException>(() => renderObject.Layout(BoxConstraints.Unbounded));
@@ -318,11 +364,14 @@ public class ConstraintsTransformBoxTest
     [Fact]
     public void PerformLayout_変換結果の最大値だけが正の無限大_制約として受理する()
     {
-        var child = new RenderConstrainedBox { AdditionalConstraints = BoxConstraints.Tight(30, 20) };
+        var child = new RenderConstrainedBox
+        {
+            AdditionalConstraints = BoxConstraints.Tight(30, 20),
+        };
         var renderObject = new RenderConstraintsTransformBox
         {
             ConstraintsTransform = _ => BoxConstraints.Unbounded,
-            Child = child
+            Child = child,
         };
 
         renderObject.Layout(BoxConstraints.Tight(10, 10));
@@ -333,76 +382,115 @@ public class ConstraintsTransformBoxTest
     [Fact]
     public void Constructor_Transformがnull_ArgumentNullExceptionを投げる()
     {
-        Assert.Throws<ArgumentNullException>(() => new ConstraintsTransformBox { ConstraintsTransform = null! });
-        Assert.Throws<ArgumentNullException>(() => new RenderConstraintsTransformBox { ConstraintsTransform = null! });
+        Assert.Throws<ArgumentNullException>(() =>
+            new ConstraintsTransformBox { ConstraintsTransform = null! }
+        );
+        Assert.Throws<ArgumentNullException>(() =>
+            new RenderConstraintsTransformBox { ConstraintsTransform = null! }
+        );
     }
 
     [Fact]
     public void Constructor_AlignmentClipAxisが不正_対応する例外を投げる()
     {
-        Assert.Throws<ArgumentOutOfRangeException>(() => new ConstraintsTransformBox
-        {
-            ConstraintsTransform = ConstraintsTransformBox.Unmodified,
-            Alignment = new Alignment(float.NaN, 0)
-        });
-        Assert.Throws<ArgumentOutOfRangeException>(() => new ConstraintsTransformBox
-        {
-            ConstraintsTransform = ConstraintsTransformBox.Unmodified,
-            ClipBehavior = (Clip)99
-        });
-        Assert.Throws<ArgumentOutOfRangeException>(() => new UnconstrainedBox { ConstrainedAxis = (Axis)99 });
+        Assert.Throws<ArgumentOutOfRangeException>(() =>
+            new ConstraintsTransformBox
+            {
+                ConstraintsTransform = ConstraintsTransformBox.Unmodified,
+                Alignment = new Alignment(float.NaN, 0),
+            }
+        );
+        Assert.Throws<ArgumentOutOfRangeException>(() =>
+            new ConstraintsTransformBox
+            {
+                ConstraintsTransform = ConstraintsTransformBox.Unmodified,
+                ClipBehavior = (Clip)99,
+            }
+        );
+        Assert.Throws<ArgumentOutOfRangeException>(() =>
+            new UnconstrainedBox { ConstrainedAxis = (Axis)99 }
+        );
     }
 
     [Fact]
     public void PublicApi_新規型の公開表面_規約どおりで外部描画型を公開しない()
     {
-        var transformProperty = typeof(ConstraintsTransformBox).GetProperty(nameof(ConstraintsTransformBox.ConstraintsTransform))!;
+        var transformProperty = typeof(ConstraintsTransformBox).GetProperty(
+            nameof(ConstraintsTransformBox.ConstraintsTransform)
+        )!;
         Assert.Equal(typeof(BoxConstraintsTransform), transformProperty.PropertyType);
-        Assert.Contains(typeof(IsExternalInit), transformProperty.SetMethod!.ReturnParameter.GetRequiredCustomModifiers());
+        Assert.Contains(
+            typeof(IsExternalInit),
+            transformProperty.SetMethod!.ReturnParameter.GetRequiredCustomModifiers()
+        );
         Assert.True(Attribute.IsDefined(transformProperty, typeof(RequiredMemberAttribute)));
-        Assert.True(typeof(MulticastDelegate).IsAssignableFrom(typeof(BoxConstraintsTransform).BaseType));
-        Assert.True(typeof(SingleChildRenderObjectWidget<RenderConstraintsTransformBox>).IsAssignableFrom(typeof(ConstraintsTransformBox)));
+        Assert.True(
+            typeof(MulticastDelegate).IsAssignableFrom(typeof(BoxConstraintsTransform).BaseType)
+        );
+        Assert.True(
+            typeof(SingleChildRenderObjectWidget<RenderConstraintsTransformBox>).IsAssignableFrom(
+                typeof(ConstraintsTransformBox)
+            )
+        );
         Assert.True(typeof(StatelessWidget).IsAssignableFrom(typeof(UnconstrainedBox)));
 
-        foreach (var type in new[] { typeof(BoxConstraintsTransform), typeof(ConstraintsTransformBox), typeof(UnconstrainedBox), typeof(RenderConstraintsTransformBox) })
+        foreach (
+            var type in new[]
+            {
+                typeof(BoxConstraintsTransform),
+                typeof(ConstraintsTransformBox),
+                typeof(UnconstrainedBox),
+                typeof(RenderConstraintsTransformBox),
+            }
+        )
         {
             Assert.DoesNotContain(
-                type.GetMembers(BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static | BindingFlags.DeclaredOnly),
-                member => member switch
-                {
-                    PropertyInfo property => IsExternalDrawingType(property.PropertyType),
-                    MethodInfo method => IsExternalDrawingType(method.ReturnType)
-                        || method.GetParameters().Any(parameter => IsExternalDrawingType(parameter.ParameterType)),
-                    _ => false
-                });
+                type.GetMembers(
+                    BindingFlags.Public
+                        | BindingFlags.Instance
+                        | BindingFlags.Static
+                        | BindingFlags.DeclaredOnly
+                ),
+                member =>
+                    member switch
+                    {
+                        PropertyInfo property => IsExternalDrawingType(property.PropertyType),
+                        MethodInfo method => IsExternalDrawingType(method.ReturnType)
+                            || method
+                                .GetParameters()
+                                .Any(parameter => IsExternalDrawingType(parameter.ParameterType)),
+                        _ => false,
+                    }
+            );
         }
     }
 
-    private static Widget CreateOverflowWidget(Clip clipBehavior) => new SizedBox
-    {
-        Width = 100,
-        Height = 100,
-        Child = new Align
+    private static Widget CreateOverflowWidget(Clip clipBehavior) =>
+        new SizedBox
         {
-            Alignment = Alignment.Center,
-            Child = new ConstrainedBox
+            Width = 100,
+            Height = 100,
+            Child = new Align
             {
-                AdditionalConstraints = BoxConstraints.Tight(40, 40),
-                Child = new ConstraintsTransformBox
+                Alignment = Alignment.Center,
+                Child = new ConstrainedBox
                 {
-                    ConstraintsTransform = ConstraintsTransformBox.Unconstrained,
-                    Alignment = Alignment.Center,
-                    ClipBehavior = clipBehavior,
-                    Child = new SizedBox
+                    AdditionalConstraints = BoxConstraints.Tight(40, 40),
+                    Child = new ConstraintsTransformBox
                     {
-                        Width = 80,
-                        Height = 20,
-                        Child = new ColoredBox { Color = new Color(255, 0, 0) }
-                    }
-                }
-            }
-        }
-    };
+                        ConstraintsTransform = ConstraintsTransformBox.Unconstrained,
+                        Alignment = Alignment.Center,
+                        ClipBehavior = clipBehavior,
+                        Child = new SizedBox
+                        {
+                            Width = 80,
+                            Height = 20,
+                            Child = new ColoredBox { Color = new Color(255, 0, 0) },
+                        },
+                    },
+                },
+            },
+        };
 
     private static bool IsExternalDrawingType(Type type) =>
         type.Namespace?.StartsWith("SkiaSharp", StringComparison.Ordinal) == true;

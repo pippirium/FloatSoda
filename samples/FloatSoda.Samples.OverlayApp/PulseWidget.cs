@@ -26,11 +26,7 @@ public class PulseState : TickerProviderState<PulseWidget>
 
     public override void InitState()
     {
-        _opacity = new AnimationController
-        {
-            Vsync = this,
-            Duration = TimeSpan.FromSeconds(1.5)
-        };
+        _opacity = new AnimationController { Vsync = this, Duration = TimeSpan.FromSeconds(1.5) };
 
         // Completed/Dismissedで折り返して往復させる
         _opacity.StatusChanged += status =>
@@ -76,15 +72,15 @@ public class PulseState : TickerProviderState<PulseWidget>
                                         Style = new TextStyle
                                         {
                                             Color = SKColors.WhiteSmoke,
-                                            FontSize = 80
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
+                                            FontSize = 80,
+                                        },
+                                    },
+                                },
+                            },
+                        },
+                    },
+                },
+            },
         };
     }
 }

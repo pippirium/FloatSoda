@@ -78,6 +78,8 @@ Issue のタイトルは「何をする Issue か」の記述に集中させ、�
 - PRを出す前に、CI(`.github/workflows/ci.yml`)と同じ手順をローカルで実行し、パスすることを確認してください(必須)。
 
 ```bash
+dotnet tool restore
+dotnet csharpier check .
 dotnet build --configuration Release
 dotnet test tests/FloatSoda.Rendering.Test --configuration Release --no-build
 dotnet test tests/FloatSoda.Test --configuration Release --no-build

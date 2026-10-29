@@ -45,12 +45,13 @@ public sealed record FittedBox : SingleChildRenderObjectWidget<RenderFittedBox>
     } = Clip.None;
 
     /// <inheritdoc/>
-    public override RenderFittedBox CreateRenderObject() => new()
-    {
-        Fit = Fit,
-        Alignment = Alignment,
-        ClipBehavior = ClipBehavior,
-    };
+    public override RenderFittedBox CreateRenderObject() =>
+        new()
+        {
+            Fit = Fit,
+            Alignment = Alignment,
+            ClipBehavior = ClipBehavior,
+        };
 
     /// <inheritdoc/>
     public override void UpdateRenderObject(RenderFittedBox renderObject)
