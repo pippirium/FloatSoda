@@ -1,4 +1,4 @@
-﻿using System.Diagnostics;
+using System.Diagnostics;
 using FloatSoda.Abstractions.Engine;
 using FloatSoda.Abstractions.Geometries;
 using FloatSoda.Abstractions.Input;
@@ -150,8 +150,16 @@ public class WidgetBinding : IFrameScheduler, IHitTestTarget, IGestureBinding
 
     internal void SetPendingOverlay(IOverlay overlay) => _pendingOverlay = overlay;
 
-    /// <summary>レンダースレッド上でウィンドウと、まだウィンドウへ渡していないオーバーレイを解放します。</summary>
-    internal void DisposeResources()
+    /// <summary>
+    /// レンダースレッド上でウィンドウを解放します。
+    /// </summary>
+    /// <param name="destroy">オーバーレイも破棄する場合は<see langword="true"/>。SteamVR上に残す場合は<see langword="false"/>。</param>
+    /// <remarks>
+    /// <paramref name="destroy"/> が<see langword="false"/>の場合、OpenVRオーバーレイは最後に描画されたフレームのまま
+    /// 破棄されず、それ以外のリソース（ポインター入力とOpenGL）は通常通り解放されます。
+    /// デスクトップウィンドウと未作成のオーバーレイは <paramref name="destroy"/> に関係なく破棄されます。
+    /// </remarks>
+    internal void ReleaseResources(bool destroy)
     {
         var pointerController = _pointerController;
         _pointerController = null;
@@ -168,7 +176,14 @@ public class WidgetBinding : IFrameScheduler, IHitTestTarget, IGestureBinding
         {
             try
             {
-                window?.Dispose();
+                if (!destroy && window is OverlayWindow overlayWindow)
+                {
+                    overlayWindow.AbandonOverlay();
+                }
+                else
+                {
+                    window?.Dispose();
+                }
             }
             finally
             {
@@ -176,6 +191,10 @@ public class WidgetBinding : IFrameScheduler, IHitTestTarget, IGestureBinding
             }
         }
     }
+
+    /// <summary>このバインディングに接続されたルートWidgetを取得します。</summary>
+    /// <value>ルートWidgetが接続される前は<see langword="null"/>です。</value>
+    public Widget? RootWidget => (RenderViewElement as RenderObjectToWidgetElement<RenderView>)?.ChildWidget;
 
     /// <summary>次のフレームで視覚更新が必要であることを記録します。</summary>
     /// <remarks>DirtyなElementまたはRenderObjectから呼び出され、<see cref="DrawFrame"/>による再構築、レイアウト、描画の実行を予約します。</remarks>

@@ -1,4 +1,4 @@
-﻿using FloatSoda.RenderObjects;
+using FloatSoda.RenderObjects;
 using FloatSoda.Widgets;
 
 namespace FloatSoda.Elements;
@@ -16,6 +16,14 @@ public class RenderObjectToWidgetElement<T> : RenderObjectElement<T> where T : R
     /// </summary>
     /// <remarks>値は再構築時に一度だけ消費され、適用前に<see langword="null"/>へ戻されます。</remarks>
     public Widget? NewWidget { get; set; }
+    /// <summary>
+    /// このElementが描画するルートWidgetを取得します。
+    /// </summary>
+    /// <remarks>
+    /// アダプターWidgetそのものではなく、アダプターが宣言する子（ウィジェットツリーのルート）を返します。
+    /// アダプターWidgetがまだ設定されていない場合は<see langword="null"/>です。
+    /// </remarks>
+    public Widget? ChildWidget { get; private set; }
     private Element? Child { get; set; }
 
     /// <summary>
@@ -38,7 +46,12 @@ public class RenderObjectToWidgetElement<T> : RenderObjectElement<T> where T : R
         OnRebuild();
     }
 
-    private void OnRebuild() => Child = UpdateChild(Child, (Widget as RenderObjectToWidgetAdapter)?.Child);
+    private void OnRebuild()
+    {
+        var childWidget = (Widget as RenderObjectToWidgetAdapter)?.Child;
+        ChildWidget = childWidget;
+        Child = UpdateChild(Child, childWidget);
+    }
 
     /// <summary>
     /// 保留中のルートWidget更新を適用した後、現在の構成をルートRenderObjectへ反映します。
