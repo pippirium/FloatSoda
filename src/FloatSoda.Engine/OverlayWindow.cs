@@ -53,8 +53,15 @@ public class OverlayWindow : IEngineWindow
         if (overlay is IDashboardOverlay)
         {
             overlay.Input.Method = VROverlayInputMethod.Mouse;
-            overlay.Input.SetMouseScale(renderer.GLView.Size.Width, renderer.GLView.Size.Height);
-            PointerSource = new OverlayMouseRawPointerSource(overlay.EventDispatcher);
+            // 物理的なパネル倍率とUIのピクセル座標を分離する。
+            overlay.Input.SetMouseScale(1, 1);
+            PointerSource = new OverlayMouseRawPointerSource(
+                overlay.EventDispatcher,
+                position => new FloatSoda.Abstractions.Geometries.Offset(
+                    position.X * renderer.GLView.Size.Width,
+                    position.Y * renderer.GLView.Size.Height
+                )
+            );
         }
         // デバイス追従・ワールド固定はコントローラーレイを毎フレーム交差させて届く。
         // MakeOverlaysInteractiveIfVisible を使わないため入力横取りは発生しない。
@@ -91,16 +98,16 @@ public class OverlayWindow : IEngineWindow
     /// <summary>
     /// 描画先テクスチャをリサイズし、ピクセル幅と物理密度（dots per meter）から
     /// オーバーレイの物理幅（WidthInMeters = width / dpm）を更新します。
-    /// マウス入力を受けるオーバーレイではマウススケールもピクセルサイズへ追従させます。
+    /// ダッシュボードのマウススケールは0〜1を維持し、入力時に描画先サイズへ変換します。
     /// </summary>
     public void Resize(SkiaSharp.SKSizeI size)
     {
         renderer.Resize(size.Width, size.Height);
         Overlay.WidthInMeters.Value = dpm.ToMeters(size.Width);
 
-        if (PointerSource is not null)
+        if (PointerSource is OverlayMouseRawPointerSource)
         {
-            Overlay.Input.SetMouseScale(size.Width, size.Height);
+            Overlay.Input.SetMouseScale(1, 1);
         }
     }
 

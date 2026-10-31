@@ -17,4 +17,11 @@ dotnet run --project samples/FloatSoda.Samples.Settings -- --desktop
 
 `SettingsDemoState` が値を保持し、`SetState` で再構築します。保存先はユーザーのローカルアプリケーションデータ配下の `FloatSoda/settings-ui-sample.json` です。
 
-画面は内容の高さに追従しますが、縦スクロールとオーバーレイ型ポップアップはありません。実機によるVRレーザー操作確認は別途必要です。
+論理キャンバスは960×1000で固定し、Dropdownの開閉でも入力座標の範囲は変わりません。
+SteamVR側のパネル拡大・縮小は物理的な表示倍率を変更します。
+このサンプルの「UI scale」は値の通知と保存を示す項目で、画面自体の倍率は変更しません。
+縦スクロールとオーバーレイ型ポップアップはありません。
+
+実機テスト環境でexe起動が`Init_HmdNotFoundPresenceFailed`となる場合、同じビルドを
+`dotnet samples/FloatSoda.Samples.Settings/bin/Release/net10.0/FloatSoda.Samples.Settings.dll --Logging:EventLog:LogLevel:Default=None`
+で起動できることを確認しています。後ろの引数はWindowsイベントログへの出力をこの起動だけ無効にします。

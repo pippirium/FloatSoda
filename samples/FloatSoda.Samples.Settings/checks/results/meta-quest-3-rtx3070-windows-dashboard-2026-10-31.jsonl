@@ -1,0 +1,7 @@
+{"run_id":"2026-10-31T15:53:00+09:00","commit":"1c89b7e","id":"settings-launch","result":"crash","remarks":"OpenVR初期化がInit_HmdNotFoundPresenceFailedで失敗。続いてWindows EventLogへの書き込み権限エラーを記録。表示・入力は未判定。"}
+{"run_id":"2026-10-31T16:06:33+09:00","commit":"1c89b7e","id":"settings-1","result":"ok","remarks":""}
+{"run_id":"2026-10-31T16:06:33+09:00","commit":"1c89b7e","id":"settings-2","result":"ok","remarks":""}
+{"run_id":"2026-10-31T16:06:33+09:00","commit":"1c89b7e","id":"settings-3","result":"ng","remarks":"NG：ドラッグできません"}
+{"run_id":"2026-10-31T16:06:33+09:00","commit":"1c89b7e","id":"settings-3","result":"ng","remarks":"NG：ドラッグできません。押しても何も変わらない。"}
+{"run_id":"2026-10-31T16:06:33+09:00","commit":"1c89b7e","id":"settings-4","result":"ng","remarks":"反応するときもあるがかなり不安定。"}
+{"run_id":"2026-10-31T16:06:33+09:00","commit":"1c89b7e","id":"settings-5","result":"skip","remarks":"入力操作が不安定なため、保存と再起動確認は未実施。"}

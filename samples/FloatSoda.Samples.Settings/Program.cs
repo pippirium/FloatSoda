@@ -5,6 +5,7 @@ using FloatSoda.Samples.Settings;
 using FloatSoda.Widgets;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using SkiaSharp;
 
 // --desktopでもSteamVR/OpenVRとHMDの接続が必要です。
 var useDesktop = args.Contains("--desktop");
@@ -18,13 +19,22 @@ using var host = builder.Build();
 var app = host.Services.GetRequiredService<FloatSodaApp>();
 var demo = new SettingsDemo();
 
+// SteamVR上での物理倍率とは別に、候補の開閉でも変わらない論理キャンバスを使う。
+var canvasSize = new SKSize(960, 1000);
+
 app.CreateWindow(
     useDesktop
-        ? new DesktopWindow { Title = "Settings Widgets", Child = demo }
+        ? new DesktopWindow
+        {
+            Title = "Settings Widgets",
+            Size = canvasSize,
+            Child = demo,
+        }
         : new DashboardWindow
         {
             Dpm = new Dpm(1000),
             Title = "Settings Widgets",
+            Size = canvasSize,
             Child = demo,
         }
 );
