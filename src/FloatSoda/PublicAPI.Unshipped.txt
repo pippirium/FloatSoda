@@ -1,0 +1,6 @@
+#nullable enable
+FloatSoda.FloatSodaApp.Post(System.Action! action) -> void
+FloatSoda.Core.WidgetBinding.RootWidget.get -> FloatSoda.Widgets.Widget?
+FloatSoda.Elements.RenderObjectToWidgetElement<T>.ChildWidget.get -> FloatSoda.Widgets.Widget?
+FloatSoda.Widgets.OverlayWindow.KeepOverlayAfterExit.get -> bool
+FloatSoda.Widgets.OverlayWindow.KeepOverlayAfterExit.init -> void

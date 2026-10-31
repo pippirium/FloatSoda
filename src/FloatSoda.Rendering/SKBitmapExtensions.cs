@@ -30,7 +30,8 @@ public static class SKBitmapExtensions
         this SKBitmap bitmap,
         string path,
         SKEncodedImageFormat format = SKEncodedImageFormat.Png,
-        int quality = 100)
+        int quality = 100
+    )
     {
         using var image = SKImage.FromBitmap(bitmap);
         using var data = image.Encode(format, quality);

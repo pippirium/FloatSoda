@@ -13,15 +13,20 @@ public class RowFlutterParityTest
     [Fact]
     public void Build_Rowの交差軸配置を省略_子を中央へ配置する()
     {
-        var view = Mount(new SizedBox
-        {
-            Width = 100,
-            Height = 100,
-            Child = new Row
+        var view = Mount(
+            new SizedBox
             {
-                Children = { new SizedBox { Width = 20, Height = 20 } }
+                Width = 100,
+                Height = 100,
+                Child = new Row
+                {
+                    Children =
+                    {
+                        new SizedBox { Width = 20, Height = 20 },
+                    },
+                },
             }
-        });
+        );
 
         var flex = Find<RenderFlex>(view);
         var child = Assert.Single(flex.Children);
@@ -33,14 +38,17 @@ public class RowFlutterParityTest
     {
         var view = new RenderView();
         var pipeline = new RenderPipeline { OnNeedVisualUpdate = () => { }, RenderView = view };
-        _ = new RenderObjectToWidgetAdapter { Container = view, Child = widget }
-            .AttachToRenderTree(new BuildOwner(() => { }), null);
+        _ = new RenderObjectToWidgetAdapter { Container = view, Child = widget }.AttachToRenderTree(
+            new BuildOwner(() => { }),
+            null
+        );
         view.PrepareInitialFrame();
         pipeline.FlushLayout();
         return view;
     }
 
-    private static T Find<T>(RenderObject root) where T : RenderObject
+    private static T Find<T>(RenderObject root)
+        where T : RenderObject
     {
         T? found = null;
         Visit(root);
@@ -48,7 +56,8 @@ public class RowFlutterParityTest
 
         void Visit(RenderObject node)
         {
-            if (found is not null) return;
+            if (found is not null)
+                return;
             if (node is T match)
             {
                 found = match;

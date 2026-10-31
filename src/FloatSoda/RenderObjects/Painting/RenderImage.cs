@@ -25,7 +25,8 @@ public class RenderImage : RenderBox
         get;
         set
         {
-            if (ReferenceEquals(field, value)) return;
+            if (ReferenceEquals(field, value))
+                return;
             field = value;
             MarkNeedsLayout();
         }
@@ -41,7 +42,8 @@ public class RenderImage : RenderBox
         set
         {
             BoxFitExtensions.Validate(value, nameof(Fit));
-            if (field == value) return;
+            if (field == value)
+                return;
             field = value;
             MarkNeedsPaint();
         }
@@ -56,14 +58,16 @@ public class RenderImage : RenderBox
         set
         {
             ValidateAlignment(value, nameof(Alignment));
-            if (field == value) return;
+            if (field == value)
+                return;
             field = value;
             MarkNeedsPaint();
         }
     } = Alignment.Center;
 
     /// <inheritdoc/>
-    public override void PerformLayout() => Size = Constraints.Constrain(new SKSize(Image.Width, Image.Height));
+    public override void PerformLayout() =>
+        Size = Constraints.Constrain(new SKSize(Image.Width, Image.Height));
 
     /// <inheritdoc/>
     internal override SKSize ComputeDryLayout(Geometrics.BoxConstraints constraints) =>
@@ -102,12 +106,14 @@ public class RenderImage : RenderBox
                 (float)sourceOffset.X,
                 (float)sourceOffset.Y,
                 fittedSizes.Source.Width,
-                fittedSizes.Source.Height);
+                fittedSizes.Source.Height
+            );
             var destination = SKRect.Create(
                 (float)(offset.X + destinationOffset.X),
                 (float)(offset.Y + destinationOffset.Y),
                 fittedSizes.Destination.Width,
-                fittedSizes.Destination.Height);
+                fittedSizes.Destination.Height
+            );
 
             context.Canvas.DrawImage(Image, source, destination);
         }
@@ -117,7 +123,11 @@ public class RenderImage : RenderBox
     {
         if (!float.IsFinite(value.X) || !float.IsFinite(value.Y))
         {
-            throw new ArgumentOutOfRangeException(parameterName, value, "配置値には有限値を指定してください。");
+            throw new ArgumentOutOfRangeException(
+                parameterName,
+                value,
+                "配置値には有限値を指定してください。"
+            );
         }
     }
 }

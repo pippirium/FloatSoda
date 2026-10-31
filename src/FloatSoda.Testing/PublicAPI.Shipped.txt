@@ -1,0 +1,7 @@
+#nullable enable
+FloatSoda.Testing.RenderObjectBitmapRenderer
+FloatSoda.Testing.RenderObjectBitmapRenderer.Render(FloatSoda.RenderObjects.RenderBox! renderObject, SkiaSharp.SKSizeI imageSize) -> SkiaSharp.SKBitmap!
+FloatSoda.Testing.RenderObjectBitmapRenderer.RenderObjectBitmapRenderer() -> void
+FloatSoda.Testing.WidgetBitmapRenderer
+FloatSoda.Testing.WidgetBitmapRenderer.Render(FloatSoda.Widgets.Widget! widget, SkiaSharp.SKSizeI imageSize) -> SkiaSharp.SKBitmap!
+FloatSoda.Testing.WidgetBitmapRenderer.WidgetBitmapRenderer() -> void

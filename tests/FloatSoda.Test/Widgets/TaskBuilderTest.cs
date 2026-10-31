@@ -19,12 +19,14 @@ public class TaskBuilderTest
         var source = new TaskCompletionSource<int>();
         var recorder = new SnapshotRecorder<int>();
 
-        Mount(new TaskBuilder<int>
-        {
-            Task = source.Task,
-            InitialData = 10,
-            Builder = (_, snapshot) => Record(recorder, snapshot)
-        });
+        Mount(
+            new TaskBuilder<int>
+            {
+                Task = source.Task,
+                InitialData = 10,
+                Builder = (_, snapshot) => Record(recorder, snapshot),
+            }
+        );
 
         var snapshot = Assert.Single(recorder.Snapshots);
         Assert.Equal(TaskConnectionState.Waiting, snapshot.ConnectionState);
@@ -39,11 +41,13 @@ public class TaskBuilderTest
         var recorder = new SnapshotRecorder<int>();
 
         // Taskを指定しないのは公開APIの既定状態。Subscribeが早期returnしConnectionStateはNoneのまま。
-        Mount(new TaskBuilder<int>
-        {
-            InitialData = 5,
-            Builder = (_, snapshot) => Record(recorder, snapshot)
-        });
+        Mount(
+            new TaskBuilder<int>
+            {
+                InitialData = 5,
+                Builder = (_, snapshot) => Record(recorder, snapshot),
+            }
+        );
 
         var snapshot = Assert.Single(recorder.Snapshots);
         Assert.Equal(TaskConnectionState.None, snapshot.ConnectionState);
@@ -57,11 +61,13 @@ public class TaskBuilderTest
         var source = new TaskCompletionSource<int>();
         var recorder = new SnapshotRecorder<int>();
 
-        Mount(new TaskBuilder<int>
-        {
-            Task = source.Task,
-            Builder = (_, snapshot) => Record(recorder, snapshot)
-        });
+        Mount(
+            new TaskBuilder<int>
+            {
+                Task = source.Task,
+                Builder = (_, snapshot) => Record(recorder, snapshot),
+            }
+        );
 
         Assert.False(Assert.Single(recorder.Snapshots).HasData);
     }
@@ -71,11 +77,13 @@ public class TaskBuilderTest
     {
         var recorder = new SnapshotRecorder<string>();
 
-        Mount(new TaskBuilder<string>
-        {
-            Task = System.Threading.Tasks.Task.FromResult<string>(null!),
-            Builder = (_, snapshot) => Record(recorder, snapshot)
-        });
+        Mount(
+            new TaskBuilder<string>
+            {
+                Task = System.Threading.Tasks.Task.FromResult<string>(null!),
+                Builder = (_, snapshot) => Record(recorder, snapshot),
+            }
+        );
 
         var snapshot = Assert.Single(recorder.Snapshots);
         Assert.Equal(TaskConnectionState.Done, snapshot.ConnectionState);
@@ -85,14 +93,19 @@ public class TaskBuilderTest
     [Fact]
     public void Task_成功_MainスレッドのBuildScopeで結果を反映する()
     {
-        var source = new TaskCompletionSource<int>(TaskCreationOptions.RunContinuationsAsynchronously);
+        var source = new TaskCompletionSource<int>(
+            TaskCreationOptions.RunContinuationsAsynchronously
+        );
         var recorder = new SnapshotRecorder<int>();
         using var taskScheduled = new ManualResetEventSlim();
-        var (_, owner, _) = MountRoot(new TaskBuilder<int>
-        {
-            Task = source.Task,
-            Builder = (_, snapshot) => Record(recorder, snapshot)
-        }, taskScheduled.Set);
+        var (_, owner, _) = MountRoot(
+            new TaskBuilder<int>
+            {
+                Task = source.Task,
+                Builder = (_, snapshot) => Record(recorder, snapshot),
+            },
+            taskScheduled.Set
+        );
         taskScheduled.Reset();
 
         var completionThread = new Thread(() => source.SetResult(42));
@@ -116,11 +129,13 @@ public class TaskBuilderTest
     {
         var source = new TaskCompletionSource<int>();
         var recorder = new SnapshotRecorder<int>();
-        var owner = Mount(new TaskBuilder<int>
-        {
-            Task = source.Task,
-            Builder = (_, snapshot) => Record(recorder, snapshot)
-        });
+        var owner = Mount(
+            new TaskBuilder<int>
+            {
+                Task = source.Task,
+                Builder = (_, snapshot) => Record(recorder, snapshot),
+            }
+        );
         var error = new InvalidOperationException("boom");
 
         source.SetException(error);
@@ -138,11 +153,13 @@ public class TaskBuilderTest
     {
         var source = new TaskCompletionSource<int>();
         var recorder = new SnapshotRecorder<int>();
-        var owner = Mount(new TaskBuilder<int>
-        {
-            Task = source.Task,
-            Builder = (_, snapshot) => Record(recorder, snapshot)
-        });
+        var owner = Mount(
+            new TaskBuilder<int>
+            {
+                Task = source.Task,
+                Builder = (_, snapshot) => Record(recorder, snapshot),
+            }
+        );
 
         source.SetCanceled();
         owner.BuildScope();
@@ -159,11 +176,13 @@ public class TaskBuilderTest
     {
         var recorder = new SnapshotRecorder<int>();
 
-        Mount(new TaskBuilder<int>
-        {
-            Task = System.Threading.Tasks.Task.FromResult(7),
-            Builder = (_, snapshot) => Record(recorder, snapshot)
-        });
+        Mount(
+            new TaskBuilder<int>
+            {
+                Task = System.Threading.Tasks.Task.FromResult(7),
+                Builder = (_, snapshot) => Record(recorder, snapshot),
+            }
+        );
 
         var snapshot = Assert.Single(recorder.Snapshots);
         Assert.Equal(TaskConnectionState.Done, snapshot.ConnectionState);
@@ -176,11 +195,13 @@ public class TaskBuilderTest
         var first = new TaskCompletionSource<int>();
         var second = new TaskCompletionSource<int>();
         var recorder = new SnapshotRecorder<int>();
-        var (root, owner, renderView) = MountRoot(new TaskBuilder<int>
-        {
-            Task = first.Task,
-            Builder = (_, snapshot) => Record(recorder, snapshot)
-        });
+        var (root, owner, renderView) = MountRoot(
+            new TaskBuilder<int>
+            {
+                Task = first.Task,
+                Builder = (_, snapshot) => Record(recorder, snapshot),
+            }
+        );
 
         root = new RenderObjectToWidgetAdapter
         {
@@ -188,8 +209,8 @@ public class TaskBuilderTest
             Child = new TaskBuilder<int>
             {
                 Task = second.Task,
-                Builder = (_, snapshot) => Record(recorder, snapshot)
-            }
+                Builder = (_, snapshot) => Record(recorder, snapshot),
+            },
         }.AttachToRenderTree(owner, root);
         owner.BuildScope();
 
@@ -207,16 +228,18 @@ public class TaskBuilderTest
     {
         var source = new TaskCompletionSource<int>();
         var recorder = new SnapshotRecorder<int>();
-        var (root, owner, renderView) = MountRoot(new TaskBuilder<int>
-        {
-            Task = source.Task,
-            Builder = (_, snapshot) => Record(recorder, snapshot)
-        });
+        var (root, owner, renderView) = MountRoot(
+            new TaskBuilder<int>
+            {
+                Task = source.Task,
+                Builder = (_, snapshot) => Record(recorder, snapshot),
+            }
+        );
 
         _ = new RenderObjectToWidgetAdapter
         {
             Container = renderView,
-            Child = new SizedBox { Width = 1, Height = 1 }
+            Child = new SizedBox { Width = 1, Height = 1 },
         }.AttachToRenderTree(owner, root);
         owner.BuildScope();
         var countAfterDispose = recorder.Snapshots.Count;
@@ -230,10 +253,7 @@ public class TaskBuilderTest
     [Fact]
     public void RequiredProperties_BuilderがNull_ArgumentNullExceptionを投げる()
     {
-        Assert.Throws<ArgumentNullException>(() => new TaskBuilder<int>
-        {
-            Builder = null!
-        });
+        Assert.Throws<ArgumentNullException>(() => new TaskBuilder<int> { Builder = null! });
     }
 
     private static Widget Record<T>(SnapshotRecorder<T> recorder, TaskSnapshot<T> snapshot)
@@ -248,21 +268,19 @@ public class TaskBuilderTest
         return owner;
     }
 
-    private static (RenderObjectToWidgetElement<RenderView> Root, BuildOwner Owner, RenderView RenderView) MountRoot(
-        Widget widget,
-        Action? onBuildScheduled = null)
+    private static (
+        RenderObjectToWidgetElement<RenderView> Root,
+        BuildOwner Owner,
+        RenderView RenderView
+    ) MountRoot(Widget widget, Action? onBuildScheduled = null)
     {
         var renderView = new RenderView(100, 100);
-        _ = new RenderPipeline
-        {
-            OnNeedVisualUpdate = () => { },
-            RenderView = renderView
-        };
+        _ = new RenderPipeline { OnNeedVisualUpdate = () => { }, RenderView = renderView };
         var owner = new BuildOwner(onBuildScheduled ?? (() => { }));
         var root = new RenderObjectToWidgetAdapter
         {
             Container = renderView,
-            Child = widget
+            Child = widget,
         }.AttachToRenderTree(owner, null);
 
         return (root, owner, renderView);

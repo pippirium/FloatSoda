@@ -24,20 +24,23 @@ public class WindowWidgetTest
     private static (RenderPipeline Pipeline, RenderView RenderView) MountTree(Widget widget) =>
         MountTree(widget, new BuildOwner(() => { }));
 
-    private static (RenderPipeline Pipeline, RenderView RenderView) MountTree(Widget widget, BuildOwner owner)
+    private static (RenderPipeline Pipeline, RenderView RenderView) MountTree(
+        Widget widget,
+        BuildOwner owner
+    )
     {
         var renderView = new RenderView();
         var pipeline = new RenderPipeline
         {
             OnNeedVisualUpdate = () => { },
-            RenderView = renderView
+            RenderView = renderView,
         };
         renderView.PrepareInitialFrame();
 
         new RenderObjectToWidgetAdapter
         {
             Container = renderView,
-            Child = widget
+            Child = widget,
         }.AttachToRenderTree(owner, null);
 
         return (pipeline, renderView);
@@ -48,11 +51,13 @@ public class WindowWidgetTest
     {
         WindowWidget? found = null;
 
-        MountTree(new DashboardWindow
-        {
-            Title = "TestWindow",
-            Child = new Probe { OnBuild = ctx => found = WindowWidget.Of(ctx) }
-        });
+        MountTree(
+            new DashboardWindow
+            {
+                Title = "TestWindow",
+                Child = new Probe { OnBuild = ctx => found = WindowWidget.Of(ctx) },
+            }
+        );
 
         // ScopeType により具象型（DashboardWindow）でも基底型 WindowWidget で lookup できる
         Assert.IsType<DashboardWindow>(found);
@@ -64,11 +69,13 @@ public class WindowWidgetTest
     {
         OverlayWindow? found = null;
 
-        MountTree(new DashboardWindow
-        {
-            Title = "TestWindow",
-            Child = new Probe { OnBuild = ctx => found = OverlayWindow.Of(ctx) }
-        });
+        MountTree(
+            new DashboardWindow
+            {
+                Title = "TestWindow",
+                Child = new Probe { OnBuild = ctx => found = OverlayWindow.Of(ctx) },
+            }
+        );
 
         // オーバーレイ系の中間基底 OverlayWindow でも lookup できる（Swap 拡張の前提）
         Assert.IsType<DashboardWindow>(found);
@@ -79,11 +86,13 @@ public class WindowWidgetTest
     {
         DesktopWindow? found = null;
 
-        MountTree(new DesktopWindow
-        {
-            Title = "TestWindow",
-            Child = new Probe { OnBuild = ctx => found = DesktopWindow.Of(ctx) }
-        });
+        MountTree(
+            new DesktopWindow
+            {
+                Title = "TestWindow",
+                Child = new Probe { OnBuild = ctx => found = DesktopWindow.Of(ctx) },
+            }
+        );
 
         Assert.IsType<DesktopWindow>(found);
         Assert.Equal("TestWindow", found!.Title);
@@ -92,21 +101,29 @@ public class WindowWidgetTest
     [Fact]
     public void OverlayWindowOf_ThrowsForDesktopWindow()
     {
-        MountTree(new DesktopWindow
-        {
-            Title = "TestWindow",
-            Child = new Probe { OnBuild = ctx => Assert.Throws<InvalidOperationException>(() => OverlayWindow.Of(ctx)) }
-        });
+        MountTree(
+            new DesktopWindow
+            {
+                Title = "TestWindow",
+                Child = new Probe
+                {
+                    OnBuild = ctx =>
+                        Assert.Throws<InvalidOperationException>(() => OverlayWindow.Of(ctx)),
+                },
+            }
+        );
     }
 
     [Fact]
     public void SizeUnset_RenderViewShrinkWrapsToChild()
     {
-        var (pipeline, renderView) = MountTree(new DashboardWindow
-        {
-            Title = "TestWindow",
-            Child = new SizedBox { Width = 320, Height = 240 }
-        });
+        var (pipeline, renderView) = MountTree(
+            new DashboardWindow
+            {
+                Title = "TestWindow",
+                Child = new SizedBox { Width = 320, Height = 240 },
+            }
+        );
 
         pipeline.FlushLayout();
 
@@ -117,12 +134,14 @@ public class WindowWidgetTest
     [Fact]
     public void SizeSet_RenderViewUsesFixedSize()
     {
-        var (pipeline, renderView) = MountTree(new DashboardWindow
-        {
-            Title = "TestWindow",
-            Size = new SKSize(800, 600),
-            Child = new SizedBox { Width = 320, Height = 240 }
-        });
+        var (pipeline, renderView) = MountTree(
+            new DashboardWindow
+            {
+                Title = "TestWindow",
+                Size = new SKSize(800, 600),
+                Child = new SizedBox { Width = 320, Height = 240 },
+            }
+        );
 
         pipeline.FlushLayout();
 
@@ -157,7 +176,8 @@ public class WindowWidgetTest
                 // 宣言に依存として登録する。作り直された宣言を読み直すために必要。
                 context.DependOnInheritedWidgetOfExactType<WindowWidget>();
                 Widget!.WindowElement =
-                    Context.GetElementForInheritedWidgetOfExactType<WindowWidget>() as WindowElement;
+                    Context.GetElementForInheritedWidgetOfExactType<WindowWidget>()
+                    as WindowElement;
                 return new SizedBox { Width = Widget!.Size.Width, Height = Widget!.Size.Height };
             }
         }
@@ -178,12 +198,15 @@ public class WindowWidgetTest
     {
         var owner = new BuildOwner(() => { });
         var resizer = new SizeResizer { Size = new SKSize(640, 360) };
-        var (pipeline, renderView) = MountTree(new DashboardWindow
-        {
-            Title = "TestWindow",
-            Size = new SKSize(800, 600),
-            Child = resizer
-        }, owner);
+        var (pipeline, renderView) = MountTree(
+            new DashboardWindow
+            {
+                Title = "TestWindow",
+                Size = new SKSize(800, 600),
+                Child = resizer,
+            },
+            owner
+        );
 
         pipeline.FlushLayout();
 
@@ -193,7 +216,12 @@ public class WindowWidgetTest
         // キャプチャ画像の実測を受けた要求として、宣言を作り直す。
         // この時点では依存 Element の再構築が予約されるだけで、レイアウトは走らない。
         var windowElement = resizer.WindowElement!;
-        windowElement.Update((WindowWidget)windowElement.Widget with { Size = new SKSize(640, 360) });
+        windowElement.Update(
+            (WindowWidget)windowElement.Widget with
+            {
+                Size = new SKSize(640, 360),
+            }
+        );
         Assert.Equal(new SKSize(640, 360), renderView.FixedSize);
 
         // 次のフレームと同じ手順(再構築 -> レイアウト)で処理する。

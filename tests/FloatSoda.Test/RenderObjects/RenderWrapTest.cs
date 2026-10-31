@@ -32,7 +32,7 @@ public class RenderWrapTest
         {
             Spacing = 5,
             RunSpacing = 7,
-            Children = { first, second, third }
+            Children = { first, second, third },
         };
 
         wrap.Layout(new BoxConstraints(MaxWidth: 70, MaxHeight: 100));
@@ -53,15 +53,12 @@ public class RenderWrapTest
     public void PerformLayout_Alignmentを指定_Run内の子を主軸の期待位置へ配置する(
         WrapAlignment alignment,
         double expectedFirst,
-        double expectedSecond)
+        double expectedSecond
+    )
     {
         var first = Box(20, 10);
         var second = Box(20, 10);
-        var wrap = new RenderWrap
-        {
-            Alignment = alignment,
-            Children = { first, second }
-        };
+        var wrap = new RenderWrap { Alignment = alignment, Children = { first, second } };
 
         wrap.Layout(BoxConstraints.Tight(100, 20));
 
@@ -77,7 +74,7 @@ public class RenderWrapTest
         var wrap = new RenderWrap
         {
             RunAlignment = WrapAlignment.End,
-            Children = { first, second }
+            Children = { first, second },
         };
 
         wrap.Layout(BoxConstraints.Tight(50, 100));
@@ -94,7 +91,7 @@ public class RenderWrapTest
         var wrap = new RenderWrap
         {
             CrossAxisAlignment = WrapCrossAlignment.End,
-            Children = { shortChild, tallChild }
+            Children = { shortChild, tallChild },
         };
 
         wrap.Layout(new BoxConstraints(MaxWidth: 100, MaxHeight: 100));
@@ -108,11 +105,7 @@ public class RenderWrapTest
     {
         var first = Box(20, 40);
         var second = Box(30, 40);
-        var wrap = new RenderWrap
-        {
-            Direction = Axis.Vertical,
-            Children = { first, second }
-        };
+        var wrap = new RenderWrap { Direction = Axis.Vertical, Children = { first, second } };
 
         wrap.Layout(new BoxConstraints(MaxWidth: 100, MaxHeight: 70));
 
@@ -130,7 +123,7 @@ public class RenderWrapTest
         {
             Direction = Axis.Vertical,
             VerticalDirection = VerticalDirection.Up,
-            Children = { first, second }
+            Children = { first, second },
         };
 
         wrap.Layout(BoxConstraints.Tight(20, 100));
@@ -144,11 +137,7 @@ public class RenderWrapTest
     {
         var first = Box(60, 20);
         var second = Box(50, 30);
-        var wrap = new RenderWrap
-        {
-            Spacing = 5,
-            Children = { first, second }
-        };
+        var wrap = new RenderWrap { Spacing = 5, Children = { first, second } };
 
         wrap.Layout(BoxConstraints.Unbounded);
 
@@ -166,7 +155,7 @@ public class RenderWrapTest
         {
             Spacing = 5,
             RunSpacing = 7,
-            Children = { first, second }
+            Children = { first, second },
         };
 
         Assert.Equal(40, wrap.GetMinIntrinsicWidth(double.PositiveInfinity));
@@ -182,28 +171,29 @@ public class RenderWrapTest
         {
             Spacing = 5,
             RunSpacing = 7,
-            Children = { Box(30, 10), Box(30, 10), Box(30, 10) }
+            Children = { Box(30, 10), Box(30, 10), Box(30, 10) },
         };
 
         Assert.Equal(
             new SKSize(65, 27),
-            wrap.GetDryLayout(new BoxConstraints(MaxWidth: 70, MaxHeight: 100)));
+            wrap.GetDryLayout(new BoxConstraints(MaxWidth: 70, MaxHeight: 100))
+        );
     }
 
-    private static RenderConstrainedBox Box(double width, double height) => new()
-    {
-        AdditionalConstraints = BoxConstraints.Tight(width, height)
-    };
+    private static RenderConstrainedBox Box(double width, double height) =>
+        new() { AdditionalConstraints = BoxConstraints.Tight(width, height) };
 
     private static IntrinsicTestBox IntrinsicBox(double width, double height) => new(width, height);
 
-    private static WrapParentData ParentData(RenderBox child) => Assert.IsType<WrapParentData>(child.ParentData);
+    private static WrapParentData ParentData(RenderBox child) =>
+        Assert.IsType<WrapParentData>(child.ParentData);
 
     private sealed class IntrinsicTestBox(double width, double height) : RenderBox
     {
         public override void PerformLayout() => Size = Constraints.Constrain(width, height);
 
-        internal override SKSize ComputeDryLayout(BoxConstraints constraints) => constraints.Constrain(width, height);
+        internal override SKSize ComputeDryLayout(BoxConstraints constraints) =>
+            constraints.Constrain(width, height);
 
         protected override double ComputeMinIntrinsicWidth(double availableHeight) => width;
 

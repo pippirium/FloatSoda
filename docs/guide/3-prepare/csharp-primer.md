@@ -33,7 +33,7 @@ Widget root = new Align
         Height = 100,
         Child = new ColoredBox
         {
-            Color = SKColors.Tomato
+            Color = Colors.Tomato
         }
     }
 };

@@ -86,7 +86,12 @@ internal static class VRLogPath
         try
         {
             Directory.CreateDirectory(directory);
-            using var _ = new FileStream(logFile, FileMode.Create, FileAccess.Write, FileShare.Read);
+            using var _ = new FileStream(
+                logFile,
+                FileMode.Create,
+                FileAccess.Write,
+                FileShare.Read
+            );
             return true;
         }
         catch (IOException)
@@ -143,9 +148,7 @@ internal static class VRLogPath
     /// </remarks>
     internal static string? GetDefaultLogsDirectory()
     {
-        return GetLogsDirectory(QueryRuntimePath()) is { } logs
-            ? logs
-            : null;
+        return GetLogsDirectory(QueryRuntimePath()) is { } logs ? logs : null;
     }
 
     /// <summary>
@@ -166,10 +169,15 @@ internal static class VRLogPath
             return null;
         }
 
-        var current = runtimePath.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+        var current = runtimePath.TrimEnd(
+            Path.DirectorySeparatorChar,
+            Path.AltDirectorySeparatorChar
+        );
         var leaf = Path.GetFileName(current);
-        if (string.Equals(leaf, "runtime", StringComparison.OrdinalIgnoreCase) ||
-            string.Equals(leaf, "bin", StringComparison.OrdinalIgnoreCase))
+        if (
+            string.Equals(leaf, "runtime", StringComparison.OrdinalIgnoreCase)
+            || string.Equals(leaf, "bin", StringComparison.OrdinalIgnoreCase)
+        )
         {
             current = Path.GetDirectoryName(current) ?? string.Empty;
         }

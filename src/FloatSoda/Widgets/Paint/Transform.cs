@@ -37,7 +37,11 @@ public record Transform : SingleChildRenderObjectWidget<RenderTransform>
         {
             if (!double.IsFinite(value.X) || !double.IsFinite(value.Y))
             {
-                throw new ArgumentOutOfRangeException(nameof(value), value, "変換原点には有限値を指定してください。");
+                throw new ArgumentOutOfRangeException(
+                    nameof(value),
+                    value,
+                    "変換原点には有限値を指定してください。"
+                );
             }
 
             field = value;
@@ -53,9 +57,16 @@ public record Transform : SingleChildRenderObjectWidget<RenderTransform>
         get;
         init
         {
-            if (value is { } alignment && (!float.IsFinite(alignment.X) || !float.IsFinite(alignment.Y)))
+            if (
+                value is { } alignment
+                && (!float.IsFinite(alignment.X) || !float.IsFinite(alignment.Y))
+            )
             {
-                throw new ArgumentOutOfRangeException(nameof(value), value, "配置値には有限値を指定してください。");
+                throw new ArgumentOutOfRangeException(
+                    nameof(value),
+                    value,
+                    "配置値には有限値を指定してください。"
+                );
             }
 
             field = value;
@@ -68,13 +79,14 @@ public record Transform : SingleChildRenderObjectWidget<RenderTransform>
     public bool TransformHitTests { get; init; } = true;
 
     /// <inheritdoc/>
-    public override RenderTransform CreateRenderObject() => new()
-    {
-        Transform = Matrix,
-        Origin = Origin,
-        Alignment = Alignment,
-        TransformHitTests = TransformHitTests
-    };
+    public override RenderTransform CreateRenderObject() =>
+        new()
+        {
+            Transform = Matrix,
+            Origin = Origin,
+            Alignment = Alignment,
+            TransformHitTests = TransformHitTests,
+        };
 
     /// <inheritdoc/>
     public override void UpdateRenderObject(RenderTransform renderObject)
@@ -87,11 +99,20 @@ public record Transform : SingleChildRenderObjectWidget<RenderTransform>
 
     private static void ValidateMatrix(Matrix3x2 matrix)
     {
-        if (!float.IsFinite(matrix.M11) || !float.IsFinite(matrix.M12)
-            || !float.IsFinite(matrix.M21) || !float.IsFinite(matrix.M22)
-            || !float.IsFinite(matrix.M31) || !float.IsFinite(matrix.M32))
+        if (
+            !float.IsFinite(matrix.M11)
+            || !float.IsFinite(matrix.M12)
+            || !float.IsFinite(matrix.M21)
+            || !float.IsFinite(matrix.M22)
+            || !float.IsFinite(matrix.M31)
+            || !float.IsFinite(matrix.M32)
+        )
         {
-            throw new ArgumentOutOfRangeException(nameof(matrix), matrix, "変換行列の各成分には有限値を指定してください。");
+            throw new ArgumentOutOfRangeException(
+                nameof(matrix),
+                matrix,
+                "変換行列の各成分には有限値を指定してください。"
+            );
         }
     }
 }

@@ -33,11 +33,8 @@ public sealed record LimitedBox : SingleChildRenderObjectWidget<RenderLimitedBox
     } = double.PositiveInfinity;
 
     /// <inheritdoc/>
-    public override RenderLimitedBox CreateRenderObject() => new()
-    {
-        MaxWidth = MaxWidth,
-        MaxHeight = MaxHeight,
-    };
+    public override RenderLimitedBox CreateRenderObject() =>
+        new() { MaxWidth = MaxWidth, MaxHeight = MaxHeight };
 
     /// <inheritdoc/>
     public override void UpdateRenderObject(RenderLimitedBox renderObject)

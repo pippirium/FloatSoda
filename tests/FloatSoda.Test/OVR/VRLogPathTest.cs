@@ -44,11 +44,14 @@ public class VRLogPathTest
     [Fact]
     public void GetLogsDirectory_末尾区切り付き_末尾の区切りを無視して決定する()
     {
-        var runtime = Path.Combine("C:", "Steam", "steamapps", "common", "SteamVR")
+        var runtime =
+            Path.Combine("C:", "Steam", "steamapps", "common", "SteamVR")
             + Path.DirectorySeparatorChar;
 
-        Assert.Equal(Path.Combine("C:", "Steam", "steamapps", "common", "SteamVR", "logs"),
-            VRLogPath.GetLogsDirectory(runtime));
+        Assert.Equal(
+            Path.Combine("C:", "Steam", "steamapps", "common", "SteamVR", "logs"),
+            VRLogPath.GetLogsDirectory(runtime)
+        );
     }
 
     [Fact]
@@ -56,8 +59,10 @@ public class VRLogPathTest
     {
         var runtime = Path.Combine("C:", "Steam", "steamapps", "common", "SteamVR", "RUNTIME");
 
-        Assert.Equal(Path.Combine("C:", "Steam", "steamapps", "common", "SteamVR", "logs"),
-            VRLogPath.GetLogsDirectory(runtime));
+        Assert.Equal(
+            Path.Combine("C:", "Steam", "steamapps", "common", "SteamVR", "logs"),
+            VRLogPath.GetLogsDirectory(runtime)
+        );
     }
 
     [Fact]
@@ -98,7 +103,10 @@ public class VRLogPathTest
     [Fact]
     public void CanCreateLogFile_書き込み可能な一時ディレクトリ_trueを返す()
     {
-        var directory = Path.Combine(Path.GetTempPath(), "floatsoda-vrlogpath-" + Guid.NewGuid().ToString("N"));
+        var directory = Path.Combine(
+            Path.GetTempPath(),
+            "floatsoda-vrlogpath-" + Guid.NewGuid().ToString("N")
+        );
 
         try
         {
@@ -117,7 +125,10 @@ public class VRLogPathTest
     [Fact]
     public void CanCreateLogFile_既存のログファイルは保持する()
     {
-        var directory = Path.Combine(Path.GetTempPath(), "floatsoda-vrlogpath-" + Guid.NewGuid().ToString("N"));
+        var directory = Path.Combine(
+            Path.GetTempPath(),
+            "floatsoda-vrlogpath-" + Guid.NewGuid().ToString("N")
+        );
         var logFile = Path.Combine(directory, VRLogPath.LogFileName);
 
         try
@@ -137,7 +148,10 @@ public class VRLogPathTest
     [Fact]
     public void CanCreateLogFile_階層の下に作成できる_trueを返す()
     {
-        var root = Path.Combine(Path.GetTempPath(), "floatsoda-vrlogpath-" + Guid.NewGuid().ToString("N"));
+        var root = Path.Combine(
+            Path.GetTempPath(),
+            "floatsoda-vrlogpath-" + Guid.NewGuid().ToString("N")
+        );
         var directory = Path.Combine(root, "nested", "vrlogs");
 
         try
@@ -154,7 +168,10 @@ public class VRLogPathTest
     public void CanCreateLogFile_ログファイル名がディレクトリと衝突すれば_falseを返す()
     {
         // 確認対象のログファイルと同じ名前のディレクトリを作成すると開けない。
-        var root = Path.Combine(Path.GetTempPath(), "floatsoda-vrlogpath-" + Guid.NewGuid().ToString("N"));
+        var root = Path.Combine(
+            Path.GetTempPath(),
+            "floatsoda-vrlogpath-" + Guid.NewGuid().ToString("N")
+        );
         Directory.CreateDirectory(Path.Combine(root, VRLogPath.LogFileName));
 
         try

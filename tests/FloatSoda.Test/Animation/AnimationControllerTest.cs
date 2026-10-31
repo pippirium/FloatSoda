@@ -12,11 +12,8 @@ public class AnimationControllerTest
         _provider = new TickerProvider { ResolveScheduler = () => _scheduler };
     }
 
-    private AnimationController CreateController(TimeSpan? duration = null) => new()
-    {
-        Vsync = _provider,
-        Duration = duration ?? TimeSpan.FromSeconds(1)
-    };
+    private AnimationController CreateController(TimeSpan? duration = null) =>
+        new() { Vsync = _provider, Duration = duration ?? TimeSpan.FromSeconds(1) };
 
     [Fact]
     public void Forward_ProgressesLinearlyAndCompletes()
@@ -134,7 +131,9 @@ public class AnimationControllerTest
     {
         var controller = CreateController();
 
-        controller.AnimateWith(new InterpolationSimulation(0.0, 1.0, TimeSpan.FromSeconds(2), new LinearCurve()));
+        controller.AnimateWith(
+            new InterpolationSimulation(0.0, 1.0, TimeSpan.FromSeconds(2), new LinearCurve())
+        );
 
         _scheduler.Pump(TimeSpan.Zero);
         _scheduler.Pump(TimeSpan.FromSeconds(1));

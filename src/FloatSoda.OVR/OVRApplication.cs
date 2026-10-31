@@ -30,7 +30,7 @@ public enum ApplicationType
     Utility = EVRApplicationType.VRApplication_Utility,
 
     /// <summary>An application that does not fit one of the specialized OpenVR categories.</summary>
-    Other = EVRApplicationType.VRApplication_Other
+    Other = EVRApplicationType.VRApplication_Other,
 }
 
 /// <summary>
@@ -48,8 +48,10 @@ public readonly record struct AppKey(string Value)
         get;
         init
         {
-            if (value.Length > 127) throw new ArgumentOutOfRangeException(nameof(value));
-            if (!Regex.IsMatch(value, "^[a-z0-9_.]+$")) throw new FormatException();
+            if (value.Length > 127)
+                throw new ArgumentOutOfRangeException(nameof(value));
+            if (!Regex.IsMatch(value, "^[a-z0-9_.]+$"))
+                throw new FormatException();
 
             field = value;
         }
@@ -78,6 +80,7 @@ public class OVRApplication : IDisposable
 {
     /// <summary>Gets the initialized OpenVR system interface.</summary>
     public CVRSystem OVRSystem { get; init; }
+
     /// <summary>Gets the application information used for initialization.</summary>
     public OVRAppInfo Info { get; init; }
 
@@ -108,7 +111,6 @@ public class OVRApplication : IDisposable
         set => OpenVR.Applications.SetApplicationAutoLaunch(Info.Key, value).ThrowIfError();
     }
 
-
     /// <summary>Gets whether the application key is currently registered with SteamVR.</summary>
     public bool Installed => OpenVR.Applications.IsApplicationInstalled(Info.Key);
 
@@ -126,7 +128,9 @@ public class OVRApplication : IDisposable
     /// </remarks>
     /// <exception cref="Exceptions.VRApplicationException">The application key is not registered with SteamVR, or another OpenVR application error occurred.</exception>
     public void Identify() =>
-        OpenVR.Applications.IdentifyApplication((uint)Environment.ProcessId, Info.Key).ThrowIfError();
+        OpenVR
+            .Applications.IdentifyApplication((uint)Environment.ProcessId, Info.Key)
+            .ThrowIfError();
 
     /// <summary>Shuts down the process-wide OpenVR context.</summary>
     public void Dispose()
@@ -148,7 +152,8 @@ public static class OVRApplications
 {
     /// <summary>Launches the application registered with the given <paramref name="appKey"/>.</summary>
     /// <param name="appKey">The registered SteamVR application key.</param>
-    public static void Launch(string appKey) => OpenVR.Applications.LaunchApplication(appKey).ThrowIfError();
+    public static void Launch(string appKey) =>
+        OpenVR.Applications.LaunchApplication(appKey).ThrowIfError();
 
     /// <summary>Adds an application manifest to SteamVR.</summary>
     /// <param name="path">The absolute path to the manifest file.</param>

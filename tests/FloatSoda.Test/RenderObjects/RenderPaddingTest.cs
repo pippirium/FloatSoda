@@ -15,38 +15,31 @@ public class RenderPaddingTest
     private static (RenderView View, RenderPipeline Pipeline) Build(RenderBox child)
     {
         var view = new RenderView { Child = child };
-        var pipeline = new RenderPipeline
-        {
-            OnNeedVisualUpdate = () => { },
-            RenderView = view
-        };
+        var pipeline = new RenderPipeline { OnNeedVisualUpdate = () => { }, RenderView = view };
         view.PrepareInitialFrame();
         return (view, pipeline);
     }
 
-    private static RenderPointerListener BuildListener(double width = 100, double height = 50) => new()
-    {
-        Child = new RenderColoredBox
+    private static RenderPointerListener BuildListener(double width = 100, double height = 50) =>
+        new()
         {
-            Child = new RenderConstrainedBox
+            Child = new RenderColoredBox
             {
-                AdditionalConstraints = BoxConstraints.Tight(width, height)
-            }
-        }
-    };
+                Child = new RenderConstrainedBox
+                {
+                    AdditionalConstraints = BoxConstraints.Tight(width, height),
+                },
+            },
+        };
 
     [Fact]
     public void PerformLayout_AddsPaddingAndOffsetsChild()
     {
         var child = new RenderConstrainedBox
         {
-            AdditionalConstraints = BoxConstraints.Tight(100, 50)
+            AdditionalConstraints = BoxConstraints.Tight(100, 50),
         };
-        var padding = new RenderPadding
-        {
-            Padding = new EdgeInsets(10, 20, 30, 40),
-            Child = child
-        };
+        var padding = new RenderPadding { Padding = new EdgeInsets(10, 20, 30, 40), Child = child };
         var (view, pipeline) = Build(padding);
 
         pipeline.FlushLayout();
@@ -61,13 +54,9 @@ public class RenderPaddingTest
     {
         var child = new RenderConstrainedBox
         {
-            AdditionalConstraints = BoxConstraints.Tight(200, 200)
+            AdditionalConstraints = BoxConstraints.Tight(200, 200),
         };
-        var padding = new RenderPadding
-        {
-            Padding = EdgeInsets.All(10),
-            Child = child
-        };
+        var padding = new RenderPadding { Padding = EdgeInsets.All(10), Child = child };
 
         padding.Layout(BoxConstraints.Tight(120, 100));
 
@@ -83,8 +72,8 @@ public class RenderPaddingTest
             Padding = EdgeInsets.All(10),
             Child = new RenderConstrainedBox
             {
-                AdditionalConstraints = BoxConstraints.Tight(100, 50)
-            }
+                AdditionalConstraints = BoxConstraints.Tight(100, 50),
+            },
         };
         var (view, pipeline) = Build(padding);
         pipeline.FlushLayout();
@@ -103,7 +92,7 @@ public class RenderPaddingTest
         var padding = new RenderPadding
         {
             Padding = new EdgeInsets(20, 30, 0, 0),
-            Child = listener
+            Child = listener,
         };
         var (view, pipeline) = Build(padding);
         pipeline.FlushLayout();
@@ -123,7 +112,8 @@ public class RenderPaddingTest
     {
         var padding = new RenderPadding();
 
-        Assert.Throws<ArgumentOutOfRangeException>(
-            () => padding.Padding = new EdgeInsets(0, -1, 0, 0));
+        Assert.Throws<ArgumentOutOfRangeException>(() =>
+            padding.Padding = new EdgeInsets(0, -1, 0, 0)
+        );
     }
 }

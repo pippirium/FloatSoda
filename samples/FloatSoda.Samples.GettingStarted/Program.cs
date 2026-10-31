@@ -21,16 +21,16 @@ Widget root = new Align
     {
         Width = 100,
         Height = 100,
-        Child = new ColoredBox
-        {
-            Color = SKColors.CornflowerBlue
-        }
-    }
+        Child = new ColoredBox { Color = SKColors.CornflowerBlue },
+    },
 };
 
-app.CreateWindow(new DashboardWindow
-{
-    Dpm = new Dpm(100),
-    Title = "MyDashboard", Child = root
-});
+app.CreateWindow(
+    new DashboardWindow
+    {
+        Dpm = new Dpm(100),
+        Title = "MyDashboard",
+        Child = root,
+    }
+);
 await host.RunAsync();

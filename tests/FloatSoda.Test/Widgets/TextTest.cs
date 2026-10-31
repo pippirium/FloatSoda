@@ -14,20 +14,17 @@ public class TextTest
     private static (
         RenderPipeline Pipeline,
         RenderView View,
-        RenderObjectToWidgetElement<RenderView> Root) Mount(Widget widget)
+        RenderObjectToWidgetElement<RenderView> Root
+    ) Mount(Widget widget)
     {
         var view = new RenderView();
-        var pipeline = new RenderPipeline
-        {
-            OnNeedVisualUpdate = () => { },
-            RenderView = view
-        };
+        var pipeline = new RenderPipeline { OnNeedVisualUpdate = () => { }, RenderView = view };
         view.PrepareInitialFrame();
 
         var root = new RenderObjectToWidgetAdapter
         {
             Container = view,
-            Child = widget
+            Child = widget,
         }.AttachToRenderTree(new BuildOwner(() => { }), null);
 
         return (pipeline, view, root);
@@ -38,8 +35,12 @@ public class TextTest
     {
         public Widget Widget => new FloatSoda.Widgets.Layout.SizedBox();
         public BuildOwner? Owner => null;
-        public T? DependOnInheritedWidgetOfExactType<T>() where T : InheritedWidget => null;
-        public InheritedElement? GetElementForInheritedWidgetOfExactType<T>() where T : InheritedWidget => null;
+
+        public T? DependOnInheritedWidgetOfExactType<T>()
+            where T : InheritedWidget => null;
+
+        public InheritedElement? GetElementForInheritedWidgetOfExactType<T>()
+            where T : InheritedWidget => null;
     }
 
     [Fact]
@@ -51,10 +52,12 @@ public class TextTest
             Color = new Color(10, 20, 30),
             Font = new SystemFontProvider("Meiryo"),
             FontWeight = 700,
-            IsItalic = true
+            IsItalic = true,
         };
 
-        var richText = Assert.IsType<RichText>(new Text("FloatSoda") { Style = style }.Build(new EmptyBuildContext()));
+        var richText = Assert.IsType<RichText>(
+            new Text("FloatSoda") { Style = style }.Build(new EmptyBuildContext())
+        );
 
         Assert.Equal("FloatSoda", richText.Text.Text);
         Assert.Equal(style, richText.Text.Style);
@@ -63,7 +66,9 @@ public class TextTest
     [Fact]
     public void Build_空文字列を指定_空のTextSpanへ委譲する()
     {
-        var richText = Assert.IsType<RichText>(new Text(string.Empty).Build(new EmptyBuildContext()));
+        var richText = Assert.IsType<RichText>(
+            new Text(string.Empty).Build(new EmptyBuildContext())
+        );
 
         Assert.Empty(richText.Text.Text);
         Assert.Equal(new TextStyle(), richText.Text.Style);
@@ -83,7 +88,9 @@ public class TextTest
     [InlineData(-1)]
     [InlineData(double.NaN)]
     [InlineData(double.PositiveInfinity)]
-    public void TextStyle_FontSizeが0以下または非有限値_ArgumentOutOfRangeExceptionを投げる(double value)
+    public void TextStyle_FontSizeが0以下または非有限値_ArgumentOutOfRangeExceptionを投げる(
+        double value
+    )
     {
         Assert.Throws<ArgumentOutOfRangeException>(() => new TextStyle { FontSize = value });
     }
@@ -105,7 +112,7 @@ public class TextTest
             Color = new Color(10, 20, 30, 40),
             Font = new SystemFontProvider("Meiryo"),
             FontWeight = 700,
-            IsItalic = true
+            IsItalic = true,
         };
 
         var renderingStyle = style.ToRichTextKitStyle();
@@ -144,13 +151,9 @@ public class TextTest
         {
             FontSize = 48,
             Color = new Color(255, 0, 0),
-            FontWeight = 700
+            FontWeight = 700,
         };
-        var overriding = new TextStyle
-        {
-            Color = new Color(0, 0, 255),
-            IsItalic = true
-        };
+        var overriding = new TextStyle { Color = new Color(0, 0, 255), IsItalic = true };
 
         var merged = baseStyle.Merge(overriding);
 
@@ -182,7 +185,7 @@ public class TextTest
         new RenderObjectToWidgetAdapter
         {
             Container = view,
-            Child = new Text("after") { Style = updatedStyle }
+            Child = new Text("after") { Style = updatedStyle },
         }.AttachToRenderTree(root.Owner!, root);
         root.Owner!.BuildScope();
 
@@ -197,27 +200,43 @@ public class TextTest
     {
         Type[] types =
         [
-            typeof(Text), typeof(RichText), typeof(TextSpan), typeof(TextStyle),
-            typeof(FontProvider), typeof(SystemFontProvider), typeof(FileFontProvider), typeof(FontResource)
+            typeof(Text),
+            typeof(RichText),
+            typeof(TextSpan),
+            typeof(TextStyle),
+            typeof(FontProvider),
+            typeof(SystemFontProvider),
+            typeof(FileFontProvider),
+            typeof(FontResource),
         ];
 
         var exposedTypes = types
-            .SelectMany(type => type.GetMembers(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly))
+            .SelectMany(type =>
+                type.GetMembers(
+                    BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly
+                )
+            )
             .SelectMany(GetSignatureTypes);
 
         Assert.DoesNotContain(exposedTypes, IsRenderingLibraryType);
     }
 
     private static bool IsRenderingLibraryType(Type type) =>
-        type.Namespace?.StartsWith("SkiaSharp", StringComparison.Ordinal) == true ||
-        type.Namespace?.StartsWith("Topten.RichTextKit", StringComparison.Ordinal) == true;
+        type.Namespace?.StartsWith("SkiaSharp", StringComparison.Ordinal) == true
+        || type.Namespace?.StartsWith("Topten.RichTextKit", StringComparison.Ordinal) == true;
 
-    private static IEnumerable<Type> GetSignatureTypes(MemberInfo member) => member switch
-    {
-        PropertyInfo property => [property.PropertyType],
-        FieldInfo field => [field.FieldType],
-        MethodInfo method => method.GetParameters().Select(parameter => parameter.ParameterType).Append(method.ReturnType),
-        ConstructorInfo constructor => constructor.GetParameters().Select(parameter => parameter.ParameterType),
-        _ => []
-    };
+    private static IEnumerable<Type> GetSignatureTypes(MemberInfo member) =>
+        member switch
+        {
+            PropertyInfo property => [property.PropertyType],
+            FieldInfo field => [field.FieldType],
+            MethodInfo method => method
+                .GetParameters()
+                .Select(parameter => parameter.ParameterType)
+                .Append(method.ReturnType),
+            ConstructorInfo constructor => constructor
+                .GetParameters()
+                .Select(parameter => parameter.ParameterType),
+            _ => [],
+        };
 }

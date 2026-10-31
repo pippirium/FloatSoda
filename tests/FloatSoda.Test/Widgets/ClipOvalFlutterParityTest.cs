@@ -17,7 +17,10 @@ public class ClipOvalFlutterParityTest
         var listener = new RenderPointerListener
         {
             Behaviour = HitTestBehaviour.Opaque,
-            Child = new RenderConstrainedBox { AdditionalConstraints = BoxConstraints.Tight(100, 100) }
+            Child = new RenderConstrainedBox
+            {
+                AdditionalConstraints = BoxConstraints.Tight(100, 100),
+            },
         };
         var clip = new RenderClipOval { Child = listener };
         var view = Mount(clip);

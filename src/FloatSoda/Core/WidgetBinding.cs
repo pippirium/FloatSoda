@@ -2,11 +2,11 @@ using System.Diagnostics;
 using FloatSoda.Abstractions.Engine;
 using FloatSoda.Abstractions.Geometries;
 using FloatSoda.Abstractions.Input;
-using FloatSoda.Rendering.Layers;
 using FloatSoda.Elements;
 using FloatSoda.Engine;
 using FloatSoda.Gesture;
 using FloatSoda.OVR.Overlay;
+using FloatSoda.Rendering.Layers;
 using FloatSoda.RenderObjects;
 using FloatSoda.Widgets;
 using SkiaSharp;
@@ -23,15 +23,20 @@ public class WidgetBinding : IFrameScheduler, IHitTestTarget, IGestureBinding
     /// <summary>フレーム予約とジェスチャ処理をこのウィンドウへ関連付けたバインディングを初期化します。</summary>
     public WidgetBinding()
     {
-        BuildOwner = new BuildOwner(EnsureVisualUpdate) { FrameScheduler = this, GestureBinding = this };
+        BuildOwner = new BuildOwner(EnsureVisualUpdate)
+        {
+            FrameScheduler = this,
+            GestureBinding = this,
+        };
     }
 
-    internal WidgetBinding(RenderView renderView) : this()
+    internal WidgetBinding(RenderView renderView)
+        : this()
     {
         Pipeline = new RenderPipeline
         {
             OnNeedVisualUpdate = EnsureVisualUpdate,
-            RenderView = renderView
+            RenderView = renderView,
         };
 
         renderView.PrepareInitialFrame();
@@ -45,14 +50,17 @@ public class WidgetBinding : IFrameScheduler, IHitTestTarget, IGestureBinding
 
     private RenderPipeline? Pipeline { get; set; }
     private BuildOwner BuildOwner { get; set; }
+
     /// <summary>ウィンドウのWidgetツリーをRenderViewへ接続するルートElementを取得します。</summary>
     /// <value>ルートWidgetが接続される前は<see langword="null"/>です。</value>
     public Element? RenderViewElement { get; private set; }
     private RenderPostTaskRunner? RenderThreadRunner { get; set; }
     private IEngineWindow? Window { get; set; }
     private IOverlay? _pendingOverlay;
+
     /// <summary>描画ウィンドウとパイプラインの初期化が開始済みかを取得します。</summary>
     public bool Initialized { get; private set; }
+
     /// <summary>次のフレームでレイアウトまたは描画を処理する必要があるかを取得します。</summary>
     /// <remarks>
     /// <see cref="EnsureVisualUpdate"/>で設定され、<see cref="DrawFrame"/>が更新処理を開始すると解除されます。
@@ -98,10 +106,15 @@ public class WidgetBinding : IFrameScheduler, IHitTestTarget, IGestureBinding
     /// <param name="windowFactory">初期化済みレンダラーからエンジンウィンドウを作成する処理。</param>
     /// <param name="visible">デスクトップウィンドウを作成時から表示する場合は<see langword="true"/>。既定値は<see langword="false"/>です。</param>
     /// <remarks>エンジンウィンドウの作成はレンダースレッドへ予約されるため、このメソッドから戻った時点では完了していない場合があります。</remarks>
-    public void EnsureInitialized(string windowName, RenderPostTaskRunner renderPostTaskRunner,
-        Func<Renderer, IEngineWindow> windowFactory, bool visible = false)
+    public void EnsureInitialized(
+        string windowName,
+        RenderPostTaskRunner renderPostTaskRunner,
+        Func<Renderer, IEngineWindow> windowFactory,
+        bool visible = false
+    )
     {
-        if (Initialized) return;
+        if (Initialized)
+            return;
         Initialized = true;
 
         WindowName = windowName;
@@ -113,10 +126,7 @@ public class WidgetBinding : IFrameScheduler, IHitTestTarget, IGestureBinding
             Renderer? renderer = null;
             try
             {
-                renderer = new Renderer
-                {
-                    GLView = new GLView(Size, visible, windowName)
-                };
+                renderer = new Renderer { GLView = new GLView(Size, visible, windowName) };
 
                 Window = windowFactory(renderer);
                 _pendingOverlay = null;
@@ -138,11 +148,10 @@ public class WidgetBinding : IFrameScheduler, IHitTestTarget, IGestureBinding
             }
         });
 
-
         Pipeline = new RenderPipeline
         {
             OnNeedVisualUpdate = EnsureVisualUpdate,
-            RenderView = new RenderView()
+            RenderView = new RenderView(),
         };
 
         Pipeline.RenderView.PrepareInitialFrame();
@@ -194,7 +203,8 @@ public class WidgetBinding : IFrameScheduler, IHitTestTarget, IGestureBinding
 
     /// <summary>このバインディングに接続されたルートWidgetを取得します。</summary>
     /// <value>ルートWidgetが接続される前は<see langword="null"/>です。</value>
-    public Widget? RootWidget => (RenderViewElement as RenderObjectToWidgetElement<RenderView>)?.ChildWidget;
+    public Widget? RootWidget =>
+        (RenderViewElement as RenderObjectToWidgetElement<RenderView>)?.ChildWidget;
 
     /// <summary>次のフレームで視覚更新が必要であることを記録します。</summary>
     /// <remarks>DirtyなElementまたはRenderObjectから呼び出され、<see cref="DrawFrame"/>による再構築、レイアウト、描画の実行を予約します。</remarks>
@@ -208,8 +218,13 @@ public class WidgetBinding : IFrameScheduler, IHitTestTarget, IGestureBinding
     /// </summary>
     public void ReapplyDeviceTrackedTransform()
     {
-        if (Window is not OverlayWindow overlayWindow) return;
-        if (overlayWindow.Overlay is not IMovableOverlay { Transform: DeviceTrackedOverlayTransform transform }) return;
+        if (Window is not OverlayWindow overlayWindow)
+            return;
+        if (
+            overlayWindow.Overlay
+            is not IMovableOverlay { Transform: DeviceTrackedOverlayTransform transform }
+        )
+            return;
 
         RenderThreadRunner?.PostTask(transform.Apply);
     }
@@ -219,15 +234,16 @@ public class WidgetBinding : IFrameScheduler, IHitTestTarget, IGestureBinding
     /// <remarks>初回接続では視覚更新を予約します。接続済みの場合は既存Elementを再利用して更新します。</remarks>
     public void AttachRootWidget(Widget rootWidget)
     {
-
-        var isBootStrapFrame = RenderViewElement == null;
+        var isBootStrapFrame = RenderViewElement is null;
 
         RenderViewElement = new RenderObjectToWidgetAdapter
-            {
-                Child = rootWidget,
-                Container = Pipeline.RenderView
-            }
-            .AttachToRenderTree(BuildOwner, RenderViewElement as RenderObjectToWidgetElement<RenderView>);
+        {
+            Child = rootWidget,
+            Container = Pipeline.RenderView,
+        }.AttachToRenderTree(
+            BuildOwner,
+            RenderViewElement as RenderObjectToWidgetElement<RenderView>
+        );
 
         if (isBootStrapFrame)
         {
@@ -245,13 +261,13 @@ public class WidgetBinding : IFrameScheduler, IHitTestTarget, IGestureBinding
     /// <remarks>Elementの再構築は毎フレーム確認します。<see cref="NeedsVisualUpdate"/>が未設定の場合、またはウィンドウ作成前の場合はレイアウトと描画を行いません。</remarks>
     public void DrawFrame()
     {
-
-        if (RenderViewElement != null)
+        if (RenderViewElement is not null)
         {
             BuildOwner.BuildScope();
         }
 
-        if (!NeedsVisualUpdate || Window == null) return;
+        if (!NeedsVisualUpdate || Window is null)
+            return;
         NeedsVisualUpdate = false;
 
         Pipeline?.FlushLayout();
@@ -265,7 +281,8 @@ public class WidgetBinding : IFrameScheduler, IHitTestTarget, IGestureBinding
 
         Pipeline?.FlushPaint();
 
-        if (Pipeline?.RenderView.Layer?.Clone() is not ContainerLayer layer) return;
+        if (Pipeline?.RenderView.Layer?.Clone() is not ContainerLayer layer)
+            return;
 
         RenderThreadRunner?.PostRender(Window, layer);
     }
@@ -274,12 +291,14 @@ public class WidgetBinding : IFrameScheduler, IHitTestTarget, IGestureBinding
     {
         var newSize = Pipeline?.RenderView.Size.ToSizeI() ?? SKSizeI.Empty;
 
-        if (newSize == _lastPostedSize || newSize is not { Width: > 0, Height: > 0 }) return;
+        if (newSize == _lastPostedSize || newSize is not { Width: > 0, Height: > 0 })
+            return;
 
         _lastPostedSize = newSize;
 
         var window = Window;
-        if (window == null) return;
+        if (window is null)
+            return;
 
         RenderThreadRunner?.PostTask(() => window.Resize(newSize));
     }
@@ -289,7 +308,8 @@ public class WidgetBinding : IFrameScheduler, IHitTestTarget, IGestureBinding
     /// <remarks>未初期化の場合は何も行いません。登録済みの一時コールバックはこのフレームで一度だけ実行されます。</remarks>
     public void BeginFrame(TimeSpan elapsedTime)
     {
-        if (!Initialized) return;
+        if (!Initialized)
+            return;
         FlushPointerEvents();
         _hasScheduledFrame = false;
         var callbacks = _transientCallbacks.Values.ToList();
@@ -311,7 +331,6 @@ public class WidgetBinding : IFrameScheduler, IHitTestTarget, IGestureBinding
 
         _transientCallbacks[NextFrameCallbackId] = callback;
 
-
         return NextFrameCallbackId;
     }
 
@@ -322,13 +341,12 @@ public class WidgetBinding : IFrameScheduler, IHitTestTarget, IGestureBinding
     /// <remarks>同一フレーム内で複数回呼び出しても予約状態は1件にまとめられ、<see cref="BeginFrame"/>の開始時に解除されます。</remarks>
     public void ScheduleFrame()
     {
-        if (_hasScheduledFrame) return;
+        if (_hasScheduledFrame)
+            return;
 
         _hasScheduledFrame = true;
     }
 
-    
-    
     /// <summary>
     /// ウィンドウ由来の生ポインタイベントをポンプ・変換し、ヒットテストへディスパッチします。
     /// Window はレンダースレッドで非同期に生成されるため、生成が観測できたフレームから配線されます。
@@ -336,11 +354,12 @@ public class WidgetBinding : IFrameScheduler, IHitTestTarget, IGestureBinding
     private void FlushPointerEvents()
     {
         var window = Window;
-        if (window == null) return;
+        if (window is null)
+            return;
 
         (window as OverlayWindow)?.PollInputEvents();
 
-        if (_pointerController == null && window.PointerSource is { } pointerSource)
+        if (_pointerController is null && window.PointerSource is { } pointerSource)
         {
             _pointerController = new PointerController(pointerSource);
             _pointerController.OnPointerEvent += HandlePointerEvent;
@@ -387,7 +406,8 @@ public class WidgetBinding : IFrameScheduler, IHitTestTarget, IGestureBinding
                 _pointerHoverTracker.Update(pointerEvent, HitTest(pointerEvent.Position));
 
                 // Down時のヒットパスへ届け続ける（ポインターキャプチャ）。配線前にDownが起きていた場合は捨てる。
-                if (!_hitTests.TryGetValue(pointerEvent.PointerId, out var result)) return;
+                if (!_hitTests.TryGetValue(pointerEvent.PointerId, out var result))
+                    return;
                 DispatchEvent(pointerEvent, result);
                 _hitTests.Remove(pointerEvent.PointerId);
                 break;
@@ -409,7 +429,13 @@ public class WidgetBinding : IFrameScheduler, IHitTestTarget, IGestureBinding
                 // 入力源がCancelを先に合成できなかった場合も、Removeだけで押下状態を残さない。
                 if (_hitTests.Remove(pointerEvent.PointerId, out var capturedResult))
                 {
-                    DispatchEvent(pointerEvent with { Phase = PointerEventPhase.Cancel }, capturedResult);
+                    DispatchEvent(
+                        pointerEvent with
+                        {
+                            Phase = PointerEventPhase.Cancel,
+                        },
+                        capturedResult
+                    );
                 }
 
                 _pointerPositions.Remove(pointerEvent.PointerId);
@@ -442,11 +468,11 @@ public class WidgetBinding : IFrameScheduler, IHitTestTarget, IGestureBinding
     {
         var hitTestResult = new HitTestResult();
         Pipeline?.RenderView.HitTest(hitTestResult, position);
-        
+
         hitTestResult.Add(new HitTestEntry(this));
         return hitTestResult;
     }
-    
+
     /// <summary>
     /// ヒットパスを通過したポインターイベントを認識器へ配送し、フェーズに応じてアリーナを進行します。
     /// </summary>

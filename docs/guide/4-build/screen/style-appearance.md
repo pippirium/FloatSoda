@@ -16,7 +16,6 @@
 ## 前提条件
 
 - [最初のオーバーレイを作る](../../../tutorials/first-overlay.md)を終え、ウィジェットを `Align` や `SizedBox` で組めること
-- ソースの先頭に `using SkiaSharp;` があること
 - ソースの先頭に、`FloatSoda.Painting`、`FloatSoda.Geometrics`、`FloatSoda.Widgets`、`FloatSoda.Widgets.Layout`、`FloatSoda.Widgets.Paint` の `using` があること
 
 ## 手順1: 文字の色と大きさを指定する
@@ -28,14 +27,14 @@ new Text("タイトル")
 {
     Style = new TextStyle
     {
-        Color = SKColors.WhiteSmoke,
+        Color = Colors.WhiteSmoke,
         FontSize = 56,
         FontWeight = 700,
     },
 }
 ```
 
-`FontWeight` は数値で、太字は 700 です。指定を省くと、大きさは 30、色は黒になります。色は `SKColors` の名前のほか、`new Color(124, 205, 255)` のように、赤、緑、青の値でも指定できます。
+`FontWeight` は数値で、太字は 700 です。指定を省くと、大きさは 30、色は黒になります。色は `Colors.WhiteSmoke` のような名前のほか、`new Color(124, 205, 255)` のように、赤、緑、青の値でも指定できます。ほかの書き方は[色の指定](#色の指定)にまとめています。
 
 日本語の文字が出ないときは、`Font` にフォントの名前を指定します。`SystemFontProvider` は、`FloatSoda.Core.Providers` の名前空間にあります。
 
@@ -58,9 +57,9 @@ new DecoratedBox
 {
     Decoration = new BoxDecoration
     {
-        Color = SKColors.SlateBlue,
+        Color = Colors.SlateBlue,
         BorderRadius = BorderRadius.All(Radius.Circular(24)),
-        Border = Border.All(new BorderSide { Color = SKColors.White, Width = 4 }),
+        Border = Border.All(new BorderSide { Color = Colors.White, Width = 4 }),
     },
     Child = new Text("タイトル"),
 }
@@ -99,7 +98,7 @@ new DecoratedBox
 ```csharp
 new DefaultTextStyle
 {
-    Style = new TextStyle { Color = SKColors.WhiteSmoke, FontSize = 36 },
+    Style = new TextStyle { Color = Colors.WhiteSmoke, FontSize = 36 },
     Child = card,
 }
 ```
@@ -113,7 +112,7 @@ public record Card : StatelessWidget
 {
     public override Widget Build(IBuildContext context) => new DefaultTextStyle
     {
-        Style = new TextStyle { Color = SKColors.WhiteSmoke, FontSize = 36 },
+        Style = new TextStyle { Color = Colors.WhiteSmoke, FontSize = 36 },
         Child = new Align
         {
             Alignment = Alignment.Center,
@@ -121,9 +120,9 @@ public record Card : StatelessWidget
             {
                 Decoration = new BoxDecoration
                 {
-                    Color = SKColors.SlateBlue,
+                    Color = Colors.SlateBlue,
                     BorderRadius = BorderRadius.All(Radius.Circular(24)),
-                    Border = Border.All(new BorderSide { Color = SKColors.White, Width = 4 }),
+                    Border = Border.All(new BorderSide { Color = Colors.White, Width = 4 }),
                 },
                 Child = new Padding
                 {
@@ -162,3 +161,23 @@ HMD を被らずに確かめたいときは、[HMD を被らずに確かめる](
 ## うまくいかないとき
 
 見た目が指定と違う、または文字が出ないときは、症状に合うページに進みます。大きさや位置が思ったとおりでない場合は[レイアウトの考え方](../../5-troubleshoot/layout-model.md)、例外が出る場合は[エラーを読んで直す](../../5-troubleshoot/read-errors.md)です。
+
+## 色の指定
+
+色は、`FloatSoda.Geometrics` の名前空間にある `Color` 型で指定します。`ColoredBox`、`Container`、`TextStyle`、`BoxDecoration`、`BorderSide` の `Color` は、どれもこの型です。作り方は次のとおりで、どれで作っても同じ `Color` 型の値になります。
+
+| 書き方 | 例 | 向いている場面 |
+| :-- | :-- | :-- |
+| `Colors.名前` | `Colors.Tomato` | CSS の名前付きの色で指定する。`Colors.Transparent` は透明な黒 |
+| `new Color(r, g, b)` | `new Color(124, 205, 255)` | 赤、緑、青を、それぞれ 0〜255 の整数で指定する |
+| `new Color(r, g, b, a)` | `new Color(124, 205, 255, 128)` | 4つ目に不透明度を 0〜255 で足す |
+| `Color.FromArgb(0xAARRGGBB)` | `Color.FromArgb(0xFF2196F3)` | 16進数の整数で指定する。Flutter の `Color(0xFF2196F3)` と同じ並び |
+| `Color.FromArgb(a, r, g, b)` | `Color.FromArgb(255, 33, 150, 243)` | 不透明度を先頭にして、成分を 0〜255 で渡す |
+| `Color.FromRgbo(r, g, b, opacity)` | `Color.FromRgbo(255, 0, 0, 0.5)` | 不透明度を 0.0〜1.0 の小数で指定する。範囲の外か `NaN` を渡すと `ArgumentOutOfRangeException` |
+| `Color.Parse("#RRGGBB")` | `Color.Parse("#2196F3")` | ウェブカラーの文字列で指定する。`#RGB`、`#RGBA`、`#RRGGBB`、`#RRGGBBAA` を受け付け、`#` は省略できる。大文字と小文字は区別しない |
+
+不透明度 `Alpha` は、0 で完全な透明、255 で完全な不透明です。`new Color(r, g, b)` のように不透明度を省くと、255 になります。作った色の不透明度だけを変えるときは、`color with { Alpha = 128 }` と書きます。
+
+16進数で不透明度を書くときは、並び順に気を付けます。`Color.Parse` の8桁は、不透明度が末尾の `#RRGGBBAA` です。`Color.FromArgb` の整数は、不透明度が先頭の `0xAARRGGBB` です。たとえば、`Color.Parse("#FF000080")` と `Color.FromArgb(0x80FF0000)` は、どちらも同じ半透明の赤になります。
+
+`new Color()` と `default(Color)` は、全成分が 0 の透明な黒です。この色で塗っても、画面には何も見えません。`new Color(...)` で作るときは、赤、緑、青の3つを必ず渡します。

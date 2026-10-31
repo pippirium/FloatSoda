@@ -1,7 +1,7 @@
 ﻿using FloatSoda.Abstractions.Geometries;
-using FloatSoda.Rendering.Layers;
 using FloatSoda.Geometrics;
 using FloatSoda.Gesture;
+using FloatSoda.Rendering.Layers;
 using SkiaSharp;
 
 namespace FloatSoda.RenderObjects.Painting;
@@ -47,19 +47,23 @@ public abstract class RenderCustomClip<T> : RenderProxyBox
         get;
         set
         {
-            if (field == value) return;
+            if (field == value)
+                return;
 
             var oldClipper = field;
             field = value;
 
-            if (value == null || oldClipper == null || value.GetType() != oldClipper.GetType() ||
-                value.ShouldReclip(oldClipper))
+            if (
+                value is null
+                || oldClipper is null
+                || value.GetType() != oldClipper.GetType()
+                || value.ShouldReclip(oldClipper)
+            )
             {
                 MarkNeedsClip();
             }
         }
     }
-
 
     /// <summary>
     /// クリップ境界に適用する描画品質を取得または設定します。
@@ -76,7 +80,8 @@ public abstract class RenderCustomClip<T> : RenderProxyBox
         get;
         set
         {
-            if (field == value) return;
+            if (field == value)
+                return;
             field = value;
             MarkNeedsPaint();
         }
@@ -98,7 +103,8 @@ public abstract class RenderCustomClip<T> : RenderProxyBox
     {
         get
         {
-            if (Clipper == null) return DefaultClip;
+            if (Clipper is null)
+                return DefaultClip;
 
             if (!_hasClipperClip)
             {
@@ -128,7 +134,8 @@ public abstract class RenderCustomClip<T> : RenderProxyBox
 
         base.PerformLayout();
 
-        if (oldSize != Size) MarkNeedsClip();
+        if (oldSize != Size)
+            MarkNeedsClip();
     }
 }
 
@@ -147,7 +154,8 @@ public class RenderClipRect : RenderCustomClip<SKRect>
     /// </remarks>
     public override bool HitTest(HitTestResult result, Offset position)
     {
-        if (Clipper != null && !Clip.Contains((float)position.X, (float)position.Y)) return false;
+        if (Clipper is not null && !Clip.Contains((float)position.X, (float)position.Y))
+            return false;
 
         return base.HitTest(result, position);
     }
@@ -155,18 +163,21 @@ public class RenderClipRect : RenderCustomClip<SKRect>
     /// <inheritdoc/>
     public override void Paint(PaintingContext context, Offset offset)
     {
-        if (Child != null && ClipBehavior != FloatSoda.Rendering.Layers.Clip.None)
+        if (Child is not null && ClipBehavior != FloatSoda.Rendering.Layers.Clip.None)
         {
             Layer = context.PushClipRect(
                 offset,
                 Clip,
-                (c, o) => base.Paint(c, o), ClipBehavior,
-                Layer as ClipRectLayer);
+                (c, o) => base.Paint(c, o),
+                ClipBehavior,
+                Layer as ClipRectLayer
+            );
         }
         else
         {
             // Clip.None では Flutter と同じくクリップのレイヤーを作らず、子を直接描画する。子が無ければ何も描画しない。
-            if (Child != null) base.Paint(context, offset);
+            if (Child is not null)
+                base.Paint(context, offset);
             Layer = null;
         }
     }
@@ -190,14 +201,16 @@ public class RenderClipRoundRect : RenderCustomClip<SKRoundRect>
         get;
         set
         {
-            if (field == value) return;
+            if (field == value)
+                return;
             field = value;
             MarkNeedsClip();
         }
     }
 
     /// <inheritdoc/>
-    protected override SKRoundRect DefaultClip => BorderRadius.ToRoundRect(SKRect.Create(Offset.Zero, Size));
+    protected override SKRoundRect DefaultClip =>
+        BorderRadius.ToRoundRect(SKRect.Create(Offset.Zero, Size));
 
     /// <inheritdoc/>
     /// <remarks>
@@ -206,7 +219,8 @@ public class RenderClipRoundRect : RenderCustomClip<SKRoundRect>
     /// </remarks>
     public override bool HitTest(HitTestResult result, Offset position)
     {
-        if (Clipper != null && !Contains(Clip, (float)position.X, (float)position.Y)) return false;
+        if (Clipper is not null && !Contains(Clip, (float)position.X, (float)position.Y))
+            return false;
 
         return base.HitTest(result, position);
     }
@@ -220,7 +234,8 @@ public class RenderClipRoundRect : RenderCustomClip<SKRoundRect>
     private static bool Contains(SKRoundRect roundRect, float x, float y)
     {
         var rect = roundRect.Rect;
-        if (!rect.Contains(x, y)) return false;
+        if (!rect.Contains(x, y))
+            return false;
 
         var topLeft = roundRect.GetRadii(SKRoundRectCorner.UpperLeft);
         var topRight = roundRect.GetRadii(SKRoundRectCorner.UpperRight);
@@ -232,9 +247,21 @@ public class RenderClipRoundRect : RenderCustomClip<SKRoundRect>
         if (x > rect.Right - topRight.X && y < rect.Top + topRight.Y)
             return InEllipse(x, y, rect.Right - topRight.X, rect.Top + topRight.Y, topRight);
         if (x > rect.Right - bottomRight.X && y > rect.Bottom - bottomRight.Y)
-            return InEllipse(x, y, rect.Right - bottomRight.X, rect.Bottom - bottomRight.Y, bottomRight);
+            return InEllipse(
+                x,
+                y,
+                rect.Right - bottomRight.X,
+                rect.Bottom - bottomRight.Y,
+                bottomRight
+            );
         if (x < rect.Left + bottomLeft.X && y > rect.Bottom - bottomLeft.Y)
-            return InEllipse(x, y, rect.Left + bottomLeft.X, rect.Bottom - bottomLeft.Y, bottomLeft);
+            return InEllipse(
+                x,
+                y,
+                rect.Left + bottomLeft.X,
+                rect.Bottom - bottomLeft.Y,
+                bottomLeft
+            );
 
         return true;
 
@@ -249,7 +276,7 @@ public class RenderClipRoundRect : RenderCustomClip<SKRoundRect>
     /// <inheritdoc/>
     public override void Paint(PaintingContext context, Offset offset)
     {
-        if (Child != null && ClipBehavior != FloatSoda.Rendering.Layers.Clip.None)
+        if (Child is not null && ClipBehavior != FloatSoda.Rendering.Layers.Clip.None)
         {
             Layer = context.PushClipRoundRect(
                 offset,
@@ -263,7 +290,8 @@ public class RenderClipRoundRect : RenderCustomClip<SKRoundRect>
         else
         {
             // Clip.None では Flutter と同じくクリップのレイヤーを作らず、子を直接描画する。子が無ければ何も描画しない。
-            if (Child != null) base.Paint(context, offset);
+            if (Child is not null)
+                base.Paint(context, offset);
             Layer = null;
         }
     }
@@ -292,7 +320,8 @@ public class RenderClipPath : RenderCustomClip<SKPath>
     /// </remarks>
     public override bool HitTest(HitTestResult result, Offset position)
     {
-        if (Clipper != null && !Clip.Contains((float)position.X, (float)position.Y)) return false;
+        if (Clipper is not null && !Clip.Contains((float)position.X, (float)position.Y))
+            return false;
 
         return base.HitTest(result, position);
     }
@@ -300,7 +329,7 @@ public class RenderClipPath : RenderCustomClip<SKPath>
     /// <inheritdoc/>
     public override void Paint(PaintingContext context, Offset offset)
     {
-        if (Child != null && ClipBehavior != FloatSoda.Rendering.Layers.Clip.None)
+        if (Child is not null && ClipBehavior != FloatSoda.Rendering.Layers.Clip.None)
         {
             Layer = context.PushClipPath(
                 offset,
@@ -314,7 +343,8 @@ public class RenderClipPath : RenderCustomClip<SKPath>
         else
         {
             // Clip.None では Flutter と同じくクリップのレイヤーを作らず、子を直接描画する。子が無ければ何も描画しない。
-            if (Child != null) base.Paint(context, offset);
+            if (Child is not null)
+                base.Paint(context, offset);
             Layer = null;
         }
     }
@@ -338,7 +368,8 @@ public class RenderClipOval : RenderCustomClip<SKRect>
         var clip = Clip;
         var dx = (position.X - clip.MidX) / clip.Width;
         var dy = (position.Y - clip.MidY) / clip.Height;
-        if ((dx * dx) + (dy * dy) > 0.25) return false;
+        if ((dx * dx) + (dy * dy) > 0.25)
+            return false;
 
         return base.HitTest(result, position);
     }
@@ -346,7 +377,8 @@ public class RenderClipOval : RenderCustomClip<SKRect>
     /// <inheritdoc/>
     public override void Paint(PaintingContext context, Offset offset)
     {
-        if (Child == null) return;
+        if (Child is null)
+            return;
 
         if (ClipBehavior == FloatSoda.Rendering.Layers.Clip.None)
         {

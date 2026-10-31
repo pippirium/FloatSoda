@@ -107,7 +107,10 @@ public class ControllerRayPointerSourceTest
     public void Pump_ヒット解除後の再ヒット_Enterから繰り返す()
     {
         var hovering = new PointerData(0.5f, 0.5f, PointerChange.Hover);
-        var source = new ControllerRayPointerSource(TileSize, [Poller(hovering, null, hovering, hovering)]);
+        var source = new ControllerRayPointerSource(
+            TileSize,
+            [Poller(hovering, null, hovering, hovering)]
+        );
 
         Pump(source);
         var second = Pump(source);
@@ -125,7 +128,10 @@ public class ControllerRayPointerSourceTest
         // 3番目の Pump で right が初ヒットする前提。
         var a = new PointerData(0.1f, 0.1f, PointerChange.Hover);
         var b = new PointerData(0.9f, 0.9f, PointerChange.Hover);
-        var source = new ControllerRayPointerSource(TileSize, [Poller(a, null), Poller(null, null, b, b)]);
+        var source = new ControllerRayPointerSource(
+            TileSize,
+            [Poller(a, null), Poller(null, null, b, b)]
+        );
 
         Pump(source);
         var second = Pump(source);

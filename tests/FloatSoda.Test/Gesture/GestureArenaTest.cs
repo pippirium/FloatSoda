@@ -8,7 +8,9 @@ public class GestureArenaTest
     {
         public int Accepted { get; private set; }
         public int Rejected { get; private set; }
+
         public void AcceptGesture(int pointer) => Accepted++;
+
         public void RejectGesture(int pointer) => Rejected++;
     }
 
@@ -34,8 +36,8 @@ public class GestureArenaTest
 
         arena.Add(1, first);
         arena.Add(1, second);
-        arena.Close(1);   // 2人残りで未確定
-        arena.Sweep(1);   // 先頭が既定勝者
+        arena.Close(1); // 2人残りで未確定
+        arena.Sweep(1); // 先頭が既定勝者
 
         Assert.Equal(1, first.Accepted);
         Assert.Equal(1, second.Rejected);

@@ -1,4 +1,5 @@
 using FloatSoda.Elements;
+using FloatSoda.Geometrics;
 using FloatSoda.RenderObjects.Painting;
 using FloatSoda.Widgets;
 using SkiaSharp;
@@ -12,7 +13,9 @@ public class LeafRenderObjectWidgetTest
     {
         var widget = new TestLeafWidget { Color = SKColors.Red };
 
-        var element = Assert.IsType<LeafRenderObjectElement<RenderColoredBox>>(widget.CreateElement());
+        var element = Assert.IsType<LeafRenderObjectElement<RenderColoredBox>>(
+            widget.CreateElement()
+        );
 
         Assert.Same(widget, element.Widget);
     }
@@ -26,7 +29,7 @@ public class LeafRenderObjectWidgetTest
         element.Mount(parent: null);
 
         var renderObject = Assert.IsType<RenderColoredBox>(element.RenderObject);
-        Assert.Equal(SKColors.Red, renderObject.Color);
+        Assert.Equal<Color>(SKColors.Red, renderObject.Color);
         Assert.False(element.Dirty);
     }
 
@@ -40,7 +43,7 @@ public class LeafRenderObjectWidgetTest
         element.Update(new TestLeafWidget { Color = SKColors.Blue });
 
         Assert.Same(originalRenderObject, element.RenderObject);
-        Assert.Equal(SKColors.Blue, originalRenderObject.Color);
+        Assert.Equal<Color>(SKColors.Blue, originalRenderObject.Color);
         Assert.False(element.Dirty);
     }
 
@@ -62,6 +65,7 @@ public class LeafRenderObjectWidgetTest
 
         public override RenderColoredBox CreateRenderObject() => new() { Color = Color };
 
-        public override void UpdateRenderObject(RenderColoredBox renderObject) => renderObject.Color = Color;
+        public override void UpdateRenderObject(RenderColoredBox renderObject) =>
+            renderObject.Color = Color;
     }
 }

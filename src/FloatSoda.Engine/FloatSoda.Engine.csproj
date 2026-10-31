@@ -1,5 +1,4 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
     <PropertyGroup>
         <TargetFramework>net10.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
@@ -10,21 +9,20 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <InternalsVisibleTo Include="FloatSoda" />
-      <InternalsVisibleTo Include="FloatSoda.Test" />
+        <InternalsVisibleTo Include="FloatSoda" />
+        <InternalsVisibleTo Include="FloatSoda.Test" />
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.6" />
-      <PackageReference Include="Microsoft.Extensions.Logging" Version="10.0.6" />
-      <PackageReference Include="OpenTK" Version="4.9.4" />
-      <PackageReference Include="SkiaSharp" Version="3.119.2" />
+        <PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.6" />
+        <PackageReference Include="Microsoft.Extensions.Logging" Version="10.0.6" />
+        <PackageReference Include="OpenTK" Version="4.9.4" />
+        <PackageReference Include="SkiaSharp" Version="3.119.2" />
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\FloatSoda.Abstractions\FloatSoda.Abstractions.csproj" />
-      <ProjectReference Include="..\FloatSoda.OVR\FloatSoda.OVR.csproj" />
-      <ProjectReference Include="..\FloatSoda.Rendering\FloatSoda.Rendering.csproj" />
+        <ProjectReference Include="..\FloatSoda.Abstractions\FloatSoda.Abstractions.csproj" />
+        <ProjectReference Include="..\FloatSoda.OVR\FloatSoda.OVR.csproj" />
+        <ProjectReference Include="..\FloatSoda.Rendering\FloatSoda.Rendering.csproj" />
     </ItemGroup>
-
 </Project>

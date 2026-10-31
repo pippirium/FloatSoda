@@ -35,8 +35,8 @@ public abstract record WindowWidget : InheritedWidget
     /// 最も近い祖先の <see cref="WindowWidget"/> を取得し、依存関係を登録します。
     /// </summary>
     public static WindowWidget Of(IBuildContext context) =>
-        context.DependOnInheritedWidgetOfExactType<WindowWidget>() ??
-        throw new InvalidOperationException("WindowWidgetが祖先に見つかりません。");
+        context.DependOnInheritedWidgetOfExactType<WindowWidget>()
+        ?? throw new InvalidOperationException("WindowWidgetが祖先に見つかりません。");
 
     /// <summary>
     /// ウィンドウ設定が更新前から変化したかを判定します。
@@ -67,9 +67,9 @@ public abstract record OverlayWindow : WindowWidget
     /// 最も近い祖先の <see cref="OverlayWindow"/> を取得し、依存関係を登録します。
     /// ルートがオーバーレイ以外のウィンドウの場合は例外をスローします。
     /// </summary>
-    public new static OverlayWindow Of(IBuildContext context) =>
-        WindowWidget.Of(context) as OverlayWindow ??
-        throw new InvalidOperationException("OverlayWindowが祖先に見つかりません。");
+    public static new OverlayWindow Of(IBuildContext context) =>
+        WindowWidget.Of(context) as OverlayWindow
+        ?? throw new InvalidOperationException("OverlayWindowが祖先に見つかりません。");
 
     /// <summary>
     /// テクスチャの物理密度（dots per meter）。オーバーレイの物理幅は
@@ -109,10 +109,9 @@ public abstract record OverlayWindow : WindowWidget
 /// </summary>
 public record DashboardWindow : OverlayWindow
 {
-    internal override IOverlay CreateOverlay()
-        => new DashboardOverlay(new DashboardOverlayIdentity(Key, Title));
+    internal override IOverlay CreateOverlay() =>
+        new DashboardOverlay(new DashboardOverlayIdentity(Key, Title));
 }
-
 
 /// <summary>
 /// ワールド空間の指定座標に固定されるウィンドウ。
@@ -173,7 +172,7 @@ public record DesktopWindow : WindowWidget
     /// <summary>
     /// 最も近い祖先の <see cref="DesktopWindow"/> を取得し、依存関係を登録します。
     /// </summary>
-    public new static DesktopWindow Of(IBuildContext context) =>
-        WindowWidget.Of(context) as DesktopWindow ??
-        throw new InvalidOperationException("DesktopWindowが祖先に見つかりません。");
+    public static new DesktopWindow Of(IBuildContext context) =>
+        WindowWidget.Of(context) as DesktopWindow
+        ?? throw new InvalidOperationException("DesktopWindowが祖先に見つかりません。");
 }

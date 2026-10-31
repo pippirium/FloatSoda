@@ -27,7 +27,10 @@ public class FittedBoxTest
     [Fact]
     public void PerformLayout_Containで固定領域を指定_子を自然サイズで自身を親サイズにする()
     {
-        var child = new RenderConstrainedBox { AdditionalConstraints = BoxConstraints.Tight(80, 20) };
+        var child = new RenderConstrainedBox
+        {
+            AdditionalConstraints = BoxConstraints.Tight(80, 20),
+        };
         var renderObject = new RenderFittedBox { Fit = BoxFit.Contain, Child = child };
 
         renderObject.Layout(BoxConstraints.Tight(40, 40));
@@ -44,12 +47,18 @@ public class FittedBoxTest
         var contain = new RenderFittedBox
         {
             Fit = BoxFit.Contain,
-            Child = new RenderConstrainedBox { AdditionalConstraints = BoxConstraints.Tight(40, 20) }
+            Child = new RenderConstrainedBox
+            {
+                AdditionalConstraints = BoxConstraints.Tight(40, 20),
+            },
         };
         var scaleDown = new RenderFittedBox
         {
             Fit = BoxFit.ScaleDown,
-            Child = new RenderConstrainedBox { AdditionalConstraints = BoxConstraints.Tight(40, 20) }
+            Child = new RenderConstrainedBox
+            {
+                AdditionalConstraints = BoxConstraints.Tight(40, 20),
+            },
         };
 
         contain.Layout(constraints);
@@ -62,21 +71,24 @@ public class FittedBoxTest
     [Fact]
     public void Paint_Contain中央配置_子を幅40高さ10で中央へ描画する()
     {
-        using var bitmap = BitmapRenderer.Render(new SizedBox
-        {
-            Width = 40,
-            Height = 40,
-            Child = new FittedBox
+        using var bitmap = BitmapRenderer.Render(
+            new SizedBox
             {
-                Fit = BoxFit.Contain,
-                Child = new SizedBox
+                Width = 40,
+                Height = 40,
+                Child = new FittedBox
                 {
-                    Width = 80,
-                    Height = 20,
-                    Child = new ColoredBox { Color = new Color(255, 0, 0) }
-                }
-            }
-        }, new SKSizeI(40, 40));
+                    Fit = BoxFit.Contain,
+                    Child = new SizedBox
+                    {
+                        Width = 80,
+                        Height = 20,
+                        Child = new ColoredBox { Color = new Color(255, 0, 0) },
+                    },
+                },
+            },
+            new SKSizeI(40, 40)
+        );
 
         Assert.Equal(0, bitmap.GetPixel(20, 10).Alpha);
         Assert.Equal(SKColors.Red, bitmap.GetPixel(20, 20));
@@ -86,22 +98,25 @@ public class FittedBoxTest
     [Fact]
     public void Paint_Contain下端配置_子を下端へ揃えて描画する()
     {
-        using var bitmap = BitmapRenderer.Render(new SizedBox
-        {
-            Width = 40,
-            Height = 40,
-            Child = new FittedBox
+        using var bitmap = BitmapRenderer.Render(
+            new SizedBox
             {
-                Fit = BoxFit.Contain,
-                Alignment = Alignment.BottomCenter,
-                Child = new SizedBox
+                Width = 40,
+                Height = 40,
+                Child = new FittedBox
                 {
-                    Width = 80,
-                    Height = 20,
-                    Child = new ColoredBox { Color = new Color(255, 0, 0) }
-                }
-            }
-        }, new SKSizeI(40, 40));
+                    Fit = BoxFit.Contain,
+                    Alignment = Alignment.BottomCenter,
+                    Child = new SizedBox
+                    {
+                        Width = 80,
+                        Height = 20,
+                        Child = new ColoredBox { Color = new Color(255, 0, 0) },
+                    },
+                },
+            },
+            new SKSizeI(40, 40)
+        );
 
         Assert.Equal(0, bitmap.GetPixel(20, 20).Alpha);
         Assert.Equal(SKColors.Red, bitmap.GetPixel(20, 35));
@@ -117,21 +132,24 @@ public class FittedBoxTest
     [InlineData(BoxFit.ScaleDown, false)]
     public void Paint_BoxFitを指定_各方式の拡大縮小結果を描画する(BoxFit fit, bool paintsTopEdge)
     {
-        using var bitmap = BitmapRenderer.Render(new SizedBox
-        {
-            Width = 40,
-            Height = 40,
-            Child = new FittedBox
+        using var bitmap = BitmapRenderer.Render(
+            new SizedBox
             {
-                Fit = fit,
-                Child = new SizedBox
+                Width = 40,
+                Height = 40,
+                Child = new FittedBox
                 {
-                    Width = 80,
-                    Height = 20,
-                    Child = new ColoredBox { Color = new Color(255, 0, 0) }
-                }
-            }
-        }, new SKSizeI(40, 40));
+                    Fit = fit,
+                    Child = new SizedBox
+                    {
+                        Width = 80,
+                        Height = 20,
+                        Child = new ColoredBox { Color = new Color(255, 0, 0) },
+                    },
+                },
+            },
+            new SKSizeI(40, 40)
+        );
 
         Assert.Equal(paintsTopEdge, bitmap.GetPixel(20, 0).Alpha > 0);
         Assert.Equal(SKColors.Red, bitmap.GetPixel(20, 20));
@@ -140,7 +158,10 @@ public class FittedBoxTest
     [Fact]
     public void Paint_CoverでClipNone_自身の領域外も描画する()
     {
-        using var bitmap = BitmapRenderer.Render(CreateCoverOverflowWidget(Clip.None), new SKSizeI(100, 100));
+        using var bitmap = BitmapRenderer.Render(
+            CreateCoverOverflowWidget(Clip.None),
+            new SKSizeI(100, 100)
+        );
 
         Assert.Equal(SKColors.Red, bitmap.GetPixel(20, 50));
         Assert.Equal(SKColors.Red, bitmap.GetPixel(35, 50));
@@ -151,7 +172,10 @@ public class FittedBoxTest
     [InlineData(Clip.Antialias)]
     public void Paint_CoverでClip有効_自身の矩形境界で切り抜く(Clip clipBehavior)
     {
-        using var bitmap = BitmapRenderer.Render(CreateCoverOverflowWidget(clipBehavior), new SKSizeI(100, 100));
+        using var bitmap = BitmapRenderer.Render(
+            CreateCoverOverflowWidget(clipBehavior),
+            new SKSizeI(100, 100)
+        );
 
         Assert.Equal(0, bitmap.GetPixel(20, 50).Alpha);
         Assert.Equal(SKColors.Red, bitmap.GetPixel(35, 50));
@@ -166,8 +190,11 @@ public class FittedBoxTest
             Fit = BoxFit.Contain,
             Child = new RenderColoredBox
             {
-                Child = new RenderConstrainedBox { AdditionalConstraints = BoxConstraints.Tight(80, 20) }
-            }
+                Child = new RenderConstrainedBox
+                {
+                    AdditionalConstraints = BoxConstraints.Tight(80, 20),
+                },
+            },
         };
         renderObject.Layout(BoxConstraints.Tight(40, 40));
 
@@ -183,7 +210,10 @@ public class FittedBoxTest
         {
             Behaviour = HitTestBehaviour.Opaque,
             OnPointerDown = pointerEvent => received = pointerEvent,
-            Child = new RenderConstrainedBox { AdditionalConstraints = BoxConstraints.Tight(80, 20) }
+            Child = new RenderConstrainedBox
+            {
+                AdditionalConstraints = BoxConstraints.Tight(80, 20),
+            },
         };
         var renderObject = new RenderFittedBox { Fit = BoxFit.Contain, Child = listener };
         renderObject.Layout(BoxConstraints.Tight(40, 40));
@@ -194,13 +224,15 @@ public class FittedBoxTest
 
         entry.Target.HandleEvent(
             new PointerEvent(1, PointerEventPhase.Down, new Offset(20, 20), entry.Transform),
-            entry);
+            entry
+        );
 
         Assert.True(received.HasValue);
         Assert.True(received.Value.Transform.HasValue);
         var localPosition = Vector2.Transform(
             new Vector2((float)received.Value.Position.X, (float)received.Value.Position.Y),
-            received.Value.Transform.Value);
+            received.Value.Transform.Value
+        );
         Assert.Equal(new Vector2(40, 10), localPosition);
     }
 
@@ -212,7 +244,7 @@ public class FittedBoxTest
             Fit = BoxFit.Contain,
             Alignment = Alignment.Center,
             ClipBehavior = Clip.None,
-            Child = new SizedBox { Width = 80, Height = 20 }
+            Child = new SizedBox { Width = 80, Height = 20 },
         };
         var (pipeline, view, root) = Mount(initial);
         pipeline.FlushLayout();
@@ -226,8 +258,8 @@ public class FittedBoxTest
             {
                 Fit = BoxFit.ScaleDown,
                 Alignment = Alignment.BottomRight,
-                ClipBehavior = Clip.HardEdge
-            }
+                ClipBehavior = Clip.HardEdge,
+            },
         }.AttachToRenderTree(root.Owner!, root);
         root.Owner!.BuildScope();
 
@@ -244,7 +276,10 @@ public class FittedBoxTest
         var renderObject = new RenderFittedBox
         {
             Fit = BoxFit.Contain,
-            Child = new RenderConstrainedBox { AdditionalConstraints = BoxConstraints.Tight(80, 20) }
+            Child = new RenderConstrainedBox
+            {
+                AdditionalConstraints = BoxConstraints.Tight(80, 20),
+            },
         };
         renderObject.Layout(BoxConstraints.Tight(40, 40));
         renderObject.NeedsPaint = false;
@@ -259,11 +294,17 @@ public class FittedBoxTest
     public void Constructor_FitAlignmentClipが不正_ArgumentOutOfRangeExceptionを投げる()
     {
         Assert.Throws<ArgumentOutOfRangeException>(() => new FittedBox { Fit = (BoxFit)99 });
-        Assert.Throws<ArgumentOutOfRangeException>(() => new FittedBox { Alignment = new Alignment(float.NaN, 0) });
+        Assert.Throws<ArgumentOutOfRangeException>(() =>
+            new FittedBox { Alignment = new Alignment(float.NaN, 0) }
+        );
         Assert.Throws<ArgumentOutOfRangeException>(() => new FittedBox { ClipBehavior = (Clip)99 });
         Assert.Throws<ArgumentOutOfRangeException>(() => new RenderFittedBox { Fit = (BoxFit)99 });
-        Assert.Throws<ArgumentOutOfRangeException>(() => new RenderFittedBox { Alignment = new Alignment(0, float.PositiveInfinity) });
-        Assert.Throws<ArgumentOutOfRangeException>(() => new RenderFittedBox { ClipBehavior = (Clip)99 });
+        Assert.Throws<ArgumentOutOfRangeException>(() =>
+            new RenderFittedBox { Alignment = new Alignment(0, float.PositiveInfinity) }
+        );
+        Assert.Throws<ArgumentOutOfRangeException>(() =>
+            new RenderFittedBox { ClipBehavior = (Clip)99 }
+        );
     }
 
     [Fact]
@@ -271,63 +312,93 @@ public class FittedBoxTest
     {
         Assert.Equal(
             new[] { "Fill", "Contain", "Cover", "FitWidth", "FitHeight", "None", "ScaleDown" },
-            Enum.GetNames<BoxFit>());
+            Enum.GetNames<BoxFit>()
+        );
 
-        foreach (var property in typeof(FittedBox).GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly))
+        foreach (
+            var property in typeof(FittedBox).GetProperties(
+                BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly
+            )
+        )
         {
-            Assert.Contains(typeof(IsExternalInit), property.SetMethod!.ReturnParameter.GetRequiredCustomModifiers());
+            Assert.Contains(
+                typeof(IsExternalInit),
+                property.SetMethod!.ReturnParameter.GetRequiredCustomModifiers()
+            );
         }
 
-        Assert.True(typeof(SingleChildRenderObjectWidget<RenderFittedBox>).IsAssignableFrom(typeof(FittedBox)));
+        Assert.True(
+            typeof(SingleChildRenderObjectWidget<RenderFittedBox>).IsAssignableFrom(
+                typeof(FittedBox)
+            )
+        );
         AssertNoSkiaMembers(typeof(BoxFit));
         AssertNoSkiaMembers(typeof(FittedBox));
         AssertNoSkiaMembers(typeof(RenderFittedBox));
     }
 
-    private static Widget CreateCoverOverflowWidget(Clip clipBehavior) => new SizedBox
-    {
-        Width = 100,
-        Height = 100,
-        Child = new Align
+    private static Widget CreateCoverOverflowWidget(Clip clipBehavior) =>
+        new SizedBox
         {
-            Alignment = Alignment.Center,
-            Child = new ConstrainedBox
+            Width = 100,
+            Height = 100,
+            Child = new Align
             {
-                AdditionalConstraints = BoxConstraints.Tight(40, 40),
-                Child = new FittedBox
+                Alignment = Alignment.Center,
+                Child = new ConstrainedBox
                 {
-                    Fit = BoxFit.Cover,
-                    ClipBehavior = clipBehavior,
-                    Child = new SizedBox
+                    AdditionalConstraints = BoxConstraints.Tight(40, 40),
+                    Child = new FittedBox
                     {
-                        Width = 80,
-                        Height = 20,
-                        Child = new ColoredBox { Color = new Color(255, 0, 0) }
-                    }
-                }
-            }
-        }
-    };
+                        Fit = BoxFit.Cover,
+                        ClipBehavior = clipBehavior,
+                        Child = new SizedBox
+                        {
+                            Width = 80,
+                            Height = 20,
+                            Child = new ColoredBox { Color = new Color(255, 0, 0) },
+                        },
+                    },
+                },
+            },
+        };
 
-    private static (RenderPipeline Pipeline, RenderView View, RenderObjectToWidgetElement<RenderView> Root) Mount(Widget widget)
+    private static (
+        RenderPipeline Pipeline,
+        RenderView View,
+        RenderObjectToWidgetElement<RenderView> Root
+    ) Mount(Widget widget)
     {
         var view = new RenderView(100, 100) { FixedSize = new SKSize(100, 100) };
         var pipeline = new RenderPipeline { OnNeedVisualUpdate = () => { }, RenderView = view };
         view.PrepareInitialFrame();
-        var root = new RenderObjectToWidgetAdapter { Container = view, Child = widget }
-            .AttachToRenderTree(new BuildOwner(() => { }), null);
+        var root = new RenderObjectToWidgetAdapter
+        {
+            Container = view,
+            Child = widget,
+        }.AttachToRenderTree(new BuildOwner(() => { }), null);
         return (pipeline, view, root);
     }
 
-    private static void AssertNoSkiaMembers(Type type) => Assert.DoesNotContain(
-        type.GetMembers(BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static | BindingFlags.DeclaredOnly),
-        member => member switch
-        {
-            PropertyInfo property => IsSkiaType(property.PropertyType),
-            MethodInfo method => IsSkiaType(method.ReturnType)
-                                 || method.GetParameters().Any(parameter => IsSkiaType(parameter.ParameterType)),
-            _ => false
-        });
+    private static void AssertNoSkiaMembers(Type type) =>
+        Assert.DoesNotContain(
+            type.GetMembers(
+                BindingFlags.Public
+                    | BindingFlags.Instance
+                    | BindingFlags.Static
+                    | BindingFlags.DeclaredOnly
+            ),
+            member =>
+                member switch
+                {
+                    PropertyInfo property => IsSkiaType(property.PropertyType),
+                    MethodInfo method => IsSkiaType(method.ReturnType)
+                        || method
+                            .GetParameters()
+                            .Any(parameter => IsSkiaType(parameter.ParameterType)),
+                    _ => false,
+                }
+        );
 
     private static bool IsSkiaType(Type type) =>
         type.Namespace?.StartsWith("SkiaSharp", StringComparison.Ordinal) == true;

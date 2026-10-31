@@ -40,7 +40,8 @@ public abstract record ImageProvider
     /// </remarks>
     protected abstract ValueTask<SKImage> LoadAsync(CancellationToken cancellationToken);
 
-    internal ValueTask<SKImage> LoadCoreAsync(CancellationToken cancellationToken) => LoadAsync(cancellationToken);
+    internal ValueTask<SKImage> LoadCoreAsync(CancellationToken cancellationToken) =>
+        LoadAsync(cancellationToken);
 }
 
 /// <summary>ファイルから画像データを読み込むプロバイダーです。</summary>
@@ -63,7 +64,7 @@ public record FileImageProvider(string Path) : ImageProvider
         // nullのまま返すとRenderImageのレイアウト/描画までnullが流れてNullReferenceExceptionになるため、
         // ここで原因の分かる例外へ変換する。
         return SKImage.FromEncodedData(data)
-               ?? throw new InvalidOperationException($"画像として読み込めませんでした: {Path}");
+            ?? throw new InvalidOperationException($"画像として読み込めませんでした: {Path}");
     }
 }
 

@@ -9,14 +9,14 @@ public class RecordToStringTest
 {
     /// <summary>recordを検査するアセンブリ。型を1つ参照して取得する。</summary>
     public static TheoryData<string> AssemblyNames =>
-    [
-        typeof(FloatSoda.Core.WidgetBinding).Assembly.GetName().Name!,
-        typeof(FloatSoda.Rendering.Layers.ILayer).Assembly.GetName().Name!,
-        typeof(FloatSoda.Abstractions.Geometries.Offset).Assembly.GetName().Name!,
-        typeof(FloatSoda.Engine.IOTaskRunner).Assembly.GetName().Name!,
-        typeof(FloatSoda.OVR.OVRAppInfo).Assembly.GetName().Name!,
-        typeof(FloatSoda.Testing.WidgetBitmapRenderer).Assembly.GetName().Name!
-    ];
+        [
+            typeof(FloatSoda.Core.WidgetBinding).Assembly.GetName().Name!,
+            typeof(FloatSoda.Rendering.Layers.ILayer).Assembly.GetName().Name!,
+            typeof(FloatSoda.Abstractions.Geometries.Offset).Assembly.GetName().Name!,
+            typeof(FloatSoda.Engine.IOTaskRunner).Assembly.GetName().Name!,
+            typeof(FloatSoda.OVR.OVRAppInfo).Assembly.GetName().Name!,
+            typeof(FloatSoda.Testing.WidgetBitmapRenderer).Assembly.GetName().Name!,
+        ];
 
     /// <summary>
     /// recordが自動生成するToString(PrintMembers)は、publicなインスタンスプロパティをすべて出力する。
@@ -26,18 +26,31 @@ public class RecordToStringTest
     /// </summary>
     [Theory]
     [MemberData(nameof(AssemblyNames))]
-    public void PrintMembers_自分と同じ系統のrecordを返す計算プロパティを持つ_自動生成のままにしていない(string assemblyName)
+    public void PrintMembers_自分と同じ系統のrecordを返す計算プロパティを持つ_自動生成のままにしていない(
+        string assemblyName
+    )
     {
-        var assembly = AppDomain.CurrentDomain.GetAssemblies().Single(a => a.GetName().Name == assemblyName);
+        var assembly = AppDomain
+            .CurrentDomain.GetAssemblies()
+            .Single(a => a.GetName().Name == assemblyName);
 
         var offenders =
             from type in assembly.GetTypes()
             let printMembers = FindPrintMembers(type)
-            where printMembers is not null && printMembers.IsDefined(typeof(CompilerGeneratedAttribute))
+            where
+                printMembers is not null
+                && printMembers.IsDefined(typeof(CompilerGeneratedAttribute))
             // ToStringを自分で書いている型は、PrintMembersを経由しない。
-            where type.GetMethod(nameof(ToString), BindingFlags.Instance | BindingFlags.Public | BindingFlags.DeclaredOnly, Type.EmptyTypes)
-                ?.IsDefined(typeof(CompilerGeneratedAttribute)) != false
-            from property in type.GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly)
+            where
+                type.GetMethod(
+                        nameof(ToString),
+                        BindingFlags.Instance | BindingFlags.Public | BindingFlags.DeclaredOnly,
+                        Type.EmptyTypes
+                    )
+                    ?.IsDefined(typeof(CompilerGeneratedAttribute)) != false
+            from property in type.GetProperties(
+                BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly
+            )
             where property.GetIndexParameters().Length == 0
             where IsComputed(type, property) && IsSameRecordFamily(type, property.PropertyType)
             select $"{type.FullName}.{property.Name}";
@@ -75,29 +88,45 @@ public class RecordToStringTest
         Assert.Equal(new EdgeInsets(3, 4, 1, 2), new EdgeInsets(1, 2, 3, 4).Flipped);
     }
 
-    private static MethodInfo? FindPrintMembers(Type type) => type.GetMethod(
-        "PrintMembers",
-        BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.DeclaredOnly,
-        [typeof(System.Text.StringBuilder)]);
+    private static MethodInfo? FindPrintMembers(Type type) =>
+        type.GetMethod(
+            "PrintMembers",
+            BindingFlags.Instance
+                | BindingFlags.Public
+                | BindingFlags.NonPublic
+                | BindingFlags.DeclaredOnly,
+            [typeof(System.Text.StringBuilder)]
+        );
 
     /// <summary>自動実装プロパティは保持している値を返すだけなので有限。計算プロパティだけを対象にする。</summary>
     private static bool IsComputed(Type type, PropertyInfo property) =>
-        type.GetField($"<{property.Name}>k__BackingField", BindingFlags.Instance | BindingFlags.NonPublic) is null;
+        type.GetField(
+            $"<{property.Name}>k__BackingField",
+            BindingFlags.Instance | BindingFlags.NonPublic
+        )
+            is null;
 
     /// <summary>プロパティの型がrecordで、宣言した型と継承関係にあるかどうか。interfaceは対象外。</summary>
     private static bool IsSameRecordFamily(Type declaringType, Type propertyType)
     {
         propertyType = Nullable.GetUnderlyingType(propertyType) ?? propertyType;
-        if (propertyType.IsInterface || !IsRecord(propertyType)) return false;
+        if (propertyType.IsInterface || !IsRecord(propertyType))
+            return false;
 
-        return propertyType.IsAssignableFrom(declaringType) || declaringType.IsAssignableFrom(propertyType);
+        return propertyType.IsAssignableFrom(declaringType)
+            || declaringType.IsAssignableFrom(propertyType);
     }
 
     private static bool IsRecord(Type type)
     {
-        for (var current = type; current is not null && current != typeof(object); current = current.BaseType)
+        for (
+            var current = type;
+            current is not null && current != typeof(object);
+            current = current.BaseType
+        )
         {
-            if (FindPrintMembers(current) is not null) return true;
+            if (FindPrintMembers(current) is not null)
+                return true;
         }
 
         return false;

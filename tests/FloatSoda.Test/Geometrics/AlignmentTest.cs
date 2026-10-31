@@ -8,17 +8,17 @@ public class AlignmentTest
     // ── 静的プリセット ─────────────────────────────────────────────
 
     public static IEnumerable<object[]> PresetData =>
-    [
-        [Alignment.TopLeft,      -1f, -1f],
-        [Alignment.TopCenter,     0f, -1f],
-        [Alignment.TopRight,      1f, -1f],
-        [Alignment.CenterLeft,   -1f,  0f],
-        [Alignment.Center,        0f,  0f],
-        [Alignment.CenterRight,   1f,  0f],
-        [Alignment.BottomLeft,   -1f,  1f],
-        [Alignment.BottomCenter,  0f,  1f],
-        [Alignment.BottomRight,   1f,  1f],
-    ];
+        [
+            [Alignment.TopLeft, -1f, -1f],
+            [Alignment.TopCenter, 0f, -1f],
+            [Alignment.TopRight, 1f, -1f],
+            [Alignment.CenterLeft, -1f, 0f],
+            [Alignment.Center, 0f, 0f],
+            [Alignment.CenterRight, 1f, 0f],
+            [Alignment.BottomLeft, -1f, 1f],
+            [Alignment.BottomCenter, 0f, 1f],
+            [Alignment.BottomRight, 1f, 1f],
+        ];
 
     [Theory]
     [MemberData(nameof(PresetData))]
@@ -33,17 +33,17 @@ public class AlignmentTest
     // size=200x100 → centerX=100, centerY=50
 
     public static IEnumerable<object[]> PivotData =>
-    [
-        [Alignment.TopLeft,      -100.0, -50.0],
-        [Alignment.TopCenter,       0.0, -50.0],
-        [Alignment.TopRight,      100.0, -50.0],
-        [Alignment.CenterLeft,   -100.0,   0.0],
-        [Alignment.Center,          0.0,   0.0],
-        [Alignment.CenterRight,   100.0,   0.0],
-        [Alignment.BottomLeft,   -100.0,  50.0],
-        [Alignment.BottomCenter,    0.0,  50.0],
-        [Alignment.BottomRight,   100.0,  50.0],
-    ];
+        [
+            [Alignment.TopLeft, -100.0, -50.0],
+            [Alignment.TopCenter, 0.0, -50.0],
+            [Alignment.TopRight, 100.0, -50.0],
+            [Alignment.CenterLeft, -100.0, 0.0],
+            [Alignment.Center, 0.0, 0.0],
+            [Alignment.CenterRight, 100.0, 0.0],
+            [Alignment.BottomLeft, -100.0, 50.0],
+            [Alignment.BottomCenter, 0.0, 50.0],
+            [Alignment.BottomRight, 100.0, 50.0],
+        ];
 
     [Theory]
     [MemberData(nameof(PivotData))]
@@ -70,21 +70,25 @@ public class AlignmentTest
     // result = (450*(1+X), 250*(1+Y))
 
     public static IEnumerable<object[]> ComputeOffsetData =>
-    [
-        [Alignment.TopLeft,        0.0,   0.0],
-        [Alignment.TopCenter,    450.0,   0.0],
-        [Alignment.TopRight,     900.0,   0.0],
-        [Alignment.CenterLeft,     0.0, 250.0],
-        [Alignment.Center,       450.0, 250.0],
-        [Alignment.CenterRight,  900.0, 250.0],
-        [Alignment.BottomLeft,     0.0, 500.0],
-        [Alignment.BottomCenter, 450.0, 500.0],
-        [Alignment.BottomRight,  900.0, 500.0],
-    ];
+        [
+            [Alignment.TopLeft, 0.0, 0.0],
+            [Alignment.TopCenter, 450.0, 0.0],
+            [Alignment.TopRight, 900.0, 0.0],
+            [Alignment.CenterLeft, 0.0, 250.0],
+            [Alignment.Center, 450.0, 250.0],
+            [Alignment.CenterRight, 900.0, 250.0],
+            [Alignment.BottomLeft, 0.0, 500.0],
+            [Alignment.BottomCenter, 450.0, 500.0],
+            [Alignment.BottomRight, 900.0, 500.0],
+        ];
 
     [Theory]
     [MemberData(nameof(ComputeOffsetData))]
-    public void ComputeOffset_PlacesChildCorrectly(Alignment alignment, double expectedX, double expectedY)
+    public void ComputeOffset_PlacesChildCorrectly(
+        Alignment alignment,
+        double expectedX,
+        double expectedY
+    )
     {
         var parent = new SKSize(1000, 600);
         var child = new SKSize(100, 100);

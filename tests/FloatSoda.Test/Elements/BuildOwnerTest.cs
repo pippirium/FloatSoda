@@ -45,7 +45,7 @@ public class BuildOwnerTest
         var root = new RenderObjectToWidgetAdapter
         {
             Container = new RenderView(),
-            Child = new OuterWidget { Log = log }
+            Child = new OuterWidget { Log = log },
         }.AttachToRenderTree(owner, null);
         var outer = FindChild(root);
         var inner = FindChild(outer);

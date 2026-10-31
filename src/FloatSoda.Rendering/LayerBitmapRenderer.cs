@@ -37,7 +37,10 @@ public sealed class LayerBitmapRenderer
 
         if (imageSize.Width <= 0 || imageSize.Height <= 0)
         {
-            throw new ArgumentOutOfRangeException(nameof(imageSize), "幅と高さは正の値である必要があります。");
+            throw new ArgumentOutOfRangeException(
+                nameof(imageSize),
+                "幅と高さは正の値である必要があります。"
+            );
         }
 
         var info = new SKImageInfo(imageSize.Width, imageSize.Height);

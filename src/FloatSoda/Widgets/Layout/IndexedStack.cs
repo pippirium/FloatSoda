@@ -41,7 +41,11 @@ public sealed record IndexedStack : MultiChildRenderObjectWidget<RenderIndexedSt
     {
         if (Index is { } index && (index < 0 || index >= Children.Count))
         {
-            throw new ArgumentOutOfRangeException(nameof(Index), Index, "IndexにはChildren内の位置またはnullを指定してください。");
+            throw new ArgumentOutOfRangeException(
+                nameof(Index),
+                Index,
+                "IndexにはChildren内の位置またはnullを指定してください。"
+            );
         }
     }
 }

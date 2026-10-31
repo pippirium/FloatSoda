@@ -56,7 +56,7 @@ FloatSoda は、Flutter の3つの木(ウィジェット、Element、RenderObjec
 | Flutter | FloatSoda | 理由 | 詳細 |
 | :-- | :-- | :-- | :-- |
 | 子と設定を、コンストラクタの引数で渡す | 子は `Child` か `Children`(`IList<Widget>`)、設定は各プロパティに、オブジェクト初期化子で渡す。名前付きコンストラクタは持たない(`Icon` のように、必須の値をコンストラクタ引数に取る型もある) | C# の流儀に合わせた方針 | [SizedBox](../../samples/FloatSoda.Samples.SizedBox/README.md) |
-| 色は `Color(0xAARRGGBB)` や `Colors.*` | `new Color(r, g, b)`(`FloatSoda.Geometrics.Color`、各 0〜255 の整数。`SKColors.CornflowerBlue` のような Skia の色も渡せる) | 色の型が違う | [ColoredBox](../../samples/FloatSoda.Samples.ColoredBox/README.md) |
+| 色は `Color(0xAARRGGBB)` や `Colors.*` | `Colors.*`、`new Color(r, g, b)`、`Color.FromArgb(0xAARRGGBB)`(どれも `FloatSoda.Geometrics`。成分は各 0〜255 の整数) | 色の型が違う。`Colors` は Material の段階色ではなく、CSS の色名を並べたもの | [ColoredBox](../../samples/FloatSoda.Samples.ColoredBox/README.md) |
 | `FontWeight.w700` | `FontWeight = 700`(`int`) | 列挙型を持たない | [Text](../../samples/FloatSoda.Samples.Text/README.md) |
 | `Matrix4` | `Matrix3x2`(2次元のアフィン変換だけ) | 3次元の変換を持たない | [Transform](../../samples/FloatSoda.Samples.Transform/README.md) |
 | `addListener` | 通知元ごとの `event`(`AnimationController` は `Changed`、`INotifyPropertyChanged` は `PropertyChanged`。`+=` で登録し、`-=` で解除する) | C# の標準の仕組みを使う方針 | [API_DESIGN.md の 3.6](../../API_DESIGN.md) |

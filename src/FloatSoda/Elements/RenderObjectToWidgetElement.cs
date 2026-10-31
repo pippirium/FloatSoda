@@ -8,7 +8,8 @@ namespace FloatSoda.Elements;
 /// </summary>
 /// <typeparam name="T">ルートとして使用するRenderObjectの型。</typeparam>
 /// <seealso cref="RenderObjectToWidgetAdapter"/>
-public class RenderObjectToWidgetElement<T> : RenderObjectElement<T> where T : RenderObject
+public class RenderObjectToWidgetElement<T> : RenderObjectElement<T>
+    where T : RenderObject
 {
     /// <summary>
     /// 次の再構築時に適用する新しいルートWidgetを取得または設定します。
@@ -16,6 +17,7 @@ public class RenderObjectToWidgetElement<T> : RenderObjectElement<T> where T : R
     /// </summary>
     /// <remarks>値は再構築時に一度だけ消費され、適用前に<see langword="null"/>へ戻されます。</remarks>
     public Widget? NewWidget { get; set; }
+
     /// <summary>
     /// このElementが描画するルートWidgetを取得します。
     /// </summary>
@@ -74,12 +76,14 @@ public class RenderObjectToWidgetElement<T> : RenderObjectElement<T> where T : R
     /// <inheritdoc/>
     public override void InsertRenderObjectChild(RenderObject? child)
     {
-        if (RenderObject is IHasSingleChildRenderObject ro) ro.Child = child;
+        if (RenderObject is IHasSingleChildRenderObject ro)
+            ro.Child = child;
     }
 
     /// <inheritdoc/>
     public override void VisitChildren(Action<Element> visitor)
     {
-        if (Child != null) visitor(Child);
+        if (Child is not null)
+            visitor(Child);
     }
 }

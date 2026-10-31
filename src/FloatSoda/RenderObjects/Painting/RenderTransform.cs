@@ -21,7 +21,8 @@ public class RenderTransform : RenderProxyBox
         set
         {
             ValidateMatrix(value);
-            if (field == value) return;
+            if (field == value)
+                return;
             field = value;
             MarkNeedsPaint();
         }
@@ -36,7 +37,8 @@ public class RenderTransform : RenderProxyBox
         set
         {
             ValidateOffset(value);
-            if (field == value) return;
+            if (field == value)
+                return;
             field = value;
             MarkNeedsPaint();
         }
@@ -56,7 +58,8 @@ public class RenderTransform : RenderProxyBox
                 ValidateAlignment(alignment);
             }
 
-            if (field == value) return;
+            if (field == value)
+                return;
             field = value;
             MarkNeedsPaint();
         }
@@ -76,8 +79,13 @@ public class RenderTransform : RenderProxyBox
             return;
         }
 
-        var effectiveTransform = GetEffectiveTransform() * Matrix3x2.CreateTranslation((float)offset.X, (float)offset.Y);
-        Layer = context.PushTransform(ToSkMatrix(effectiveTransform), base.Paint, Layer as TransformLayer);
+        var effectiveTransform =
+            GetEffectiveTransform() * Matrix3x2.CreateTranslation((float)offset.X, (float)offset.Y);
+        Layer = context.PushTransform(
+            ToSkMatrix(effectiveTransform),
+            base.Paint,
+            Layer as TransformLayer
+        );
     }
 
     /// <inheritdoc/>
@@ -86,7 +94,8 @@ public class RenderTransform : RenderProxyBox
     /// 拡大や回転ではみ出した見た目の部分も、子のヒットテストへ渡します。
     /// Flutter の <c>RenderTransform.hitTest</c> に合わせています。
     /// </remarks>
-    public override bool HitTest(HitTestResult result, Offset position) => HitTestChildren(result, position);
+    public override bool HitTest(HitTestResult result, Offset position) =>
+        HitTestChildren(result, position);
 
     /// <inheritdoc/>
     /// <remarks>
@@ -103,7 +112,8 @@ public class RenderTransform : RenderProxyBox
         return result.AddWithPaintTransform(
             GetEffectiveTransform(),
             position,
-            (r, transformed) => Child?.HitTest(r, transformed) ?? false);
+            (r, transformed) => Child?.HitTest(r, transformed) ?? false
+        );
     }
 
     private Matrix3x2 GetEffectiveTransform()
@@ -116,30 +126,40 @@ public class RenderTransform : RenderProxyBox
         }
 
         return Matrix3x2.CreateTranslation((float)-pivot.X, (float)-pivot.Y)
-               * Transform
-               * Matrix3x2.CreateTranslation((float)pivot.X, (float)pivot.Y);
+            * Transform
+            * Matrix3x2.CreateTranslation((float)pivot.X, (float)pivot.Y);
     }
 
-    private static SKMatrix ToSkMatrix(Matrix3x2 matrix) => new()
-    {
-        ScaleX = matrix.M11,
-        SkewX = matrix.M21,
-        TransX = matrix.M31,
-        SkewY = matrix.M12,
-        ScaleY = matrix.M22,
-        TransY = matrix.M32,
-        Persp0 = 0,
-        Persp1 = 0,
-        Persp2 = 1
-    };
+    private static SKMatrix ToSkMatrix(Matrix3x2 matrix) =>
+        new()
+        {
+            ScaleX = matrix.M11,
+            SkewX = matrix.M21,
+            TransX = matrix.M31,
+            SkewY = matrix.M12,
+            ScaleY = matrix.M22,
+            TransY = matrix.M32,
+            Persp0 = 0,
+            Persp1 = 0,
+            Persp2 = 1,
+        };
 
     private static void ValidateMatrix(Matrix3x2 matrix)
     {
-        if (!float.IsFinite(matrix.M11) || !float.IsFinite(matrix.M12)
-            || !float.IsFinite(matrix.M21) || !float.IsFinite(matrix.M22)
-            || !float.IsFinite(matrix.M31) || !float.IsFinite(matrix.M32))
+        if (
+            !float.IsFinite(matrix.M11)
+            || !float.IsFinite(matrix.M12)
+            || !float.IsFinite(matrix.M21)
+            || !float.IsFinite(matrix.M22)
+            || !float.IsFinite(matrix.M31)
+            || !float.IsFinite(matrix.M32)
+        )
         {
-            throw new ArgumentOutOfRangeException(nameof(matrix), matrix, "変換行列の各成分には有限値を指定してください。");
+            throw new ArgumentOutOfRangeException(
+                nameof(matrix),
+                matrix,
+                "変換行列の各成分には有限値を指定してください。"
+            );
         }
     }
 
@@ -147,7 +167,11 @@ public class RenderTransform : RenderProxyBox
     {
         if (!double.IsFinite(offset.X) || !double.IsFinite(offset.Y))
         {
-            throw new ArgumentOutOfRangeException(nameof(offset), offset, "変換原点には有限値を指定してください。");
+            throw new ArgumentOutOfRangeException(
+                nameof(offset),
+                offset,
+                "変換原点には有限値を指定してください。"
+            );
         }
     }
 
@@ -155,7 +179,11 @@ public class RenderTransform : RenderProxyBox
     {
         if (!float.IsFinite(alignment.X) || !float.IsFinite(alignment.Y))
         {
-            throw new ArgumentOutOfRangeException(nameof(alignment), alignment, "配置値には有限値を指定してください。");
+            throw new ArgumentOutOfRangeException(
+                nameof(alignment),
+                alignment,
+                "配置値には有限値を指定してください。"
+            );
         }
     }
 }

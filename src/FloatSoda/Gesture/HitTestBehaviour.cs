@@ -10,5 +10,5 @@ public enum HitTestBehaviour
     Opaque,
 
     /// <summary>自身をヒットパスへ追加しつつ、背後の兄弟要素への探索を継続します。</summary>
-    Translucent
+    Translucent,
 }

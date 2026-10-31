@@ -6,13 +6,16 @@ namespace FloatSoda;
 internal sealed class FloatSodaHostedService(
     FloatSodaApp app,
     IHostApplicationLifetime applicationLifetime,
-    ILogger<FloatSodaHostedService> logger) : IHostedService
+    ILogger<FloatSodaHostedService> logger
+) : IHostedService
 {
-    private readonly TaskCompletionSource _started =
-        new(TaskCreationOptions.RunContinuationsAsynchronously);
+    private readonly TaskCompletionSource _started = new(
+        TaskCreationOptions.RunContinuationsAsynchronously
+    );
 
-    private readonly TaskCompletionSource _completed =
-        new(TaskCreationOptions.RunContinuationsAsynchronously);
+    private readonly TaskCompletionSource _completed = new(
+        TaskCreationOptions.RunContinuationsAsynchronously
+    );
 
     private Thread? _mainThread;
 
@@ -24,11 +27,7 @@ internal sealed class FloatSodaHostedService(
             return;
         }
 
-        _mainThread = new Thread(Run)
-        {
-            IsBackground = true,
-            Name = "FloatSodaMainThread"
-        };
+        _mainThread = new Thread(Run) { IsBackground = true, Name = "FloatSodaMainThread" };
 
         if (OperatingSystem.IsWindows())
         {
@@ -54,9 +53,14 @@ internal sealed class FloatSodaHostedService(
     {
         try
         {
-            app.Run(applicationLifetime.ApplicationStopping, () => _started.TrySetResult(), applicationLifetime.StopApplication);
+            app.Run(
+                applicationLifetime.ApplicationStopping,
+                () => _started.TrySetResult(),
+                applicationLifetime.StopApplication
+            );
         }
-        catch (OperationCanceledException) when (applicationLifetime.ApplicationStopping.IsCancellationRequested)
+        catch (OperationCanceledException)
+            when (applicationLifetime.ApplicationStopping.IsCancellationRequested)
         {
             _started.TrySetCanceled(applicationLifetime.ApplicationStopping);
         }

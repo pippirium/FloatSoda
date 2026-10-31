@@ -55,10 +55,7 @@ public class TransformLayer : ContainerLayer
     /// </returns>
     public override ILayer Clone()
     {
-        var cloned = new TransformLayer()
-        {
-            Transform = Transform
-        };
+        var cloned = new TransformLayer() { Transform = Transform };
 
         foreach (var child in Children)
         {

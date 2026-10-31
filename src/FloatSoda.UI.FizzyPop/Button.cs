@@ -37,7 +37,7 @@ public record Button : StatelessWidget
                 {
                     { IsDisabled: true } => style.DisabledBackgroundColor,
                     { IsPressed: true } => style.PressedBackgroundColor,
-                    _ => style.BackgroundColor
+                    _ => style.BackgroundColor,
                 };
                 // TODO: BackdropFilter相当のレンダー機能実装後に背景ブラーを適用する
                 // (現状は半透明ベタ塗りまで。SKImageFilter.CreateBlur ベースのレイヤーが必要)
@@ -48,10 +48,10 @@ public record Button : StatelessWidget
                     {
                         WidthFactor = 1.5,
                         HeightFactor = 1.5,
-                        Child = Child
-                    }
+                        Child = Child,
+                    },
                 };
-            }
+            },
         };
     }
 }

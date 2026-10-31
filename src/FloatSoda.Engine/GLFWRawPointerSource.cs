@@ -40,9 +40,12 @@ public sealed unsafe class GLFWRawPointerSource : IRawPointerSource
         _currentPosition = new Offset(x, y);
 
         _cursorEnterCallback = (_, entered) =>
-            OnPointerEvent?.Invoke(new RawPointerEvent(
-                entered ? RawPointerKind.Enter : RawPointerKind.Leave,
-                _currentPosition));
+            OnPointerEvent?.Invoke(
+                new RawPointerEvent(
+                    entered ? RawPointerKind.Enter : RawPointerKind.Leave,
+                    _currentPosition
+                )
+            );
 
         _cursorPosCallback = (_, cursorX, cursorY) =>
         {
@@ -54,10 +57,13 @@ public sealed unsafe class GLFWRawPointerSource : IRawPointerSource
 
         _mouseButtonCallback = (_, button, action, _) =>
         {
-            if (TryMapButton(button) is not { } pointerButton) return;
-            if (action == InputAction.Repeat) return;
+            if (TryMapButton(button) is not { } pointerButton)
+                return;
+            if (action == InputAction.Repeat)
+                return;
 
-            var kind = action == InputAction.Press ? RawPointerKind.ButtonDown : RawPointerKind.ButtonUp;
+            var kind =
+                action == InputAction.Press ? RawPointerKind.ButtonDown : RawPointerKind.ButtonUp;
 
             OnPointerEvent?.Invoke(new RawPointerEvent(kind, _currentPosition, pointerButton));
         };
@@ -67,13 +73,14 @@ public sealed unsafe class GLFWRawPointerSource : IRawPointerSource
         GLFW.SetMouseButtonCallback(_handle, _mouseButtonCallback);
     }
 
-    private static PointerButton? TryMapButton(MouseButton button) => button switch
-    {
-        MouseButton.Left => PointerButton.Left,
-        MouseButton.Middle => PointerButton.Middle,
-        MouseButton.Right => PointerButton.Right,
-        _ => null,
-    };
+    private static PointerButton? TryMapButton(MouseButton button) =>
+        button switch
+        {
+            MouseButton.Left => PointerButton.Left,
+            MouseButton.Middle => PointerButton.Middle,
+            MouseButton.Right => PointerButton.Right,
+            _ => null,
+        };
 
     /// <summary>
     /// GLFW ウィンドウから登録済みのマウスコールバックを解除します。

@@ -1,7 +1,7 @@
 using FloatSoda.Geometrics;
-using FloatSoda.Testing;
 using FloatSoda.RenderObjects.Layout;
 using FloatSoda.RenderObjects.Painting;
+using FloatSoda.Testing;
 using SkiaSharp;
 
 namespace FloatSoda.Test.RenderObjects;
@@ -17,7 +17,7 @@ public class RenderColoredBoxTest
         var renderBox = new RenderConstrainedBox
         {
             AdditionalConstraints = BoxConstraints.Tight(Size.Width, Size.Height),
-            Child = new RenderColoredBox { Color = SKColors.Red }
+            Child = new RenderColoredBox { Color = SKColors.Red },
         };
 
         using var bitmap = Renderer.Render(renderBox, Size);

@@ -8,8 +8,10 @@ public interface IOverlayIdentity : IDisposable
 {
     /// <summary>Gets the stable key used to identify the overlay in SteamVR.</summary>
     string Key { get; }
+
     /// <summary>Gets the user-facing overlay name.</summary>
     string Name { get; }
+
     /// <summary>Gets the native OpenVR overlay handle.</summary>
     ulong Handle { get; }
 
@@ -37,8 +39,10 @@ public interface IOverlayIdentity : IDisposable
 public class OverlayIdentity : IOverlayIdentity
 {
     private ulong _handle;
+
     /// <inheritdoc />
     public string Key { get; protected init; }
+
     /// <inheritdoc />
     public string Name { get; protected init; }
 
@@ -56,7 +60,11 @@ public class OverlayIdentity : IOverlayIdentity
     /// <param name="key">The stable key used to identify the overlay in SteamVR.</param>
     /// <param name="name">The user-facing overlay name.</param>
     /// <param name="overlayHandle">An existing handle to adopt, or the invalid handle to create a new overlay.</param>
-    public OverlayIdentity(string key, string name, ulong overlayHandle = OpenVR.k_ulOverlayHandleInvalid)
+    public OverlayIdentity(
+        string key,
+        string name,
+        ulong overlayHandle = OpenVR.k_ulOverlayHandleInvalid
+    )
     {
         Key = key;
         Name = name;
@@ -84,23 +92,41 @@ public class OverlayIdentity : IOverlayIdentity
     private static EVROverlayError CreateOverlay(string key, string name, ref ulong handle)
     {
         var error = OpenVR.Overlay.CreateOverlay(key, name, ref handle);
-        if (error != EVROverlayError.KeyInUse) return error;
-        if (!TryDestroyStaleOverlay(key, out var cleanupError)) return cleanupError;
+        if (error != EVROverlayError.KeyInUse)
+            return error;
+        if (!TryDestroyStaleOverlay(key, out var cleanupError))
+            return cleanupError;
 
         handle = OpenVR.k_ulOverlayHandleInvalid;
         return OpenVR.Overlay.CreateOverlay(key, name, ref handle);
     }
 
     internal static EVROverlayError CreateDashboardOverlay(
-        string key, string name, ref ulong mainHandle, ref ulong thumbnailHandle)
+        string key,
+        string name,
+        ref ulong mainHandle,
+        ref ulong thumbnailHandle
+    )
     {
-        var error = OpenVR.Overlay.CreateDashboardOverlay(key, name, ref mainHandle, ref thumbnailHandle);
-        if (error != EVROverlayError.KeyInUse) return error;
-        if (!TryDestroyStaleOverlay(key, out var cleanupError)) return cleanupError;
+        var error = OpenVR.Overlay.CreateDashboardOverlay(
+            key,
+            name,
+            ref mainHandle,
+            ref thumbnailHandle
+        );
+        if (error != EVROverlayError.KeyInUse)
+            return error;
+        if (!TryDestroyStaleOverlay(key, out var cleanupError))
+            return cleanupError;
 
         mainHandle = OpenVR.k_ulOverlayHandleInvalid;
         thumbnailHandle = OpenVR.k_ulOverlayHandleInvalid;
-        return OpenVR.Overlay.CreateDashboardOverlay(key, name, ref mainHandle, ref thumbnailHandle);
+        return OpenVR.Overlay.CreateDashboardOverlay(
+            key,
+            name,
+            ref mainHandle,
+            ref thumbnailHandle
+        );
     }
 
     /// <summary>
@@ -111,7 +137,8 @@ public class OverlayIdentity : IOverlayIdentity
     {
         var handle = OpenVR.k_ulOverlayHandleInvalid;
         error = OpenVR.Overlay.FindOverlay(key, ref handle);
-        if (error != EVROverlayError.None || handle == OpenVR.k_ulOverlayHandleInvalid) return false;
+        if (error != EVROverlayError.None || handle == OpenVR.k_ulOverlayHandleInvalid)
+            return false;
 
         var renderingPid = OpenVR.Overlay.GetOverlayRenderingPid(handle);
         if (IsProcessAliveOrUnknown(renderingPid))
@@ -127,7 +154,8 @@ public class OverlayIdentity : IOverlayIdentity
     private static bool IsProcessAliveOrUnknown(uint processId)
     {
         // PID が未設定、または現在のプロセスとして確認できない場合は安全側に倒す。
-        if (processId == 0 || processId > int.MaxValue) return true;
+        if (processId == 0 || processId > int.MaxValue)
+            return true;
 
         try
         {
@@ -154,12 +182,16 @@ public class DashboardOverlayIdentity : IOverlayIdentity
 {
     /// <inheritdoc />
     public string Key { get; init; }
+
     /// <inheritdoc />
     public string Name { get; init; }
+
     /// <inheritdoc />
     public ulong Handle { get; private set; }
+
     /// <summary>Gets the native handle for the dashboard thumbnail.</summary>
     public ulong ThumbnailHandle { get; private set; }
+
     /// <inheritdoc />
     public bool Detached => Handle == OpenVR.k_ulOverlayHandleInvalid;
 
@@ -174,7 +206,9 @@ public class DashboardOverlayIdentity : IOverlayIdentity
         ulong mainHandle = OpenVR.k_ulOverlayHandleInvalid;
         ulong thumbHandle = OpenVR.k_ulOverlayHandleInvalid;
 
-        OverlayIdentity.CreateDashboardOverlay(Key, Name, ref mainHandle, ref thumbHandle).ThrowIfError();
+        OverlayIdentity
+            .CreateDashboardOverlay(Key, Name, ref mainHandle, ref thumbHandle)
+            .ThrowIfError();
 
         Handle = mainHandle;
         ThumbnailHandle = thumbHandle;

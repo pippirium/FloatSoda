@@ -1,12 +1,12 @@
 using FloatSoda.Animation;
 using FloatSoda.Core;
 using FloatSoda.Geometrics;
-using FloatSoda.Testing;
 using FloatSoda.RenderObjects;
 using FloatSoda.RenderObjects.Animation;
 using FloatSoda.RenderObjects.Layout;
 using FloatSoda.RenderObjects.Painting;
 using FloatSoda.Test.Animation;
+using FloatSoda.Testing;
 using SkiaSharp;
 
 namespace FloatSoda.Test.RenderObjects;
@@ -15,20 +15,22 @@ public class RenderAnimatedOpacityTest
 {
     private static readonly SKSizeI Size = new(100, 100);
 
-    private static AnimationController CreateController(FakeFrameScheduler scheduler) => new()
-    {
-        Vsync = new TickerProvider { ResolveScheduler = () => scheduler },
-        Duration = TimeSpan.FromSeconds(1)
-    };
+    private static AnimationController CreateController(FakeFrameScheduler scheduler) =>
+        new()
+        {
+            Vsync = new TickerProvider { ResolveScheduler = () => scheduler },
+            Duration = TimeSpan.FromSeconds(1),
+        };
 
     /// <summary>RenderAnimatedOpacityをパイプラインへAttachし、初回フレームをフラッシュ済みの状態で返す。</summary>
     private static (RenderAnimatedOpacity opacityBox, RenderPipeline pipeline) CreateAttachedTree(
-        IAnimation<double> animation)
+        IAnimation<double> animation
+    )
     {
         var opacityBox = new RenderAnimatedOpacity
         {
             Opacity = animation,
-            Child = new RenderColoredBox { Color = SKColors.Red }
+            Child = new RenderColoredBox { Color = SKColors.Red },
         };
 
         var pipeline = new RenderPipeline
@@ -39,9 +41,9 @@ public class RenderAnimatedOpacityTest
                 Child = new RenderConstrainedBox
                 {
                     AdditionalConstraints = BoxConstraints.Tight(Size.Width, Size.Height),
-                    Child = opacityBox
-                }
-            }
+                    Child = opacityBox,
+                },
+            },
         };
 
         pipeline.RenderView.PrepareInitialFrame();
@@ -142,8 +144,8 @@ public class RenderAnimatedOpacityTest
             Child = new RenderAnimatedOpacity
             {
                 Opacity = controller,
-                Child = new RenderColoredBox { Color = SKColors.Red }
-            }
+                Child = new RenderColoredBox { Color = SKColors.Red },
+            },
         };
 
         using var bitmap = new RenderObjectBitmapRenderer().Render(tree, Size);
@@ -165,8 +167,8 @@ public class RenderAnimatedOpacityTest
             Child = new RenderAnimatedOpacity
             {
                 Opacity = controller,
-                Child = new RenderColoredBox { Color = SKColors.Red }
-            }
+                Child = new RenderColoredBox { Color = SKColors.Red },
+            },
         };
 
         using var bitmap = new RenderObjectBitmapRenderer().Render(tree, Size);
