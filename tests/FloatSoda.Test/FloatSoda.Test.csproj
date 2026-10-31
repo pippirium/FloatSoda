@@ -22,5 +22,6 @@
         <ProjectReference Include="..\..\src\FloatSoda\FloatSoda.csproj" />
         <ProjectReference Include="..\..\src\FloatSoda.OVR\FloatSoda.OVR.csproj" />
         <ProjectReference Include="..\..\src\FloatSoda.Testing\FloatSoda.Testing.csproj" />
+        <ProjectReference Include="..\..\samples\FloatSoda.Samples.Settings\FloatSoda.Samples.Settings.csproj" />
     </ItemGroup>
 </Project>

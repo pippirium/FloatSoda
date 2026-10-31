@@ -1,7 +1,10 @@
 using System.Text.Json;
 using FloatSoda.Elements;
 using FloatSoda.Geometrics;
+using FloatSoda.Gesture;
+using FloatSoda.Painting;
 using FloatSoda.Widgets;
+using FloatSoda.Widgets.Gesture;
 using FloatSoda.Widgets.Layout;
 using FloatSoda.Widgets.Settings;
 
@@ -10,6 +13,9 @@ namespace FloatSoda.Samples.Settings;
 /// <summary>設定画面の状態更新とアプリ側JSON保存を紹介するサンプルです。</summary>
 public sealed record SettingsDemo : StatefulWidget<SettingsDemo>
 {
+    /// <summary>ScreenViewを起動し、画面に表示する結果メッセージを返します。</summary>
+    public Func<string>? LaunchScreenView { get; init; }
+
     /// <inheritdoc/>
     public override State<SettingsDemo> CreateState() => new SettingsDemoState();
 }
@@ -21,6 +27,7 @@ public sealed class SettingsDemoState : State<SettingsDemo>
     private bool _haptics = true;
     private double _scale = 0.6;
     private string _quality = "Standard";
+    private string _launchMessage = "起動ボタンで画面共有を開始";
 
     private static readonly string SavePath = Path.Combine(
         Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
@@ -85,6 +92,42 @@ public sealed class SettingsDemoState : State<SettingsDemo>
                                 {
                                     Value = _haptics,
                                     OnChanged = value => Change(() => _haptics = value),
+                                },
+                            },
+                            new SettingsTile
+                            {
+                                Title = "ScreenView",
+                                Description = _launchMessage,
+                                Trailing = new GestureDetector
+                                {
+                                    Behaviour = HitTestBehaviour.Opaque,
+                                    OnTap = Widget!.LaunchScreenView is null
+                                        ? null
+                                        : () =>
+                                            SetState(() =>
+                                                _launchMessage = Widget!.LaunchScreenView!()
+                                            ),
+                                    Child = new Container
+                                    {
+                                        Width = 300,
+                                        Height = 56,
+                                        Decoration = new BoxDecoration
+                                        {
+                                            Color = new Color(52, 66, 82),
+                                            BorderRadius = BorderRadius.Circular(8),
+                                        },
+                                        Child = new Center
+                                        {
+                                            Child = new Text("ScreenViewを起動")
+                                            {
+                                                Style = new TextStyle
+                                                {
+                                                    FontSize = 22,
+                                                    Color = new Color(242, 247, 252),
+                                                },
+                                            },
+                                        },
+                                    },
                                 },
                             },
                         },

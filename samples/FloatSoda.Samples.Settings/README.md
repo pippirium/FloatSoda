@@ -14,6 +14,16 @@ dotnet run --project samples/FloatSoda.Samples.Settings -- --desktop
 - Switch: トリガーでON/OFFを切り替え
 - Slider: トラック上を押すとその位置の値を選択し、押したまま動かすと値を更新
 - Dropdown: 押して候補を展開し、候補を押して選択
+- ScreenViewを起動: 別プロセスのScreenViewを起動し、結果を行の説明に表示
+
+ScreenViewの既定の起動先は
+`%LOCALAPPDATA%\FloatSoda\Apps\ScreenView\FloatSoda.Apps.ScreenView.exe`です。
+ScreenViewを別途ビルド・発行して配置してください。起動先を変更するには、
+設定サンプルに`--screenview-exe "C:\任意のフォルダー\FloatSoda.Apps.ScreenView.exe"`を渡します。
+設定サンプルを開くだけではScreenViewは起動しません。
+起動済みの場合は追加起動せず、設定サンプルを終了してもScreenViewは終了しません。
+ScreenViewには追加引数を渡さず、そのアプリの既定の動作で起動します
+（現在はChromeのウィンドウを対象とする空間オーバーレイ）。
 
 `SettingsDemoState` が値を保持し、`SetState` で再構築します。保存先はユーザーのローカルアプリケーションデータ配下の `FloatSoda/settings-ui-sample.json` です。
 

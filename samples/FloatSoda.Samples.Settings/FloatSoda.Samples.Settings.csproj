@@ -6,6 +6,7 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
     <ItemGroup>
+        <InternalsVisibleTo Include="FloatSoda.Test" />
         <ProjectReference Include="..\..\src\FloatSoda.Engine\FloatSoda.Engine.csproj" />
         <ProjectReference Include="..\..\src\FloatSoda\FloatSoda.csproj" />
     </ItemGroup>

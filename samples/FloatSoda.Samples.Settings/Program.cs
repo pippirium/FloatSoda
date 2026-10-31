@@ -8,16 +8,39 @@ using Microsoft.Extensions.Hosting;
 using SkiaSharp;
 
 // --desktopでもSteamVR/OpenVRとHMDの接続が必要です。
-var useDesktop = args.Contains("--desktop");
-var hostArgs = args.Where(arg => arg != "--desktop").ToArray();
-var builder = Host.CreateApplicationBuilder(hostArgs);
+var useDesktop = false;
+var screenViewPath = Path.Combine(
+    Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+    "FloatSoda",
+    "Apps",
+    "ScreenView",
+    "FloatSoda.Apps.ScreenView.exe"
+);
+var hostArgs = new List<string>();
+for (var index = 0; index < args.Length; index++)
+{
+    if (args[index] == "--desktop")
+        useDesktop = true;
+    else if (args[index] == "--screenview-exe")
+    {
+        if (index + 1 >= args.Length || args[index + 1].StartsWith("--", StringComparison.Ordinal))
+            throw new ArgumentException(
+                "--screenview-exeにはScreenViewのexeパスを指定してください。"
+            );
+        screenViewPath = args[++index];
+    }
+    else
+        hostArgs.Add(args[index]);
+}
+var builder = Host.CreateApplicationBuilder(hostArgs.ToArray());
 builder.Services.AddFloatSoda(
     new FloatSodaOptions { AppKey = new AppKey("FloatSoda.Samples.Settings") }
 );
 
 using var host = builder.Build();
 var app = host.Services.GetRequiredService<FloatSodaApp>();
-var demo = new SettingsDemo();
+using var screenView = new ScreenViewLauncher(screenViewPath);
+var demo = new SettingsDemo { LaunchScreenView = screenView.Start };
 
 // SteamVR上での物理倍率とは別に、候補の開閉でも変わらない論理キャンバスを使う。
 var canvasSize = new SKSize(960, 1000);
