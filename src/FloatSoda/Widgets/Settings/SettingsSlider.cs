@@ -41,13 +41,24 @@ public sealed class SettingsSliderState : State<SettingsSlider>
     /// <summary>値の範囲を検証し、範囲内に収めます。</summary>
     public static double ClampValue(double value, double min, double max)
     {
-        if (!double.IsFinite(min) || !double.IsFinite(max) || max <= min || !double.IsFinite(max - min))
+        if (
+            !double.IsFinite(min)
+            || !double.IsFinite(max)
+            || max <= min
+            || !double.IsFinite(max - min)
+        )
         {
-            throw new ArgumentOutOfRangeException(nameof(max), "MinとMaxは有限値で、MaxはMinより大きくしてください。");
+            throw new ArgumentOutOfRangeException(
+                nameof(max),
+                "MinとMaxは有限値で、MaxはMinより大きくしてください。"
+            );
         }
         if (!double.IsFinite(value))
         {
-            throw new ArgumentOutOfRangeException(nameof(value), "Valueには有限値を指定してください。");
+            throw new ArgumentOutOfRangeException(
+                nameof(value),
+                "Valueには有限値を指定してください。"
+            );
         }
 
         return Math.Clamp(value, min, max);
@@ -58,7 +69,10 @@ public sealed class SettingsSliderState : State<SettingsSlider>
     {
         var model = Widget!;
         if (!double.IsFinite(model.TrackWidth) || model.TrackWidth < 26)
-            throw new ArgumentOutOfRangeException(nameof(model.TrackWidth), "TrackWidthは26以上の有限値を指定してください。");
+            throw new ArgumentOutOfRangeException(
+                nameof(model.TrackWidth),
+                "TrackWidthは26以上の有限値を指定してください。"
+            );
         var trackWidth = model.TrackWidth;
         var value = ClampValue(model.Value, model.Min, model.Max);
         var ratio = (value - model.Min) / (model.Max - model.Min);
@@ -69,7 +83,10 @@ public sealed class SettingsSliderState : State<SettingsSlider>
             CrossAxisAlignment = CrossAxisAlignment.Center,
             Children =
             {
-                new Text(value.ToString("0.##")) { Style = new TextStyle { FontSize = 23, Color = SettingsPalette.Text } },
+                new Text(value.ToString("0.##"))
+                {
+                    Style = new TextStyle { FontSize = 23, Color = SettingsPalette.Text },
+                },
                 new SizedBox { Height = 8 },
                 new Listener
                 {
@@ -91,28 +108,28 @@ public sealed class SettingsSliderState : State<SettingsSlider>
                                     Alignment = Alignment.Center,
                                     Child = new Container
                                     {
-                                        Width = TrackWidth,
+                                        Width = trackWidth,
                                         Height = 12,
                                         Decoration = new BoxDecoration
                                         {
                                             Color = SettingsPalette.Control,
-                                            BorderRadius = BorderRadius.Circular(6)
-                                        }
-                                    }
+                                            BorderRadius = BorderRadius.Circular(6),
+                                        },
+                                    },
                                 },
                                 new Align
                                 {
                                     Alignment = Alignment.CenterLeft,
                                     Child = new Container
                                     {
-                                        Width = ratio * TrackWidth,
+                                        Width = ratio * trackWidth,
                                         Height = 12,
                                         Decoration = new BoxDecoration
                                         {
                                             Color = SettingsPalette.Accent,
-                                            BorderRadius = BorderRadius.Circular(6)
-                                        }
-                                    }
+                                            BorderRadius = BorderRadius.Circular(6),
+                                        },
+                                    },
                                 },
                                 new Positioned
                                 {
@@ -125,41 +142,46 @@ public sealed class SettingsSliderState : State<SettingsSlider>
                                         Decoration = new BoxDecoration
                                         {
                                             Color = SettingsPalette.Text,
-                                            BorderRadius = BorderRadius.Circular(13)
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
+                                            BorderRadius = BorderRadius.Circular(13),
+                                        },
+                                    },
+                                },
+                            },
+                        },
+                    },
+                },
+            },
         };
     }
 
     private void HandleDown(PointerEvent e)
     {
-        if (Widget?.OnChanged is null || _activePointer.HasValue) return;
+        if (Widget?.OnChanged is null || _activePointer.HasValue)
+            return;
         _activePointer = e.PointerId;
         Emit(e);
     }
 
     private void HandleMove(PointerEvent e)
     {
-        if (_activePointer == e.PointerId) Emit(e);
+        if (_activePointer == e.PointerId)
+            Emit(e);
     }
 
     private void HandleEnd(PointerEvent e)
     {
-        if (_activePointer == e.PointerId) _activePointer = null;
+        if (_activePointer == e.PointerId)
+            _activePointer = null;
     }
 
     private void Emit(PointerEvent e)
     {
         var model = Widget!;
-        if (model.OnChanged is null) return;
+        if (model.OnChanged is null)
+            return;
         var position = new Vector2((float)e.Position.X, (float)e.Position.Y);
-        if (e.Transform is { } localTransform) position = Vector2.Transform(position, localTransform);
+        if (e.Transform is { } localTransform)
+            position = Vector2.Transform(position, localTransform);
         var ratio = Math.Clamp((double)position.X / model.TrackWidth, 0, 1);
         var next = model.Min + (model.Max - model.Min) * ratio;
         model.OnChanged(ClampValue(next, model.Min, model.Max));

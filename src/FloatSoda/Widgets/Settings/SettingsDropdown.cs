@@ -36,9 +36,12 @@ public sealed class SettingsDropdownState : State<SettingsDropdown>
         var label = model.Options.Contains(model.Value) ? model.Value : "未選択";
         var children = new List<Widget>
         {
-            Button(label + (_open ? " ▲" : " ▼"), model.OnChanged is null || model.Options.Count == 0
-                ? null
-                : () => SetState(() => _open = !_open))
+            Button(
+                label + (_open ? " ▲" : " ▼"),
+                model.OnChanged is null || model.Options.Count == 0
+                    ? null
+                    : () => SetState(() => _open = !_open)
+            ),
         };
 
         if (_open && model.OnChanged is not null)
@@ -47,11 +50,17 @@ public sealed class SettingsDropdownState : State<SettingsDropdown>
             {
                 var choice = option;
                 children.Add(new SizedBox { Height = 6 });
-                children.Add(Button(choice, () =>
-                {
-                    SetState(() => _open = false);
-                    if (choice != Widget!.Value) Widget.OnChanged?.Invoke(choice);
-                }));
+                children.Add(
+                    Button(
+                        choice,
+                        () =>
+                        {
+                            SetState(() => _open = false);
+                            if (choice != Widget!.Value)
+                                Widget.OnChanged?.Invoke(choice);
+                        }
+                    )
+                );
             }
         }
 
@@ -62,33 +71,34 @@ public sealed class SettingsDropdownState : State<SettingsDropdown>
             {
                 MainAxisSize = MainAxisSize.Min,
                 CrossAxisAlignment = CrossAxisAlignment.Stretch,
-                Children = children
-            }
+                Children = children,
+            },
         };
     }
 
-    private static Widget Button(string text, Action? action) => new GestureDetector
-    {
-        Behaviour = HitTestBehaviour.Opaque,
-        OnTap = action,
-        Child = new Container
+    private static Widget Button(string text, Action? action) =>
+        new GestureDetector
         {
-            Decoration = new BoxDecoration
+            Behaviour = HitTestBehaviour.Opaque,
+            OnTap = action,
+            Child = new Container
             {
-                Color = SettingsPalette.Control,
-                BorderRadius = BorderRadius.Circular(8)
-            },
-            Child = new SizedBox
-            {
-                Height = 56,
-                Child = new Center
+                Decoration = new BoxDecoration
                 {
-                    Child = new Text(text)
+                    Color = SettingsPalette.Control,
+                    BorderRadius = BorderRadius.Circular(8),
+                },
+                Child = new SizedBox
+                {
+                    Height = 56,
+                    Child = new Center
                     {
-                        Style = new TextStyle { FontSize = 22, Color = SettingsPalette.Text }
-                    }
-                }
-            }
-        }
-    };
+                        Child = new Text(text)
+                        {
+                            Style = new TextStyle { FontSize = 22, Color = SettingsPalette.Text },
+                        },
+                    },
+                },
+            },
+        };
 }

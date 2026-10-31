@@ -29,7 +29,7 @@ public sealed record SettingsSwitch : StatelessWidget
                 Decoration = new BoxDecoration
                 {
                     Color = Value ? SettingsPalette.Accent : SettingsPalette.Control,
-                    BorderRadius = BorderRadius.Circular(30)
+                    BorderRadius = BorderRadius.Circular(30),
                 },
                 Padding = EdgeInsets.All(8),
                 Child = new Align
@@ -42,17 +42,17 @@ public sealed record SettingsSwitch : StatelessWidget
                         Decoration = new BoxDecoration
                         {
                             Color = SettingsPalette.Text,
-                            BorderRadius = BorderRadius.Circular(22)
-                        }
-                    }
-                }
-            }
+                            BorderRadius = BorderRadius.Circular(22),
+                        },
+                    },
+                },
+            },
         };
         return new GestureDetector
         {
             Behaviour = HitTestBehaviour.Opaque,
             OnTap = OnChanged is null ? null : () => OnChanged(!Value),
-            Child = track
+            Child = track,
         };
     }
 }

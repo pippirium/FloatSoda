@@ -57,6 +57,7 @@ public class WidgetBinding : IFrameScheduler, IHitTestTarget, IGestureBinding
     private RenderPostTaskRunner? RenderThreadRunner { get; set; }
     private IEngineWindow? Window { get; set; }
     private IOverlay? _pendingOverlay;
+
     /// <summary>描画ウィンドウとパイプラインの初期化が開始済みかを取得します。</summary>
     public bool Initialized { get; private set; }
 
@@ -125,10 +126,7 @@ public class WidgetBinding : IFrameScheduler, IHitTestTarget, IGestureBinding
             Renderer? renderer = null;
             try
             {
-                renderer = new Renderer
-                {
-                    GLView = new GLView(Size, visible, windowName)
-                };
+                renderer = new Renderer { GLView = new GLView(Size, visible, windowName) };
 
                 Window = windowFactory(renderer);
                 _pendingOverlay = null;

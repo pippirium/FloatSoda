@@ -3,6 +3,7 @@ using FloatSoda.Abstractions.Geometries;
 using FloatSoda.Abstractions.Input;
 using FloatSoda.OVR;
 using FloatSoda.OVR.Overlay;
+using FloatSoda.Rendering.Layers;
 using SkiaSharp;
 
 namespace FloatSoda.Engine;
@@ -17,6 +18,13 @@ public class OverlayWindow : IEngineWindow
     /// <summary>このウィンドウが描画先とするOpenVRオーバーレイを取得します。</summary>
     public IOverlay Overlay { get; }
 
+    /// <summary>既定のコントローラーを使用するオーバーレイウィンドウを作成します。</summary>
+    /// <param name="overlay">描画先となるOpenVRオーバーレイ。</param>
+    /// <param name="renderer">レイヤーツリーを描画するレンダラー。</param>
+    /// <param name="dpm">オーバーレイの物理幅へ換算する密度。</param>
+    public OverlayWindow(IOverlay overlay, Renderer renderer, Dpm dpm)
+        : this(overlay, renderer, dpm, null) { }
+
     /// <summary>指定されたオーバーレイを描画先とするウィンドウを作成します。</summary>
     /// <param name="overlay">描画先となるOpenVRオーバーレイ。</param>
     /// <param name="renderer">レイヤーツリーをテクスチャへ描画するレンダラー。</param>
@@ -30,8 +38,12 @@ public class OverlayWindow : IEngineWindow
     /// 交差させる<see cref="ControllerRayPointerSource"/>を生成します（入力横取りフラグは使用しません）。
     /// どちらでもないオーバーレイでは<see cref="PointerSource"/>は<see langword="null"/>のままです。
     /// </remarks>
-    public OverlayWindow(IOverlay overlay, Renderer renderer, Dpm dpm,
-        IReadOnlyList<TrackedDevice>? pointerDevices = null)
+    public OverlayWindow(
+        IOverlay overlay,
+        Renderer renderer,
+        Dpm dpm,
+        IReadOnlyList<TrackedDevice>? pointerDevices = null
+    )
     {
         Overlay = overlay;
         this.renderer = renderer;
@@ -44,14 +56,16 @@ public class OverlayWindow : IEngineWindow
             overlay.Input.SetMouseScale(renderer.GLView.Size.Width, renderer.GLView.Size.Height);
             PointerSource = new OverlayMouseRawPointerSource(overlay.EventDispatcher);
         }
-
         // デバイス追従・ワールド固定はコントローラーレイを毎フレーム交差させて届く。
         // MakeOverlaysInteractiveIfVisible を使わないため入力横取りは発生しない。
         else if (overlay is IMovableOverlay movable)
         {
-            PointerSource = new ControllerRayPointerSource(movable.Intersection,
-                () => new SKSizeI((int)renderer.GLView.Size.Width, (int)renderer.GLView.Size.Height),
-                pointerDevices);
+            PointerSource = new ControllerRayPointerSource(
+                movable.Intersection,
+                () =>
+                    new SKSizeI((int)renderer.GLView.Size.Width, (int)renderer.GLView.Size.Height),
+                pointerDevices
+            );
         }
     }
 

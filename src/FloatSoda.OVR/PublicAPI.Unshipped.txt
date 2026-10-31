@@ -1,1 +1,7 @@
 #nullable enable
+FloatSoda.OVR.Overlay.OverlayKeyboard
+const FloatSoda.OVR.Overlay.OverlayKeyboard.InputModeMultiLine = 2 -> int
+const FloatSoda.OVR.Overlay.OverlayKeyboard.InputModeSingleLine = 1 -> int
+static FloatSoda.OVR.Overlay.OverlayKeyboard.GetText(uint maxLength = 256) -> string!
+static FloatSoda.OVR.Overlay.OverlayKeyboard.Hide() -> void
+static FloatSoda.OVR.Overlay.OverlayKeyboard.TryShowForOverlay(ulong overlayHandle, string! description, string? existingText = null, uint flags = 2, int inputMode = 1, uint maxChars = 256, ulong userValue = 0) -> bool

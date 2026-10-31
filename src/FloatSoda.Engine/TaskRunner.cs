@@ -436,12 +436,10 @@ public abstract class PostTaskRunner(string threadName, IFramePacer pacer, ILogg
     }
 
     /// <inheritdoc />
-    public void Stop()
-        => StopCore(StopTimeout);
+    public void Stop() => StopCore(StopTimeout);
 
     /// <summary>専用スレッド上の終了処理が完了するまで待機します。</summary>
-    internal void StopAndWait()
-        => StopCore(Timeout.InfiniteTimeSpan);
+    internal void StopAndWait() => StopCore(Timeout.InfiniteTimeSpan);
 
     private void StopCore(TimeSpan timeout)
     {
@@ -660,7 +658,11 @@ public class RenderPostTaskRunner(string threadName, IFramePacer pacer, ILogger?
         }
         catch (Exception exception)
         {
-            Logger?.LogError(exception, "{ThreadName} の終了時にリソース解放が失敗しました", ThreadName);
+            Logger?.LogError(
+                exception,
+                "{ThreadName} の終了時にリソース解放が失敗しました",
+                ThreadName
+            );
         }
         finally
         {

@@ -10,17 +10,23 @@ using Microsoft.Extensions.Hosting;
 var useDesktop = args.Contains("--desktop");
 var hostArgs = args.Where(arg => arg != "--desktop").ToArray();
 var builder = Host.CreateApplicationBuilder(hostArgs);
-builder.Services.AddFloatSoda(new FloatSodaOptions
-{
-    AppKey = new AppKey("FloatSoda.Samples.Settings")
-});
+builder.Services.AddFloatSoda(
+    new FloatSodaOptions { AppKey = new AppKey("FloatSoda.Samples.Settings") }
+);
 
 using var host = builder.Build();
 var app = host.Services.GetRequiredService<FloatSodaApp>();
 var demo = new SettingsDemo();
 
-app.CreateWindow(useDesktop
-    ? new DesktopWindow { Title = "Settings Widgets", Child = demo }
-    : new DashboardWindow { Dpm = new Dpm(1000), Title = "Settings Widgets", Child = demo });
+app.CreateWindow(
+    useDesktop
+        ? new DesktopWindow { Title = "Settings Widgets", Child = demo }
+        : new DashboardWindow
+        {
+            Dpm = new Dpm(1000),
+            Title = "Settings Widgets",
+            Child = demo,
+        }
+);
 
 await host.RunAsync();

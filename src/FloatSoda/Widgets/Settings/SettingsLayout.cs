@@ -31,8 +31,16 @@ public sealed record SettingsPage : StatelessWidget
     {
         var children = new List<Widget>
         {
-            new Text(Title) { Style = new TextStyle { FontSize = 38, FontWeight = 700, Color = SettingsPalette.Text } },
-            new SizedBox { Height = 24 }
+            new Text(Title)
+            {
+                Style = new TextStyle
+                {
+                    FontSize = 38,
+                    FontWeight = 700,
+                    Color = SettingsPalette.Text,
+                },
+            },
+            new SizedBox { Height = 24 },
         };
 
         foreach (var section in Sections)
@@ -49,8 +57,8 @@ public sealed record SettingsPage : StatelessWidget
             {
                 MainAxisSize = MainAxisSize.Min,
                 CrossAxisAlignment = CrossAxisAlignment.Stretch,
-                Children = children
-            }
+                Children = children,
+            },
         };
     }
 }
@@ -69,8 +77,16 @@ public sealed record SettingsSection : StatelessWidget
     {
         var children = new List<Widget>
         {
-            new Text(Title) { Style = new TextStyle { FontSize = 28, FontWeight = 700, Color = SettingsPalette.Accent } },
-            new SizedBox { Height = 14 }
+            new Text(Title)
+            {
+                Style = new TextStyle
+                {
+                    FontSize = 28,
+                    FontWeight = 700,
+                    Color = SettingsPalette.Accent,
+                },
+            },
+            new SizedBox { Height = 14 },
         };
 
         foreach (var child in Children)
@@ -84,15 +100,15 @@ public sealed record SettingsSection : StatelessWidget
             Decoration = new BoxDecoration
             {
                 Color = SettingsPalette.Section,
-                BorderRadius = BorderRadius.Circular(12)
+                BorderRadius = BorderRadius.Circular(12),
             },
             Padding = EdgeInsets.All(18),
             Child = new Column
             {
                 CrossAxisAlignment = CrossAxisAlignment.Stretch,
                 MainAxisSize = MainAxisSize.Min,
-                Children = children
-            }
+                Children = children,
+            },
         };
     }
 }
@@ -114,12 +130,20 @@ public sealed record SettingsTile : StatelessWidget
     {
         var labelChildren = new List<Widget>
         {
-            new Text(Title) { Style = new TextStyle { FontSize = 25, Color = SettingsPalette.Text } }
+            new Text(Title)
+            {
+                Style = new TextStyle { FontSize = 25, Color = SettingsPalette.Text },
+            },
         };
         if (!string.IsNullOrWhiteSpace(Description))
         {
             labelChildren.Add(new SizedBox { Height = 5 });
-            labelChildren.Add(new Text(Description!) { Style = new TextStyle { FontSize = 19, Color = SettingsPalette.SecondaryText } });
+            labelChildren.Add(
+                new Text(Description!)
+                {
+                    Style = new TextStyle { FontSize = 19, Color = SettingsPalette.SecondaryText },
+                }
+            );
         }
 
         var rowChildren = new List<Widget>
@@ -130,9 +154,9 @@ public sealed record SettingsTile : StatelessWidget
                 {
                     MainAxisSize = MainAxisSize.Min,
                     CrossAxisAlignment = CrossAxisAlignment.Start,
-                    Children = labelChildren
-                }
-            }
+                    Children = labelChildren,
+                },
+            },
         };
         if (Trailing is not null)
         {
@@ -147,8 +171,8 @@ public sealed record SettingsTile : StatelessWidget
             {
                 MainAxisSize = MainAxisSize.Max,
                 CrossAxisAlignment = CrossAxisAlignment.Center,
-                Children = rowChildren
-            }
+                Children = rowChildren,
+            },
         };
     }
 }
