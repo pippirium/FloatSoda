@@ -127,6 +127,35 @@ public class OverlayWindow : IEngineWindow
         }
     }
 
+    /// <summary>
+    /// オーバーレイをSteamVR上に残したまま、このウィンドウが保持する入力とOpenGLのリソースだけを解放します。
+    /// </summary>
+    /// <remarks>
+    /// 最後のフレームをオーバーレイへ転送した後に呼ぶと、表示内容は最後に転送されたフレームのまま残ります。
+    /// 破棄を免れたオーバーレイの所有はOpenVRコンテキストへ移り、プロセスが <c>VREvent_Quit</c> を受けて
+    /// 終了するときやSteamVRが終了したときにSteamVRにより破棄されます。
+    /// 以降このインスタンスへの <see cref="Present"/>、<see cref="Resize"/>、
+    /// <see cref="PollInputEvents"/> は呼び出さないでください。
+    /// </remarks>
+    public void AbandonOverlay()
+    {
+        try
+        {
+            PointerSource?.Dispose();
+        }
+        finally
+        {
+            try
+            {
+                Overlay.Identity.Detach();
+            }
+            finally
+            {
+                renderer.Dispose();
+            }
+        }
+    }
+
     /// <summary>このウィンドウの生ポインター入力源とオーバーレイを破棄します。</summary>
     public void Dispose()
     {

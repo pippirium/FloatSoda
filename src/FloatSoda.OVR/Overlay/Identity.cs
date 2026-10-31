@@ -1,4 +1,4 @@
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using FloatSoda.OVR.Exceptions;
 
 namespace FloatSoda.OVR.Overlay;
@@ -14,6 +14,25 @@ public interface IOverlayIdentity : IDisposable
 
     /// <summary>Gets the native OpenVR overlay handle.</summary>
     ulong Handle { get; }
+
+    /// <summary>
+    /// Gets whether <see cref="IDisposable.Dispose"/> keeps the native overlay alive instead of destroying it.
+    /// </summary>
+    /// <remarks>
+    /// <see langword="true"/> once the identity released the handle without destroying it, or when it
+    /// never owned one. Releasing is idempotent, so releasing twice is harmless.
+    /// </remarks>
+    bool Detached { get; }
+
+    /// <summary>
+    /// Releases ownership of the native overlay without destroying it.
+    /// </summary>
+    /// <remarks>
+    /// The overlay itself keeps living in SteamVR, and <see cref="IDisposable.Dispose"/> becomes a no-op.
+    /// SteamVR still destroys the overlay when the owning process is told to quit or when
+    /// SteamVR itself shuts down. Calling this on an already released identity does nothing.
+    /// </remarks>
+    void Detach();
 }
 
 /// <summary>Creates or adopts the identity of a regular OpenVR overlay.</summary>
@@ -33,6 +52,9 @@ public class OverlayIdentity : IOverlayIdentity
         get => _handle;
         private set => _handle = value;
     }
+
+    /// <inheritdoc />
+    public bool Detached => _handle == OpenVR.k_ulOverlayHandleInvalid;
 
     /// <summary>Creates a new overlay identity or adopts an existing handle.</summary>
     /// <param name="key">The stable key used to identify the overlay in SteamVR.</param>
@@ -63,6 +85,9 @@ public class OverlayIdentity : IOverlayIdentity
             Handle = OpenVR.k_ulOverlayHandleInvalid;
         }
     }
+
+    /// <inheritdoc />
+    public void Detach() => Handle = OpenVR.k_ulOverlayHandleInvalid;
 
     private static EVROverlayError CreateOverlay(string key, string name, ref ulong handle)
     {
@@ -167,6 +192,9 @@ public class DashboardOverlayIdentity : IOverlayIdentity
     /// <summary>Gets the native handle for the dashboard thumbnail.</summary>
     public ulong ThumbnailHandle { get; private set; }
 
+    /// <inheritdoc />
+    public bool Detached => Handle == OpenVR.k_ulOverlayHandleInvalid;
+
     /// <summary>Creates a dashboard overlay and its thumbnail.</summary>
     /// <param name="key">The stable key used to identify the overlay in SteamVR.</param>
     /// <param name="name">The user-facing dashboard name.</param>
@@ -194,5 +222,12 @@ public class DashboardOverlayIdentity : IOverlayIdentity
             OpenVR.Overlay.DestroyOverlay(Handle).ThrowIfError();
             Handle = OpenVR.k_ulOverlayHandleInvalid;
         }
+    }
+
+    /// <inheritdoc />
+    public void Detach()
+    {
+        Handle = OpenVR.k_ulOverlayHandleInvalid;
+        ThumbnailHandle = OpenVR.k_ulOverlayHandleInvalid;
     }
 }

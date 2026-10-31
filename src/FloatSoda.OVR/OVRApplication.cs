@@ -1,4 +1,4 @@
-﻿using System.Text.RegularExpressions;
+using System.Text.RegularExpressions;
 using FloatSoda.OVR.Exceptions;
 
 namespace FloatSoda.OVR;
@@ -93,6 +93,10 @@ public class OVRApplication : IDisposable
     public OVRApplication(OVRAppInfo appInfo)
     {
         Info = appInfo;
+        // SteamVRのlogsディレクトリへ書き込めない環境では、ログが開けないだけで
+        // OpenVRの初期化が Init_NoLogPath で失敗する。書き込み先を退避させてから初期化する。
+        VRLogPath.EnsureUsableLogsDirectory();
+
         // Attempt to initialize a new OpenVR context
         var err = EVRInitError.None;
         OVRSystem = OpenVR.Init(ref err, (EVRApplicationType)Info.Type, Info.StartupInfo);

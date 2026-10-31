@@ -20,6 +20,14 @@ public class WindowElement : InheritedElement
     public override void Update(Widget newWidget)
     {
         base.Update(newWidget);
+
+        // ルートの寸法を新しい宣言の値へ差し替える。
+        // base.Update(<see cref="InheritedElement.Update"/>)は宣言を受け取ったうえで依存 Element へ
+        // <see cref="Element.DidChangeDependencies"/> を呼び、そこで再構築が予約される。子孫が実測に
+        // 合わせて宣言を作り直す使い方（ScreenView のオーバーレイサイズ追従）は、予約された再構築が
+        // 新しい <see cref="RenderView.FixedSize"/> と組むことに依存するため、ここでの反映を
+        // <see cref="InheritedElement.Update"/> より後に置くこと。寸法が変わらなかったときは同じ値を
+        // 再代入するだけで、Layout Dirty は立たない。
         ApplySizeToRenderView();
     }
 
