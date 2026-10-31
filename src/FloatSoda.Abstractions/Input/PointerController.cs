@@ -98,21 +98,22 @@ public class PointerController : IDisposable
 
     private void OnPointerButton(RawPointerEvent rawEvent)
     {
-        if (rawEvent.Button != PointerButton.Left) return;
+        if (rawEvent.Button != PointerButton.Left)
+            return;
         _buttonPressed = rawEvent.Kind == RawPointerKind.ButtonDown;
 
-        if (!_buttonPressed && !_pointerCurrentlyDown) return;
+        if (!_buttonPressed && !_pointerCurrentlyDown)
+            return;
         var phase = (_buttonPressed, _pointerCurrentlyDown) switch
         {
             (true, true) => PointerEventPhase.Move,
             (true, false) => PointerEventPhase.Down,
             (false, true) => PointerEventPhase.Up,
-            _ => throw new UnreachableException()
+            _ => throw new UnreachableException(),
         };
 
         SendPointerEvent(phase, rawEvent.Position);
     }
-
 
     private void SendPointerEvent(PointerEventPhase phase, Offset offset)
     {

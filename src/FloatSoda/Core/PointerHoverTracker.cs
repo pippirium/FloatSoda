@@ -20,20 +20,22 @@ internal sealed class PointerHoverTracker
     {
         var pointerId = pointerEvent.PointerId;
         var previous = _lastHitPaths.GetValueOrDefault(pointerId) ?? Array.Empty<HitTestEntry>();
-        var current = hitTestResult?.Path
-            .Where(entry => entry.Target is RenderPointerListener)
-            .ToArray() ?? Array.Empty<HitTestEntry>();
+        var current =
+            hitTestResult?.Path.Where(entry => entry.Target is RenderPointerListener).ToArray()
+            ?? Array.Empty<HitTestEntry>();
 
         foreach (var entry in previous)
         {
-            if (ContainsTarget(current, entry.Target)) continue;
+            if (ContainsTarget(current, entry.Target))
+                continue;
             Dispatch(pointerEvent with { Phase = PointerEventPhase.Exit }, entry);
         }
 
         for (var i = current.Length - 1; i >= 0; i--)
         {
             var entry = current[i];
-            if (ContainsTarget(previous, entry.Target)) continue;
+            if (ContainsTarget(previous, entry.Target))
+                continue;
             Dispatch(pointerEvent with { Phase = PointerEventPhase.Enter }, entry);
         }
 
@@ -47,9 +49,9 @@ internal sealed class PointerHoverTracker
         }
     }
 
-    private static bool ContainsTarget(IEnumerable<HitTestEntry> entries, IHitTestTarget target)
-        => entries.Any(entry => ReferenceEquals(entry.Target, target));
+    private static bool ContainsTarget(IEnumerable<HitTestEntry> entries, IHitTestTarget target) =>
+        entries.Any(entry => ReferenceEquals(entry.Target, target));
 
-    private static void Dispatch(PointerEvent pointerEvent, HitTestEntry entry)
-        => entry.Target.HandleEvent(pointerEvent with { Transform = entry.Transform }, entry);
+    private static void Dispatch(PointerEvent pointerEvent, HitTestEntry entry) =>
+        entry.Target.HandleEvent(pointerEvent with { Transform = entry.Transform }, entry);
 }

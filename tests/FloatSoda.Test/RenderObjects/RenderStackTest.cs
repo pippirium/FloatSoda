@@ -13,11 +13,7 @@ public class RenderStackTest
     public void PerformLayout_非Positioned子をAlignmentで配置する()
     {
         var child = Box(40, 20);
-        var stack = new RenderStack
-        {
-            Alignment = Alignment.BottomRight,
-            Children = { child }
-        };
+        var stack = new RenderStack { Alignment = Alignment.BottomRight, Children = { child } };
 
         stack.Layout(BoxConstraints.Tight(200, 100));
 
@@ -30,11 +26,7 @@ public class RenderStackTest
     public void PerformLayout_FitExpandで非Positioned子をStack全体へ広げる()
     {
         var child = Box(40, 20);
-        var stack = new RenderStack
-        {
-            Fit = StackFit.Expand,
-            Children = { child }
-        };
+        var stack = new RenderStack { Fit = StackFit.Expand, Children = { child } };
 
         stack.Layout(BoxConstraints.Tight(200, 100));
 
@@ -46,11 +38,7 @@ public class RenderStackTest
     public void PerformLayout_FitPassthroughで親の最小制約も子へ渡す()
     {
         var child = Box(40, 20);
-        var stack = new RenderStack
-        {
-            Fit = StackFit.Passthrough,
-            Children = { child }
-        };
+        var stack = new RenderStack { Fit = StackFit.Passthrough, Children = { child } };
 
         stack.Layout(new BoxConstraints(80, 200, 60, 100));
 
@@ -96,11 +84,7 @@ public class RenderStackTest
     public void PerformLayout_Positionedの未指定軸をAlignmentで配置する()
     {
         var child = Box(10, 10);
-        var stack = new RenderStack
-        {
-            Alignment = Alignment.BottomRight,
-            Children = { child }
-        };
+        var stack = new RenderStack { Alignment = Alignment.BottomRight, Children = { child } };
         var parentData = Assert.IsType<StackParentData>(child.ParentData);
         parentData.Left = 10;
         parentData.Width = 20;
@@ -116,7 +100,12 @@ public class RenderStackTest
     {
         var child = Box(20, 20);
         var stack = new RenderStack { Children = { child } };
-        var initial = new Positioned { Left = 10, Top = 5, Child = new SizedBox() };
+        var initial = new Positioned
+        {
+            Left = 10,
+            Top = 5,
+            Child = new SizedBox(),
+        };
         initial.ApplyParentData(child);
         stack.Layout(BoxConstraints.Tight(100, 80));
         Assert.False(stack.NeedsLayout);
@@ -139,7 +128,7 @@ public class RenderStackTest
             Left = 0,
             Right = 0,
             Width = 20,
-            Child = new SizedBox()
+            Child = new SizedBox(),
         };
 
         Assert.Throws<InvalidOperationException>(() => positioned.ApplyParentData(child));
@@ -150,17 +139,11 @@ public class RenderStackTest
     {
         var child = Box(20, 20);
         var stack = new RenderStack { Children = { child } };
-        var positioned = new Positioned
-        {
-            Width = -1,
-            Child = new SizedBox()
-        };
+        var positioned = new Positioned { Width = -1, Child = new SizedBox() };
 
         Assert.Throws<ArgumentOutOfRangeException>(() => positioned.ApplyParentData(child));
     }
 
-    private static RenderConstrainedBox Box(double width, double height) => new()
-    {
-        AdditionalConstraints = BoxConstraints.Tight(width, height)
-    };
+    private static RenderConstrainedBox Box(double width, double height) =>
+        new() { AdditionalConstraints = BoxConstraints.Tight(width, height) };
 }

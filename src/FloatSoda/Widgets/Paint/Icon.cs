@@ -50,11 +50,11 @@ public sealed record Icon(IconData Data) : StatelessWidget
                         {
                             Font = Data.Font,
                             FontSize = Size,
-                            Color = Color
-                        }
-                    }
-                }
-            }
+                            Color = Color,
+                        },
+                    },
+                },
+            },
         };
     }
 }

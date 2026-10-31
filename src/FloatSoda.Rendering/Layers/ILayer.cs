@@ -25,6 +25,7 @@ public interface ILayer
     /// 描画先の座標系とキャンバスを保持するコンテキスト。
     /// </param>
     void Layout(LayerContext context);
+
     /// <summary>
     /// レイアウト済みの内容を指定された描画先へ合成します。
     /// </summary>
@@ -32,6 +33,7 @@ public interface ILayer
     /// 合成先のキャンバスを保持するコンテキスト。
     /// </param>
     void Paint(LayerContext context);
+
     /// <summary>
     /// 現在の合成設定を保持する、独立したレイヤーツリーを作成します。
     /// </summary>

@@ -29,7 +29,8 @@ public sealed class RenderSizedOverflowBox : RenderBox, IHasSingleChildRenderObj
         set
         {
             ValidateSize(value, nameof(RequestedSize));
-            if (field == value) return;
+            if (field == value)
+                return;
             field = value;
             MarkNeedsLayout();
         }
@@ -43,20 +44,23 @@ public sealed class RenderSizedOverflowBox : RenderBox, IHasSingleChildRenderObj
         set
         {
             LayoutOverflowValidation.ValidateAlignment(value, nameof(Alignment));
-            if (field == value) return;
+            if (field == value)
+                return;
             field = value;
             MarkNeedsLayout();
         }
     } = Alignment.Center;
 
     /// <inheritdoc/>
-    public override void SetupParentData(RenderObject child) => child.ParentData = new BoxParentData();
+    public override void SetupParentData(RenderObject child) =>
+        child.ParentData = new BoxParentData();
 
     /// <inheritdoc/>
     public override void PerformLayout()
     {
         Size = Constraints.Constrain(RequestedSize.Width, RequestedSize.Height);
-        if (Child is null) return;
+        if (Child is null)
+            return;
 
         Child.Layout(Constraints, parentUseSize: true);
         AlignChild();
@@ -81,7 +85,8 @@ public sealed class RenderSizedOverflowBox : RenderBox, IHasSingleChildRenderObj
     /// <inheritdoc/>
     public override void Paint(PaintingContext context, Offset offset)
     {
-        if (Child is null) return;
+        if (Child is null)
+            return;
         var childOffset = ((BoxParentData)Child.ParentData!).Offset;
         context.PaintChild(Child, offset + childOffset);
     }
@@ -89,10 +94,14 @@ public sealed class RenderSizedOverflowBox : RenderBox, IHasSingleChildRenderObj
     /// <inheritdoc/>
     public override bool HitTestChildren(HitTestResult result, Offset position)
     {
-        if (Child is not RenderBox child) return false;
+        if (Child is not RenderBox child)
+            return false;
         var childOffset = ((BoxParentData)Child.ParentData!).Offset;
-        return result.AddWidthPaintOffset(childOffset, position,
-            (testResult, transformed) => child.HitTest(testResult, transformed));
+        return result.AddWidthPaintOffset(
+            childOffset,
+            position,
+            (testResult, transformed) => child.HitTest(testResult, transformed)
+        );
     }
 
     /// <inheritdoc/>
@@ -110,19 +119,29 @@ public sealed class RenderSizedOverflowBox : RenderBox, IHasSingleChildRenderObj
     }
 
     /// <inheritdoc/>
-    public override void VisitChildren(Action<RenderObject> visitor) => _child.VisitChildren(visitor);
+    public override void VisitChildren(Action<RenderObject> visitor) =>
+        _child.VisitChildren(visitor);
 
     /// <inheritdoc/>
     public override void RedepthChildren() => VisitChildren(RedepthChild);
 
     internal static void ValidateSize(Geometrics.Size value, string parameterName)
     {
-        if (!double.IsFinite(value.Width) || value.Width < 0
-            || !double.IsFinite(value.Height) || value.Height < 0)
+        if (
+            !double.IsFinite(value.Width)
+            || value.Width < 0
+            || !double.IsFinite(value.Height)
+            || value.Height < 0
+        )
         {
-            throw new ArgumentOutOfRangeException(parameterName, value, "サイズの幅と高さには0以上の有限値を指定してください。");
+            throw new ArgumentOutOfRangeException(
+                parameterName,
+                value,
+                "サイズの幅と高さには0以上の有限値を指定してください。"
+            );
         }
     }
 
-    private void AlignChild() => ((BoxParentData)Child!.ParentData!).Offset = Alignment.ComputeOffset(Size, Child.Size);
+    private void AlignChild() =>
+        ((BoxParentData)Child!.ParentData!).Offset = Alignment.ComputeOffset(Size, Child.Size);
 }

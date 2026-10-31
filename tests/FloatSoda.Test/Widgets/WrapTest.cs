@@ -31,15 +31,18 @@ public class WrapTest
                     new SizedBox { Width = 30, Height = 10 },
                     new SizedBox { Width = 30, Height = 10 },
                     new SizedBox { Width = 30, Height = 10 },
-                ]
-            }
+                ],
+            },
         }.AttachToRenderTree(new BuildOwner(() => { }), null);
 
         pipeline.FlushLayout();
 
         var wrap = Assert.IsType<RenderWrap>(view.Child);
         Assert.Equal(3, wrap.Children.Count);
-        Assert.Equal(new Offset(0, 17), Assert.IsType<WrapParentData>(wrap.Children.Last().ParentData).Offset);
+        Assert.Equal(
+            new Offset(0, 17),
+            Assert.IsType<WrapParentData>(wrap.Children.Last().ParentData).Offset
+        );
     }
 
     [Fact]
@@ -75,7 +78,9 @@ public class WrapTest
     [InlineData(double.NaN)]
     [InlineData(double.PositiveInfinity)]
     [InlineData(double.NegativeInfinity)]
-    public void Constructor_SpacingまたはRunSpacingが不正_ArgumentOutOfRangeExceptionを投げる(double value)
+    public void Constructor_SpacingまたはRunSpacingが不正_ArgumentOutOfRangeExceptionを投げる(
+        double value
+    )
     {
         Assert.Throws<ArgumentOutOfRangeException>(() => new Wrap { Spacing = value });
         Assert.Throws<ArgumentOutOfRangeException>(() => new Wrap { RunSpacing = value });
@@ -87,29 +92,61 @@ public class WrapTest
     public void Constructor_列挙値が不正_ArgumentOutOfRangeExceptionを投げる()
     {
         Assert.Throws<ArgumentOutOfRangeException>(() => new Wrap { Direction = (Axis)99 });
-        Assert.Throws<ArgumentOutOfRangeException>(() => new Wrap { Alignment = (WrapAlignment)99 });
-        Assert.Throws<ArgumentOutOfRangeException>(() => new Wrap { RunAlignment = (WrapAlignment)99 });
-        Assert.Throws<ArgumentOutOfRangeException>(() => new Wrap { CrossAxisAlignment = (WrapCrossAlignment)99 });
-        Assert.Throws<ArgumentOutOfRangeException>(() => new Wrap { VerticalDirection = (VerticalDirection)99 });
+        Assert.Throws<ArgumentOutOfRangeException>(() =>
+            new Wrap { Alignment = (WrapAlignment)99 }
+        );
+        Assert.Throws<ArgumentOutOfRangeException>(() =>
+            new Wrap { RunAlignment = (WrapAlignment)99 }
+        );
+        Assert.Throws<ArgumentOutOfRangeException>(() =>
+            new Wrap { CrossAxisAlignment = (WrapCrossAlignment)99 }
+        );
+        Assert.Throws<ArgumentOutOfRangeException>(() =>
+            new Wrap { VerticalDirection = (VerticalDirection)99 }
+        );
     }
 
     [Fact]
     public void PublicApi_Wrapの公開表面_専用列挙型を使用してSkiaSharp型を公開しない()
     {
-        Assert.True(typeof(MultiChildRenderObjectWidget<RenderWrap>).IsAssignableFrom(typeof(Wrap)));
-        Assert.Equal(typeof(WrapAlignment), typeof(Wrap).GetProperty(nameof(Wrap.Alignment))!.PropertyType);
-        Assert.Equal(typeof(WrapAlignment), typeof(Wrap).GetProperty(nameof(Wrap.RunAlignment))!.PropertyType);
-        Assert.Equal(typeof(WrapCrossAlignment), typeof(Wrap).GetProperty(nameof(Wrap.CrossAxisAlignment))!.PropertyType);
+        Assert.True(
+            typeof(MultiChildRenderObjectWidget<RenderWrap>).IsAssignableFrom(typeof(Wrap))
+        );
+        Assert.Equal(
+            typeof(WrapAlignment),
+            typeof(Wrap).GetProperty(nameof(Wrap.Alignment))!.PropertyType
+        );
+        Assert.Equal(
+            typeof(WrapAlignment),
+            typeof(Wrap).GetProperty(nameof(Wrap.RunAlignment))!.PropertyType
+        );
+        Assert.Equal(
+            typeof(WrapCrossAlignment),
+            typeof(Wrap).GetProperty(nameof(Wrap.CrossAxisAlignment))!.PropertyType
+        );
 
         var exposedTypes = typeof(Wrap)
-            .GetMembers(BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static | BindingFlags.DeclaredOnly)
-            .SelectMany(member => member switch
-            {
-                PropertyInfo property => [property.PropertyType],
-                MethodInfo method => method.GetParameters().Select(parameter => parameter.ParameterType).Append(method.ReturnType),
-                _ => []
-            });
+            .GetMembers(
+                BindingFlags.Public
+                    | BindingFlags.Instance
+                    | BindingFlags.Static
+                    | BindingFlags.DeclaredOnly
+            )
+            .SelectMany(member =>
+                member switch
+                {
+                    PropertyInfo property => [property.PropertyType],
+                    MethodInfo method => method
+                        .GetParameters()
+                        .Select(parameter => parameter.ParameterType)
+                        .Append(method.ReturnType),
+                    _ => [],
+                }
+            );
 
-        Assert.DoesNotContain(exposedTypes, type => type.Namespace?.StartsWith("SkiaSharp", StringComparison.Ordinal) == true);
+        Assert.DoesNotContain(
+            exposedTypes,
+            type => type.Namespace?.StartsWith("SkiaSharp", StringComparison.Ordinal) == true
+        );
     }
 }

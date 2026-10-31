@@ -13,8 +13,9 @@ public class OpenVRExceptionUnexpectedErrorTest
     [Fact]
     public void VRSettingsException_ThrowIfError_AccessDenied_VRSettingsExceptionを投げる()
     {
-        var exception = Assert.Throws<VRSettingsException>(
-            () => VRSettingsException.ThrowIfError(EVRSettingsError.AccessDenied));
+        var exception = Assert.Throws<VRSettingsException>(() =>
+            VRSettingsException.ThrowIfError(EVRSettingsError.AccessDenied)
+        );
 
         Assert.Equal(EVRSettingsError.AccessDenied, exception.ErrorCode);
         Assert.NotEqual("VRSettingsException_AccessDenied", exception.Message);
@@ -23,8 +24,9 @@ public class OpenVRExceptionUnexpectedErrorTest
     [Fact]
     public void VRNotificationException_ThrowIfError_ServiceUnavailable_VRNotificationExceptionを投げる()
     {
-        var exception = Assert.Throws<VRNotificationException>(
-            () => VRNotificationException.ThrowIfError(EVRNotificationError.ServiceUnavailable));
+        var exception = Assert.Throws<VRNotificationException>(() =>
+            VRNotificationException.ThrowIfError(EVRNotificationError.ServiceUnavailable)
+        );
 
         Assert.Equal(EVRNotificationError.ServiceUnavailable, exception.ErrorCode);
         Assert.NotEqual("VRNotificationException_ServiceUnavailable", exception.Message);
@@ -35,7 +37,9 @@ public class OpenVRExceptionUnexpectedErrorTest
     {
         var error = (EVRSettingsError)UndefinedErrorValue;
 
-        var exception = Assert.Throws<VRSettingsException>(() => VRSettingsException.ThrowIfError(error));
+        var exception = Assert.Throws<VRSettingsException>(() =>
+            VRSettingsException.ThrowIfError(error)
+        );
 
         Assert.Equal(error, exception.ErrorCode);
         Assert.Contains(UndefinedErrorValue.ToString(), exception.Message);
@@ -46,7 +50,9 @@ public class OpenVRExceptionUnexpectedErrorTest
     {
         var error = (EVRNotificationError)UndefinedErrorValue;
 
-        var exception = Assert.Throws<VRNotificationException>(() => VRNotificationException.ThrowIfError(error));
+        var exception = Assert.Throws<VRNotificationException>(() =>
+            VRNotificationException.ThrowIfError(error)
+        );
 
         Assert.Equal(error, exception.ErrorCode);
         Assert.Contains(UndefinedErrorValue.ToString(), exception.Message);
@@ -57,7 +63,9 @@ public class OpenVRExceptionUnexpectedErrorTest
     {
         var error = (EVRScreenshotError)UndefinedErrorValue;
 
-        var exception = Assert.Throws<VRScreenshotException>(() => VRScreenshotException.ThrowIfError(error));
+        var exception = Assert.Throws<VRScreenshotException>(() =>
+            VRScreenshotException.ThrowIfError(error)
+        );
 
         Assert.Equal(error, exception.ErrorCode);
         Assert.Contains(UndefinedErrorValue.ToString(), exception.Message);
@@ -68,7 +76,9 @@ public class OpenVRExceptionUnexpectedErrorTest
     {
         var error = (EVRCompositorError)UndefinedErrorValue;
 
-        var exception = Assert.Throws<VRCompositorException>(() => VRCompositorException.ThrowIfError(error));
+        var exception = Assert.Throws<VRCompositorException>(() =>
+            VRCompositorException.ThrowIfError(error)
+        );
 
         Assert.Equal(error, exception.ErrorCode);
         Assert.Contains(UndefinedErrorValue.ToString(), exception.Message);
@@ -79,7 +89,9 @@ public class OpenVRExceptionUnexpectedErrorTest
     {
         var error = (ETrackedPropertyError)UndefinedErrorValue;
 
-        var exception = Assert.Throws<TrackedPropertyException>(() => TrackedPropertyException.ThrowIfError(error));
+        var exception = Assert.Throws<TrackedPropertyException>(() =>
+            TrackedPropertyException.ThrowIfError(error)
+        );
 
         Assert.Equal(error, exception.ErrorCode);
         Assert.Contains(UndefinedErrorValue.ToString(), exception.Message);

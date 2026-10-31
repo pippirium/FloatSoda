@@ -12,10 +12,7 @@ public abstract record StatelessWidget : Widget
     /// このウィジェットの構築結果を管理するElementを生成します。
     /// </summary>
     /// <returns>このウィジェットを保持する未マウントのElement。</returns>
-    public override Element CreateElement() => new StatelessElement
-    {
-        Widget = this
-    };
+    public override Element CreateElement() => new StatelessElement { Widget = this };
 
     /// <summary>
     /// 現在の構成から、このウィジェットの直下に配置するウィジェットを構築します。
@@ -31,16 +28,14 @@ public abstract record StatelessWidget : Widget
 /// <typeparam name="T">この状態と関連付ける具象ウィジェットの型。</typeparam>
 /// <seealso cref="State{T}"/>
 /// <seealso cref="StatefulElement{T}"/>
-public abstract record StatefulWidget<T> : Widget where T : StatefulWidget<T>
+public abstract record StatefulWidget<T> : Widget
+    where T : StatefulWidget<T>
 {
     /// <summary>
     /// このウィジェットと状態のライフサイクルを管理するElementを生成します。
     /// </summary>
     /// <returns>このウィジェットを保持する未マウントのElement。</returns>
-    public override Element CreateElement() => new StatefulElement<T>
-    {
-        Widget = this
-    };
+    public override Element CreateElement() => new StatefulElement<T> { Widget = this };
 
     /// <summary>
     /// このウィジェットに関連付ける新しい状態オブジェクトを生成します。
@@ -55,7 +50,8 @@ public abstract record StatefulWidget<T> : Widget where T : StatefulWidget<T>
 /// <typeparam name="T">この状態が関連付けられる具象ウィジェットの型。</typeparam>
 /// <seealso cref="StatefulWidget{T}"/>
 /// <seealso cref="StatefulElement{T}"/>
-public abstract class State<T> where T : StatefulWidget<T>
+public abstract class State<T>
+    where T : StatefulWidget<T>
 {
     /// <summary>
     /// 現在この状態に関連付けられているウィジェットを取得または設定します。
@@ -68,6 +64,7 @@ public abstract class State<T> where T : StatefulWidget<T>
     /// </summary>
     /// <remarks>Elementへのマウント前は<see langword="null"/>です。</remarks>
     public StatefulElement<T>? Element { get; set; }
+
     /// <summary>
     /// この状態が配置されている構築コンテキストを取得します。
     /// </summary>

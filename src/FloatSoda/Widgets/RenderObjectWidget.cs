@@ -6,7 +6,8 @@ namespace FloatSoda.Widgets;
 /// RenderObjectの生成と更新に必要な構成を宣言するウィジェットの基底型です。
 /// </summary>
 /// <typeparam name="T">このウィジェットが構成するRenderObjectの型。</typeparam>
-public abstract record RenderObjectWidget<T> : Widget where T : RenderObject
+public abstract record RenderObjectWidget<T> : Widget
+    where T : RenderObject
 {
     /// <summary>
     /// Elementが初めてマウントされるときに、このウィジェットの構成に対応するRenderObjectを生成します。
@@ -24,5 +25,5 @@ public abstract record RenderObjectWidget<T> : Widget where T : RenderObject
     /// 既定の実装は何も変更しません。派生型は、構成値の変更に応じて必要なDirty状態が更新されるよう、
     /// RenderObjectの公開プロパティを介して差分を反映します。
     /// </remarks>
-    public virtual void UpdateRenderObject(T renderObject) {}
+    public virtual void UpdateRenderObject(T renderObject) { }
 }

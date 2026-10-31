@@ -17,7 +17,11 @@ public sealed record IconData
     {
         if (codePoint is < 0 or > 0x10ffff || codePoint is >= 0xd800 and <= 0xdfff)
         {
-            throw new ArgumentOutOfRangeException(nameof(codePoint), codePoint, "有効なUnicodeコードポイントを指定してください。");
+            throw new ArgumentOutOfRangeException(
+                nameof(codePoint),
+                codePoint,
+                "有効なUnicodeコードポイントを指定してください。"
+            );
         }
 
         ArgumentNullException.ThrowIfNull(font);

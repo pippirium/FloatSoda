@@ -15,7 +15,8 @@ public sealed class RenderLimitedBox : RenderProxyBox
         set
         {
             ValidateLimit(value, nameof(MaxWidth));
-            if (field == value) return;
+            if (field == value)
+                return;
             field = value;
             MarkNeedsLayout();
         }
@@ -30,7 +31,8 @@ public sealed class RenderLimitedBox : RenderProxyBox
         set
         {
             ValidateLimit(value, nameof(MaxHeight));
-            if (field == value) return;
+            if (field == value)
+                return;
             field = value;
             MarkNeedsLayout();
         }
@@ -58,11 +60,17 @@ public sealed class RenderLimitedBox : RenderProxyBox
         return constraints.Constrain(childSize);
     }
 
-    private BoxConstraints LimitConstraints(BoxConstraints constraints) => new(
-        constraints.MinWidth,
-        double.IsFinite(constraints.MaxWidth) ? constraints.MaxWidth : constraints.ConstrainWidth(MaxWidth),
-        constraints.MinHeight,
-        double.IsFinite(constraints.MaxHeight) ? constraints.MaxHeight : constraints.ConstrainHeight(MaxHeight));
+    private BoxConstraints LimitConstraints(BoxConstraints constraints) =>
+        new(
+            constraints.MinWidth,
+            double.IsFinite(constraints.MaxWidth)
+                ? constraints.MaxWidth
+                : constraints.ConstrainWidth(MaxWidth),
+            constraints.MinHeight,
+            double.IsFinite(constraints.MaxHeight)
+                ? constraints.MaxHeight
+                : constraints.ConstrainHeight(MaxHeight)
+        );
 
     internal static void ValidateLimit(double value, string parameterName)
     {
@@ -71,7 +79,8 @@ public sealed class RenderLimitedBox : RenderProxyBox
             throw new ArgumentOutOfRangeException(
                 parameterName,
                 value,
-                "最大寸法には0以上の有限値または正の無限大を指定してください。");
+                "最大寸法には0以上の有限値または正の無限大を指定してください。"
+            );
         }
     }
 }

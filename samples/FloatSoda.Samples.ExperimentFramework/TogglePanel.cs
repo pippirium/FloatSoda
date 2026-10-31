@@ -25,22 +25,24 @@ class TogglePanelState : State<TogglePanel>
 
     public void Toggle() => SetState(() => _flag = !_flag);
 
-    private Widget Panel(SKColor color) => new SizedBox
-    {
-        Width = 100,
-        Height = 100,
-        Child = new ColoredBox { Color = color }
-    };
+    private Widget Panel(SKColor color) =>
+        new SizedBox
+        {
+            Width = 100,
+            Height = 100,
+            Child = new ColoredBox { Color = color },
+        };
 
     private Widget Wrap(Widget child) =>
         Widget!.UseBoundary ? new RepaintBoundary { Child = child } : child;
 
-    public override Widget Build(IBuildContext context) => new Column
-    {
-        Children =
+    public override Widget Build(IBuildContext context) =>
+        new Column
         {
-            Wrap(Panel(_flag ? SKColors.Tomato : SKColors.CornflowerBlue)),
-            Wrap(Panel(SKColors.DarkSeaGreen)),
-        }
-    };
+            Children =
+            {
+                Wrap(Panel(_flag ? SKColors.Tomato : SKColors.CornflowerBlue)),
+                Wrap(Panel(SKColors.DarkSeaGreen)),
+            },
+        };
 }

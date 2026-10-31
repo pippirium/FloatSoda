@@ -14,5 +14,6 @@ public record AbsorbPointer : SingleChildRenderObjectWidget<RenderAbsorbPointer>
     public override RenderAbsorbPointer CreateRenderObject() => new() { Absorbing = Absorbing };
 
     /// <inheritdoc />
-    public override void UpdateRenderObject(RenderAbsorbPointer renderObject) => renderObject.Absorbing = Absorbing;
+    public override void UpdateRenderObject(RenderAbsorbPointer renderObject) =>
+        renderObject.Absorbing = Absorbing;
 }

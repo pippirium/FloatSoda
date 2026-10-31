@@ -6,6 +6,8 @@
 
 このサンプルは1枚の的(まと)に `PointerRegion` + `Listener` + `GestureDetector` を重ね、Enter / Exit / Down / Up / Cancel / Tap がどの順で届くかを1画面で確認できるようにしています。
 
+このサンプルは、ウィジェット1つを最小の形で見せるカタログ型の作例です。主な読者は、FloatSoda で UI を作る利用者です。
+
 ## 使い方
 
 ### 出入りを受け取る

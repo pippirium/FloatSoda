@@ -36,21 +36,21 @@ public class InheritedWidgetTest
         }
     }
 
-    private static (RenderObjectToWidgetElement<RenderView> Root, BuildOwner Owner, RenderView RenderView) MountTree(Widget widget)
+    private static (
+        RenderObjectToWidgetElement<RenderView> Root,
+        BuildOwner Owner,
+        RenderView RenderView
+    ) MountTree(Widget widget)
     {
         var renderView = new RenderView(100, 100);
-        _ = new RenderPipeline
-        {
-            OnNeedVisualUpdate = () => { },
-            RenderView = renderView
-        };
+        _ = new RenderPipeline { OnNeedVisualUpdate = () => { }, RenderView = renderView };
 
         var owner = new BuildOwner(() => { });
 
         var root = new RenderObjectToWidgetAdapter
         {
             Container = renderView,
-            Child = widget
+            Child = widget,
         }.AttachToRenderTree(owner, null);
 
         return (root, owner, renderView);
@@ -58,13 +58,18 @@ public class InheritedWidgetTest
 
     /// <summary>ルートWidgetを差し替えて再ビルドまで実行する。</summary>
     private static void ReattachRoot(
-        (RenderObjectToWidgetElement<RenderView> Root, BuildOwner Owner, RenderView RenderView) tree,
-        Widget widget)
+        (
+            RenderObjectToWidgetElement<RenderView> Root,
+            BuildOwner Owner,
+            RenderView RenderView
+        ) tree,
+        Widget widget
+    )
     {
         new RenderObjectToWidgetAdapter
         {
             Container = tree.RenderView,
-            Child = widget
+            Child = widget,
         }.AttachToRenderTree(tree.Owner, tree.Root);
 
         tree.Owner.BuildScope();
@@ -75,14 +80,16 @@ public class InheritedWidgetTest
     {
         ScopeA? found = null;
 
-        MountTree(new ScopeA
-        {
-            Value = 1,
-            Child = new Probe
+        MountTree(
+            new ScopeA
             {
-                OnBuild = ctx => found = ctx.DependOnInheritedWidgetOfExactType<ScopeA>()
+                Value = 1,
+                Child = new Probe
+                {
+                    OnBuild = ctx => found = ctx.DependOnInheritedWidgetOfExactType<ScopeA>(),
+                },
             }
-        });
+        );
 
         Assert.NotNull(found);
         Assert.Equal(1, found!.Value);
@@ -94,22 +101,24 @@ public class InheritedWidgetTest
         ScopeA? foundA = null;
         ScopeB? foundB = null;
 
-        MountTree(new ScopeA
-        {
-            Value = 1,
-            Child = new ScopeB
+        MountTree(
+            new ScopeA
             {
-                Name = "inner",
-                Child = new Probe
+                Value = 1,
+                Child = new ScopeB
                 {
-                    OnBuild = ctx =>
+                    Name = "inner",
+                    Child = new Probe
                     {
-                        foundA = ctx.DependOnInheritedWidgetOfExactType<ScopeA>();
-                        foundB = ctx.DependOnInheritedWidgetOfExactType<ScopeB>();
-                    }
-                }
+                        OnBuild = ctx =>
+                        {
+                            foundA = ctx.DependOnInheritedWidgetOfExactType<ScopeA>();
+                            foundB = ctx.DependOnInheritedWidgetOfExactType<ScopeB>();
+                        },
+                    },
+                },
             }
-        });
+        );
 
         // 外側のScopeAはコピーされたマップ経由で見つかる
         Assert.NotNull(foundA);
@@ -125,18 +134,20 @@ public class InheritedWidgetTest
     {
         ScopeA? found = null;
 
-        MountTree(new ScopeA
-        {
-            Value = 1,
-            Child = new ScopeA
+        MountTree(
+            new ScopeA
             {
-                Value = 2,
-                Child = new Probe
+                Value = 1,
+                Child = new ScopeA
                 {
-                    OnBuild = ctx => found = ctx.DependOnInheritedWidgetOfExactType<ScopeA>()
-                }
+                    Value = 2,
+                    Child = new Probe
+                    {
+                        OnBuild = ctx => found = ctx.DependOnInheritedWidgetOfExactType<ScopeA>(),
+                    },
+                },
             }
-        });
+        );
 
         // Flutter同様、最も近い祖先が優先される
         Assert.NotNull(found);
@@ -148,10 +159,9 @@ public class InheritedWidgetTest
     {
         ScopeA? found = new ScopeA { Value = -1, Child = new SizedBox() };
 
-        MountTree(new Probe
-        {
-            OnBuild = ctx => found = ctx.DependOnInheritedWidgetOfExactType<ScopeA>()
-        });
+        MountTree(
+            new Probe { OnBuild = ctx => found = ctx.DependOnInheritedWidgetOfExactType<ScopeA>() }
+        );
 
         Assert.Null(found);
     }
@@ -162,19 +172,21 @@ public class InheritedWidgetTest
         InheritedElement? scopeElement = null;
         var buildCount = 0;
 
-        var tree = MountTree(new ScopeA
-        {
-            Value = 1,
-            Child = new Probe
+        var tree = MountTree(
+            new ScopeA
             {
-                OnBuild = ctx =>
+                Value = 1,
+                Child = new Probe
                 {
-                    buildCount++;
-                    ctx.DependOnInheritedWidgetOfExactType<ScopeA>();
-                    scopeElement = ctx.GetElementForInheritedWidgetOfExactType<ScopeA>();
-                }
+                    OnBuild = ctx =>
+                    {
+                        buildCount++;
+                        ctx.DependOnInheritedWidgetOfExactType<ScopeA>();
+                        scopeElement = ctx.GetElementForInheritedWidgetOfExactType<ScopeA>();
+                    },
+                },
             }
-        });
+        );
 
         Assert.NotNull(scopeElement);
         Assert.Single(scopeElement!.Dependents);
@@ -197,15 +209,16 @@ public class InheritedWidgetTest
         InheritedElement? scopeElement = null;
         var buildCount = 0;
 
-        Probe CreateProbe() => new()
-        {
-            OnBuild = ctx =>
+        Probe CreateProbe() =>
+            new()
             {
-                buildCount++;
-                ctx.DependOnInheritedWidgetOfExactType<ScopeA>();
-                scopeElement = ctx.GetElementForInheritedWidgetOfExactType<ScopeA>();
-            }
-        };
+                OnBuild = ctx =>
+                {
+                    buildCount++;
+                    ctx.DependOnInheritedWidgetOfExactType<ScopeA>();
+                    scopeElement = ctx.GetElementForInheritedWidgetOfExactType<ScopeA>();
+                },
+            };
 
         var tree = MountTree(new ScopeA { Value = 1, Child = CreateProbe() });
 
@@ -226,25 +239,27 @@ public class InheritedWidgetTest
         InheritedElement? found = null;
         Exception? thrown = null;
 
-        MountTree(new ScopeA
-        {
-            Value = 1,
-            Child = new Probe
+        MountTree(
+            new ScopeA
             {
-                OnBuild = ctx =>
+                Value = 1,
+                Child = new Probe
                 {
-                    buildRan = true;
-                    try
+                    OnBuild = ctx =>
                     {
-                        found = ctx.GetElementForInheritedWidgetOfExactType<ScopeB>();
-                    }
-                    catch (Exception e)
-                    {
-                        thrown = e;
-                    }
-                }
+                        buildRan = true;
+                        try
+                        {
+                            found = ctx.GetElementForInheritedWidgetOfExactType<ScopeB>();
+                        }
+                        catch (Exception e)
+                        {
+                            thrown = e;
+                        }
+                    },
+                },
             }
-        });
+        );
 
         // 未登録の型はnullを返すべき（KeyNotFoundExceptionを投げない）
         Assert.True(buildRan);

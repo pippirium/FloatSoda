@@ -14,10 +14,15 @@ public class RenderIndexedStack : RenderStack
         {
             if (value < 0)
             {
-                throw new ArgumentOutOfRangeException(nameof(Index), value, "Indexには0以上の位置またはnullを指定してください。");
+                throw new ArgumentOutOfRangeException(
+                    nameof(Index),
+                    value,
+                    "Indexには0以上の位置またはnullを指定してください。"
+                );
             }
 
-            if (field == value) return;
+            if (field == value)
+                return;
             field = value;
             MarkNeedsPaint();
         }
@@ -33,7 +38,8 @@ public class RenderIndexedStack : RenderStack
     /// <inheritdoc/>
     public override void Paint(PaintingContext context, Offset offset)
     {
-        if (GetSelectedChild() is not { } child) return;
+        if (GetSelectedChild() is not { } child)
+            return;
         var parentData = (StackParentData)child.ParentData!;
         context.PaintChild(child, offset + parentData.Offset);
     }
@@ -41,12 +47,14 @@ public class RenderIndexedStack : RenderStack
     /// <inheritdoc/>
     public override bool HitTestChildren(HitTestResult result, Offset position)
     {
-        if (GetSelectedChild() is not { } child) return false;
+        if (GetSelectedChild() is not { } child)
+            return false;
         var parentData = (StackParentData)child.ParentData!;
         return result.AddWidthPaintOffset(
             parentData.Offset,
             position,
-            (testResult, transformed) => child.HitTest(testResult, transformed));
+            (testResult, transformed) => child.HitTest(testResult, transformed)
+        );
     }
 
     private RenderBox? GetSelectedChild()
@@ -59,7 +67,11 @@ public class RenderIndexedStack : RenderStack
     {
         if (Index is { } index && (index < 0 || index >= Children.Count))
         {
-            throw new ArgumentOutOfRangeException(nameof(Index), Index, "IndexにはChildren内の位置またはnullを指定してください。");
+            throw new ArgumentOutOfRangeException(
+                nameof(Index),
+                Index,
+                "IndexにはChildren内の位置またはnullを指定してください。"
+            );
         }
     }
 }

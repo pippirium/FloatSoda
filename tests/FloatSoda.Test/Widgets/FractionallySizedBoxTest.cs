@@ -14,18 +14,19 @@ namespace FloatSoda.Test.Widgets;
 
 public class FractionallySizedBoxTest
 {
-    public static TheoryData<Alignment, float, float> Alignments => new()
-    {
-        { Alignment.TopLeft, 0, 0 },
-        { Alignment.TopCenter, 50, 0 },
-        { Alignment.TopRight, 100, 0 },
-        { Alignment.CenterLeft, 0, 37.5f },
-        { Alignment.Center, 50, 37.5f },
-        { Alignment.CenterRight, 100, 37.5f },
-        { Alignment.BottomLeft, 0, 75 },
-        { Alignment.BottomCenter, 50, 75 },
-        { Alignment.BottomRight, 100, 75 },
-    };
+    public static TheoryData<Alignment, float, float> Alignments =>
+        new()
+        {
+            { Alignment.TopLeft, 0, 0 },
+            { Alignment.TopCenter, 50, 0 },
+            { Alignment.TopRight, 100, 0 },
+            { Alignment.CenterLeft, 0, 37.5f },
+            { Alignment.Center, 50, 37.5f },
+            { Alignment.CenterRight, 100, 37.5f },
+            { Alignment.BottomLeft, 0, 75 },
+            { Alignment.BottomCenter, 50, 75 },
+            { Alignment.BottomRight, 100, 75 },
+        };
 
     [Fact]
     public void PerformLayout_親がBounded_Factorを子のTight制約へ反映する()
@@ -35,7 +36,7 @@ public class FractionallySizedBoxTest
         {
             WidthFactor = 0.5,
             HeightFactor = 0.25,
-            Child = child
+            Child = child,
         };
 
         renderObject.Layout(BoxConstraints.Tight(200, 100));
@@ -52,7 +53,7 @@ public class FractionallySizedBoxTest
         var renderObject = new RenderFractionallySizedOverflowBox
         {
             HeightFactor = 0.5,
-            Child = child
+            Child = child,
         };
         var constraints = new BoxConstraints(10, 100, 20, 200);
 
@@ -67,10 +68,12 @@ public class FractionallySizedBoxTest
         var renderObject = new RenderFractionallySizedOverflowBox
         {
             WidthFactor = 0.5,
-            Child = new RenderConstrainedBox { AdditionalConstraints = BoxConstraints.Unbounded }
+            Child = new RenderConstrainedBox { AdditionalConstraints = BoxConstraints.Unbounded },
         };
 
-        Assert.Throws<InvalidOperationException>(() => renderObject.Layout(BoxConstraints.Unbounded));
+        Assert.Throws<InvalidOperationException>(() =>
+            renderObject.Layout(BoxConstraints.Unbounded)
+        );
     }
 
     [Fact]
@@ -80,7 +83,7 @@ public class FractionallySizedBoxTest
         var renderObject = new RenderFractionallySizedOverflowBox
         {
             HeightFactor = 0,
-            Child = child
+            Child = child,
         };
 
         Assert.Equal(40, renderObject.GetMaxIntrinsicWidth(double.PositiveInfinity));
@@ -94,7 +97,7 @@ public class FractionallySizedBoxTest
         var renderObject = new RenderFractionallySizedOverflowBox
         {
             WidthFactor = 0,
-            Child = child
+            Child = child,
         };
 
         Assert.Equal(20, renderObject.GetMaxIntrinsicHeight(double.PositiveInfinity));
@@ -106,7 +109,8 @@ public class FractionallySizedBoxTest
     public void PerformLayout_Alignment各値_子のオフセットを設定する(
         Alignment alignment,
         float expectedX,
-        float expectedY)
+        float expectedY
+    )
     {
         var child = new RenderConstrainedBox { AdditionalConstraints = BoxConstraints.Unbounded };
         var renderObject = new RenderFractionallySizedOverflowBox
@@ -114,12 +118,15 @@ public class FractionallySizedBoxTest
             WidthFactor = 0.5,
             HeightFactor = 0.25,
             Alignment = alignment,
-            Child = child
+            Child = child,
         };
 
         renderObject.Layout(BoxConstraints.Tight(200, 100));
 
-        Assert.Equal(new Offset(expectedX, expectedY), Assert.IsType<BoxParentData>(child.ParentData).Offset);
+        Assert.Equal(
+            new Offset(expectedX, expectedY),
+            Assert.IsType<BoxParentData>(child.ParentData).Offset
+        );
     }
 
     [Fact]
@@ -129,7 +136,7 @@ public class FractionallySizedBoxTest
         {
             WidthFactor = 0.5,
             HeightFactor = 0.5,
-            Alignment = Alignment.TopLeft
+            Alignment = Alignment.TopLeft,
         };
         var (pipeline, view, root) = Mount(initial);
         pipeline.FlushLayout();
@@ -142,8 +149,8 @@ public class FractionallySizedBoxTest
             {
                 WidthFactor = 0.25,
                 HeightFactor = null,
-                Alignment = Alignment.BottomRight
-            }
+                Alignment = Alignment.BottomRight,
+            },
         }.AttachToRenderTree(root.Owner!, root);
         root.Owner!.BuildScope();
 
@@ -161,58 +168,93 @@ public class FractionallySizedBoxTest
     [InlineData(double.NegativeInfinity)]
     public void Constructor_Factorが不正_ArgumentOutOfRangeExceptionを投げる(double value)
     {
-        Assert.Throws<ArgumentOutOfRangeException>(() => new FractionallySizedBox { WidthFactor = value });
-        Assert.Throws<ArgumentOutOfRangeException>(() => new FractionallySizedBox { HeightFactor = value });
-        Assert.Throws<ArgumentOutOfRangeException>(() => new RenderFractionallySizedOverflowBox { WidthFactor = value });
-        Assert.Throws<ArgumentOutOfRangeException>(() => new RenderFractionallySizedOverflowBox { HeightFactor = value });
+        Assert.Throws<ArgumentOutOfRangeException>(() =>
+            new FractionallySizedBox { WidthFactor = value }
+        );
+        Assert.Throws<ArgumentOutOfRangeException>(() =>
+            new FractionallySizedBox { HeightFactor = value }
+        );
+        Assert.Throws<ArgumentOutOfRangeException>(() =>
+            new RenderFractionallySizedOverflowBox { WidthFactor = value }
+        );
+        Assert.Throws<ArgumentOutOfRangeException>(() =>
+            new RenderFractionallySizedOverflowBox { HeightFactor = value }
+        );
     }
 
     [Fact]
     public void Constructor_Alignmentが非有限_ArgumentOutOfRangeExceptionを投げる()
     {
-        Assert.Throws<ArgumentOutOfRangeException>(() => new FractionallySizedBox
-        {
-            Alignment = new Alignment(float.NaN, 0)
-        });
-        Assert.Throws<ArgumentOutOfRangeException>(() => new RenderFractionallySizedOverflowBox
-        {
-            Alignment = new Alignment(0, float.PositiveInfinity)
-        });
+        Assert.Throws<ArgumentOutOfRangeException>(() =>
+            new FractionallySizedBox { Alignment = new Alignment(float.NaN, 0) }
+        );
+        Assert.Throws<ArgumentOutOfRangeException>(() =>
+            new RenderFractionallySizedOverflowBox
+            {
+                Alignment = new Alignment(0, float.PositiveInfinity),
+            }
+        );
     }
 
     [Fact]
     public void PublicApi_公開表面_InitOnlyでSkia型を公開しない()
     {
-        Assert.True(typeof(SingleChildRenderObjectWidget<RenderFractionallySizedOverflowBox>)
-            .IsAssignableFrom(typeof(FractionallySizedBox)));
+        Assert.True(
+            typeof(SingleChildRenderObjectWidget<RenderFractionallySizedOverflowBox>).IsAssignableFrom(
+                typeof(FractionallySizedBox)
+            )
+        );
         AssertNoSkiaDeclaredMembers(typeof(FractionallySizedBox));
 
-        foreach (var property in typeof(FractionallySizedBox)
-                     .GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly))
+        foreach (
+            var property in typeof(FractionallySizedBox).GetProperties(
+                BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly
+            )
+        )
         {
-            Assert.Contains(typeof(IsExternalInit), property.SetMethod!.ReturnParameter.GetRequiredCustomModifiers());
+            Assert.Contains(
+                typeof(IsExternalInit),
+                property.SetMethod!.ReturnParameter.GetRequiredCustomModifiers()
+            );
         }
     }
 
-    private static (RenderPipeline Pipeline, RenderView View, RenderObjectToWidgetElement<RenderView> Root) Mount(Widget widget)
+    private static (
+        RenderPipeline Pipeline,
+        RenderView View,
+        RenderObjectToWidgetElement<RenderView> Root
+    ) Mount(Widget widget)
     {
         var view = new RenderView(200, 100) { FixedSize = new SKSize(200, 100) };
         var pipeline = new RenderPipeline { OnNeedVisualUpdate = () => { }, RenderView = view };
         view.PrepareInitialFrame();
-        var root = new RenderObjectToWidgetAdapter { Container = view, Child = widget }
-            .AttachToRenderTree(new BuildOwner(() => { }), null);
+        var root = new RenderObjectToWidgetAdapter
+        {
+            Container = view,
+            Child = widget,
+        }.AttachToRenderTree(new BuildOwner(() => { }), null);
         return (pipeline, view, root);
     }
 
-    private static void AssertNoSkiaDeclaredMembers(Type type) => Assert.DoesNotContain(
-        type.GetMembers(BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static | BindingFlags.DeclaredOnly),
-        member => member switch
-        {
-            PropertyInfo property => IsSkiaType(property.PropertyType),
-            MethodInfo method => IsSkiaType(method.ReturnType)
-                                 || method.GetParameters().Any(parameter => IsSkiaType(parameter.ParameterType)),
-            _ => false
-        });
+    private static void AssertNoSkiaDeclaredMembers(Type type) =>
+        Assert.DoesNotContain(
+            type.GetMembers(
+                BindingFlags.Public
+                    | BindingFlags.Instance
+                    | BindingFlags.Static
+                    | BindingFlags.DeclaredOnly
+            ),
+            member =>
+                member switch
+                {
+                    PropertyInfo property => IsSkiaType(property.PropertyType),
+                    MethodInfo method => IsSkiaType(method.ReturnType)
+                        || method
+                            .GetParameters()
+                            .Any(parameter => IsSkiaType(parameter.ParameterType)),
+                    _ => false,
+                }
+        );
 
     private static bool IsSkiaType(Type type) =>
         type.Namespace?.StartsWith("SkiaSharp", StringComparison.Ordinal) == true;

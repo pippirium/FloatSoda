@@ -11,20 +11,28 @@ public readonly record struct Alignment(float X = 0, float Y = 0)
 {
     /// <summary>左上を表す配置値を取得します。</summary>
     public static readonly Alignment TopLeft = new(-1, -1);
+
     /// <summary>上端中央を表す配置値を取得します。</summary>
     public static readonly Alignment TopCenter = new(0, -1);
+
     /// <summary>右上を表す配置値を取得します。</summary>
     public static readonly Alignment TopRight = new(1, -1);
+
     /// <summary>左端中央を表す配置値を取得します。</summary>
     public static readonly Alignment CenterLeft = new(-1, 0);
+
     /// <summary>中央を表す配置値を取得します。</summary>
     public static readonly Alignment Center = default;
+
     /// <summary>右端中央を表す配置値を取得します。</summary>
     public static readonly Alignment CenterRight = new(1, 0);
+
     /// <summary>左下を表す配置値を取得します。</summary>
     public static readonly Alignment BottomLeft = new(-1, 1);
+
     /// <summary>下端中央を表す配置値を取得します。</summary>
     public static readonly Alignment BottomCenter = new(0, 1);
+
     /// <summary>右下を表す配置値を取得します。</summary>
     public static readonly Alignment BottomRight = new(1, 1);
 
@@ -56,9 +64,11 @@ public readonly record struct Alignment(float X = 0, float Y = 0)
     /// <summary>水平および垂直方向を中央に対して反転した配置値を返します。</summary>
     /// <returns>両成分の符号を反転した新しい配置値。</returns>
     public Alignment FlipAll() => new(-X, -Y);
+
     /// <summary>水平方向を中央に対して反転した配置値を返します。</summary>
     /// <returns>水平成分の符号だけを反転した新しい配置値。</returns>
     public Alignment FlipX() => this with { X = -X };
+
     /// <summary>垂直方向を中央に対して反転した配置値を返します。</summary>
     /// <returns>垂直成分の符号だけを反転した新しい配置値。</returns>
     public Alignment FlipY() => this with { Y = -Y };

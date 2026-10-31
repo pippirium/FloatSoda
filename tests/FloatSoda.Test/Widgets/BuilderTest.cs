@@ -12,7 +12,8 @@ public class BuilderTest
     {
         public required int Value { get; init; }
 
-        public override bool UpdateShouldNotify(InheritedWidget oldWidget) => !Equals(oldWidget, this);
+        public override bool UpdateShouldNotify(InheritedWidget oldWidget) =>
+            !Equals(oldWidget, this);
     }
 
     [Fact]
@@ -20,18 +21,20 @@ public class BuilderTest
     {
         TestScope? found = null;
 
-        Mount(new TestScope
-        {
-            Value = 42,
-            Child = new Builder
+        Mount(
+            new TestScope
             {
-                ChildBuilder = context =>
+                Value = 42,
+                Child = new Builder
                 {
-                    found = context.DependOnInheritedWidgetOfExactType<TestScope>();
-                    return new SizedBox { Width = 10, Height = 10 };
-                }
+                    ChildBuilder = context =>
+                    {
+                        found = context.DependOnInheritedWidgetOfExactType<TestScope>();
+                        return new SizedBox { Width = 10, Height = 10 };
+                    },
+                },
             }
-        });
+        );
 
         Assert.NotNull(found);
         Assert.Equal(42, found!.Value);
@@ -46,17 +49,13 @@ public class BuilderTest
     private static void Mount(Widget widget)
     {
         var renderView = new RenderView(100, 100);
-        _ = new RenderPipeline
-        {
-            OnNeedVisualUpdate = () => { },
-            RenderView = renderView
-        };
+        _ = new RenderPipeline { OnNeedVisualUpdate = () => { }, RenderView = renderView };
         var owner = new BuildOwner(() => { });
 
         _ = new RenderObjectToWidgetAdapter
         {
             Container = renderView,
-            Child = widget
+            Child = widget,
         }.AttachToRenderTree(owner, null);
     }
 }

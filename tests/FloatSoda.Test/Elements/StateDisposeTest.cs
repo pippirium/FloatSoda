@@ -19,6 +19,7 @@ public class StateDisposeTest
     private record RootWidget : StatefulWidget<RootWidget>
     {
         public required Holder Holder { get; init; }
+
         public override State<RootWidget> CreateState() => new RootState();
     }
 
@@ -26,10 +27,11 @@ public class StateDisposeTest
     {
         public override void InitState() => Widget!.Holder.Root = this;
 
-        public void Toggle() => SetState(() => Widget!.Holder.ShowChild = !Widget!.Holder.ShowChild);
+        public void Toggle() =>
+            SetState(() => Widget!.Holder.ShowChild = !Widget!.Holder.ShowChild);
 
-        public override Widget Build(IBuildContext context)
-            => Widget!.Holder.ShowChild
+        public override Widget Build(IBuildContext context) =>
+            Widget!.Holder.ShowChild
                 ? new ChildWidget { Holder = Widget!.Holder }
                 : new SizedBox { Width = 1, Height = 1 };
     }
@@ -37,6 +39,7 @@ public class StateDisposeTest
     private record ChildWidget : StatefulWidget<ChildWidget>
     {
         public required Holder Holder { get; init; }
+
         public override State<ChildWidget> CreateState() => new ChildState();
     }
 
@@ -48,13 +51,14 @@ public class StateDisposeTest
             base.Dispose();
         }
 
-        public override Widget Build(IBuildContext context)
-            => new GrandChildWidget { Holder = Widget!.Holder };
+        public override Widget Build(IBuildContext context) =>
+            new GrandChildWidget { Holder = Widget!.Holder };
     }
 
     private record GrandChildWidget : StatefulWidget<GrandChildWidget>
     {
         public required Holder Holder { get; init; }
+
         public override State<GrandChildWidget> CreateState() => new GrandChildState();
     }
 
@@ -66,24 +70,23 @@ public class StateDisposeTest
             base.Dispose();
         }
 
-        public override Widget Build(IBuildContext context) => new SizedBox { Width = 5, Height = 5 };
+        public override Widget Build(IBuildContext context) =>
+            new SizedBox { Width = 5, Height = 5 };
     }
 
-    private static (RenderObjectToWidgetElement<RenderView> Root, BuildOwner Owner) MountTree(Widget widget)
+    private static (RenderObjectToWidgetElement<RenderView> Root, BuildOwner Owner) MountTree(
+        Widget widget
+    )
     {
         var renderView = new RenderView(100, 100);
-        _ = new RenderPipeline
-        {
-            OnNeedVisualUpdate = () => { },
-            RenderView = renderView
-        };
+        _ = new RenderPipeline { OnNeedVisualUpdate = () => { }, RenderView = renderView };
 
         var owner = new BuildOwner(() => { });
 
         var root = new RenderObjectToWidgetAdapter
         {
             Container = renderView,
-            Child = widget
+            Child = widget,
         }.AttachToRenderTree(owner, null);
 
         return (root, owner);
@@ -105,7 +108,7 @@ public class StateDisposeTest
         var holder = new Holder();
         var (_, owner) = MountTree(new RootWidget { Holder = holder });
 
-        holder.Root!.Toggle();   // 子サブツリーを SizedBox へ差し替え → 旧サブツリーは非活性化
+        holder.Root!.Toggle(); // 子サブツリーを SizedBox へ差し替え → 旧サブツリーは非活性化
         owner.BuildScope();
 
         Assert.Equal(1, holder.ChildDisposeCount);

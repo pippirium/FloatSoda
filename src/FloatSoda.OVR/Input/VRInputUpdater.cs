@@ -32,14 +32,19 @@ public sealed class VRInputUpdater
         {
             ulong setHandle = 0;
             VRInputException.ThrowIfError(
-                OpenVR.Input.GetActionSetHandle(InputPaths.ActionSetPath(map.Name), ref setHandle));
+                OpenVR.Input.GetActionSetHandle(InputPaths.ActionSetPath(map.Name), ref setHandle)
+            );
             map.Handle = setHandle;
 
             foreach (var action in map.Actions)
             {
                 ulong actionHandle = 0;
                 VRInputException.ThrowIfError(
-                    OpenVR.Input.GetActionHandle(InputPaths.ActionPath(map.Name, action.Name), ref actionHandle));
+                    OpenVR.Input.GetActionHandle(
+                        InputPaths.ActionPath(map.Name, action.Name),
+                        ref actionHandle
+                    )
+                );
                 action.Handle = actionHandle;
             }
         }
@@ -52,14 +57,17 @@ public sealed class VRInputUpdater
     public void Update()
     {
         RefreshActiveSets();
-        if (_activeSets.Length == 0) return;
+        if (_activeSets.Length == 0)
+            return;
 
         var error = OpenVR.Input.UpdateActionState(_activeSets, ActiveActionSetSize);
-        if (error != EVRInputError.None) return;
+        if (error != EVRInputError.None)
+            return;
 
         foreach (var map in _maps)
         {
-            if (!map.Enabled) continue;
+            if (!map.Enabled)
+                continue;
             foreach (var action in map.Actions)
             {
                 action.Update();
@@ -73,10 +81,12 @@ public sealed class VRInputUpdater
         var version = 0;
         for (var i = 0; i < _maps.Count; i++)
         {
-            if (_maps[i].Enabled) version |= 1 << i;
+            if (_maps[i].Enabled)
+                version |= 1 << i;
         }
 
-        if (version == _activeSetsVersion) return;
+        if (version == _activeSetsVersion)
+            return;
         _activeSetsVersion = version;
 
         _activeSets = _maps

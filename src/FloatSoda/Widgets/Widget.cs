@@ -13,7 +13,7 @@ public abstract record Widget
     /// キーを指定しない場合は、同じ位置にある同一ランタイム型のウィジェットを更新対象として再利用できます。
     /// </summary>
     public IKey? Key { get; init; }
-    
+
     /// <summary>
     /// 既存のElementを維持したまま、古いウィジェットを新しいウィジェットで更新できるかを判定します。
     /// </summary>
@@ -35,5 +35,5 @@ public abstract record Widget
     public abstract Element CreateElement();
 
     /// <inheritdoc/>
-    public override int GetHashCode() => (Key != null ? Key.GetHashCode() : 0);
+    public override int GetHashCode() => (Key is not null ? Key.GetHashCode() : 0);
 }

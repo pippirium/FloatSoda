@@ -51,13 +51,16 @@ public sealed class OverlayMouseRawPointerSource : IRawPointerSource
         OnPointerEvent?.Invoke(new RawPointerEvent(RawPointerKind.Move, position));
     }
 
-    private void OnMouseButtonDown(in VREvent_t vrEvent) => OnMouseButton(vrEvent.data.mouse, RawPointerKind.ButtonDown);
+    private void OnMouseButtonDown(in VREvent_t vrEvent) =>
+        OnMouseButton(vrEvent.data.mouse, RawPointerKind.ButtonDown);
 
-    private void OnMouseButtonUp(in VREvent_t vrEvent) => OnMouseButton(vrEvent.data.mouse, RawPointerKind.ButtonUp);
+    private void OnMouseButtonUp(in VREvent_t vrEvent) =>
+        OnMouseButton(vrEvent.data.mouse, RawPointerKind.ButtonUp);
 
     private void OnMouseButton(in VREvent_Mouse_t mouse, RawPointerKind kind)
     {
-        if (TryMapButton((EVRMouseButton)mouse.button) is not { } button) return;
+        if (TryMapButton((EVRMouseButton)mouse.button) is not { } button)
+            return;
 
         var position = ToLocalPosition(mouse);
 
@@ -71,13 +74,14 @@ public sealed class OverlayMouseRawPointerSource : IRawPointerSource
     /// </summary>
     private static Offset ToLocalPosition(in VREvent_Mouse_t mouse) => new(mouse.x, mouse.y);
 
-    private static PointerButton? TryMapButton(EVRMouseButton button) => button switch
-    {
-        EVRMouseButton.Left => PointerButton.Left,
-        EVRMouseButton.Middle => PointerButton.Middle,
-        EVRMouseButton.Right => PointerButton.Right,
-        _ => null,
-    };
+    private static PointerButton? TryMapButton(EVRMouseButton button) =>
+        button switch
+        {
+            EVRMouseButton.Left => PointerButton.Left,
+            EVRMouseButton.Middle => PointerButton.Middle,
+            EVRMouseButton.Right => PointerButton.Right,
+            _ => null,
+        };
 
     /// <summary>
     /// イベントディスパッチャから登録済みの OpenVR マウスイベントハンドラーを解除します。

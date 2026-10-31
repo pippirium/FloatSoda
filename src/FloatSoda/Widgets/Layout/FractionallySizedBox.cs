@@ -5,7 +5,8 @@ namespace FloatSoda.Widgets.Layout;
 
 /// <summary>親の最大サイズに対する割合で子をサイズし、自身の領域外への描画を許可します。</summary>
 /// <seealso cref="RenderFractionallySizedOverflowBox"/>
-public sealed record FractionallySizedBox : SingleChildRenderObjectWidget<RenderFractionallySizedOverflowBox>
+public sealed record FractionallySizedBox
+    : SingleChildRenderObjectWidget<RenderFractionallySizedOverflowBox>
 {
     /// <summary>親の最大幅へ乗算して子へ適用する幅を取得します。</summary>
     /// <value>0以上の有限値。<see langword="null"/>の場合は親の幅制約をそのまま渡します。</value>
@@ -46,12 +47,13 @@ public sealed record FractionallySizedBox : SingleChildRenderObjectWidget<Render
     } = Alignment.Center;
 
     /// <inheritdoc/>
-    public override RenderFractionallySizedOverflowBox CreateRenderObject() => new()
-    {
-        WidthFactor = WidthFactor,
-        HeightFactor = HeightFactor,
-        Alignment = Alignment
-    };
+    public override RenderFractionallySizedOverflowBox CreateRenderObject() =>
+        new()
+        {
+            WidthFactor = WidthFactor,
+            HeightFactor = HeightFactor,
+            Alignment = Alignment,
+        };
 
     /// <inheritdoc/>
     public override void UpdateRenderObject(RenderFractionallySizedOverflowBox renderObject)

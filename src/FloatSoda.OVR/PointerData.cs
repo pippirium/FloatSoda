@@ -16,5 +16,5 @@ public enum PointerChange
     Down,
 
     /// <summary>The pointer is hovering and the primary button did not change.</summary>
-    Hover
+    Hover,
 }

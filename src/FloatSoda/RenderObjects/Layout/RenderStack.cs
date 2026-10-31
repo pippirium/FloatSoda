@@ -2,7 +2,6 @@ using FloatSoda.Abstractions.Geometries;
 using FloatSoda.Core;
 using FloatSoda.Geometrics;
 using FloatSoda.Gesture;
-using SkiaSharp;
 
 namespace FloatSoda.RenderObjects.Layout;
 
@@ -28,7 +27,13 @@ public class StackParentData : BoxParentData
     public double? Height { get; set; }
 
     /// <summary>いずれかの絶対配置値が指定されているかを取得します。</summary>
-    public bool IsPositioned => Left.HasValue || Top.HasValue || Right.HasValue || Bottom.HasValue || Width.HasValue || Height.HasValue;
+    public bool IsPositioned =>
+        Left.HasValue
+        || Top.HasValue
+        || Right.HasValue
+        || Bottom.HasValue
+        || Width.HasValue
+        || Height.HasValue;
 }
 
 /// <summary>複数の子を重ね、通常配置または絶対配置で位置決めするRenderObjectです。</summary>
@@ -46,7 +51,8 @@ public class RenderStack : RenderBox, IHasMultiChildrenRenderObject
         get;
         set
         {
-            if (field == value) return;
+            if (field == value)
+                return;
             field = value;
             MarkNeedsLayout();
         }
@@ -58,7 +64,8 @@ public class RenderStack : RenderBox, IHasMultiChildrenRenderObject
         get;
         set
         {
-            if (field == value) return;
+            if (field == value)
+                return;
             field = value;
             MarkNeedsLayout();
         }
@@ -71,12 +78,14 @@ public class RenderStack : RenderBox, IHasMultiChildrenRenderObject
     /// <summary>指定したRenderObjectを<paramref name="after"/>の次へ挿入します。<paramref name="after"/>が<see langword="null"/>なら先頭へ挿入します。</summary>
     /// <param name="child">挿入するRenderObject。<see cref="RenderBox"/>である必要があります。</param>
     /// <param name="after">挿入位置の基準にする子。</param>
-    public void InsertChild(RenderObject child, RenderObject? after) => Children.Insert((RenderBox)child, (RenderBox?)after);
+    public void InsertChild(RenderObject child, RenderObject? after) =>
+        Children.Insert((RenderBox)child, (RenderBox?)after);
 
     /// <summary>保持している子を<paramref name="after"/>の次へ移動します。<paramref name="after"/>が<see langword="null"/>なら先頭へ移動します。</summary>
     /// <param name="child">移動するRenderObject。</param>
     /// <param name="after">移動先の基準にする子。</param>
-    public void MoveChild(RenderObject child, RenderObject? after) => Children.Move((RenderBox)child, (RenderBox?)after);
+    public void MoveChild(RenderObject child, RenderObject? after) =>
+        Children.Move((RenderBox)child, (RenderBox?)after);
 
     /// <summary>指定したRenderObjectを子のコレクションから削除します。</summary>
     /// <param name="child">削除するRenderObject。</param>
@@ -84,7 +93,8 @@ public class RenderStack : RenderBox, IHasMultiChildrenRenderObject
     public bool RemoveChild(RenderObject child) => Children.Remove((RenderBox)child);
 
     /// <inheritdoc/>
-    public override void SetupParentData(RenderObject child) => child.ParentData = new StackParentData();
+    public override void SetupParentData(RenderObject child) =>
+        child.ParentData = new StackParentData();
 
     /// <inheritdoc/>
     public override void PerformLayout()
@@ -97,7 +107,8 @@ public class RenderStack : RenderBox, IHasMultiChildrenRenderObject
         foreach (var child in Children)
         {
             var parentData = (StackParentData)child.ParentData!;
-            if (parentData.IsPositioned) continue;
+            if (parentData.IsPositioned)
+                continue;
 
             hasNonPositionedChild = true;
             child.Layout(nonPositionedConstraints, parentUseSize: true);
@@ -109,7 +120,10 @@ public class RenderStack : RenderBox, IHasMultiChildrenRenderObject
             ? Constraints.Constrain(width, height)
             : Constraints.Constrain(
                 double.IsFinite(Constraints.MaxWidth) ? Constraints.MaxWidth : Constraints.MinWidth,
-                double.IsFinite(Constraints.MaxHeight) ? Constraints.MaxHeight : Constraints.MinHeight);
+                double.IsFinite(Constraints.MaxHeight)
+                    ? Constraints.MaxHeight
+                    : Constraints.MinHeight
+            );
 
         foreach (var child in Children)
         {
@@ -125,34 +139,52 @@ public class RenderStack : RenderBox, IHasMultiChildrenRenderObject
         }
     }
 
-    private BoxConstraints GetNonPositionedConstraints() => Fit switch
-    {
-        StackFit.Loose => Constraints.Loosen,
-        StackFit.Expand => new BoxConstraints(
-            MinWidth: double.IsFinite(Constraints.MaxWidth) ? Constraints.MaxWidth : Constraints.MinWidth,
-            MaxWidth: Constraints.MaxWidth,
-            MinHeight: double.IsFinite(Constraints.MaxHeight) ? Constraints.MaxHeight : Constraints.MinHeight,
-            MaxHeight: Constraints.MaxHeight),
-        StackFit.Passthrough => Constraints,
-        _ => throw new ArgumentOutOfRangeException(nameof(Fit), Fit, null),
-    };
+    private BoxConstraints GetNonPositionedConstraints() =>
+        Fit switch
+        {
+            StackFit.Loose => Constraints.Loosen,
+            StackFit.Expand => new BoxConstraints(
+                MinWidth: double.IsFinite(Constraints.MaxWidth)
+                    ? Constraints.MaxWidth
+                    : Constraints.MinWidth,
+                MaxWidth: Constraints.MaxWidth,
+                MinHeight: double.IsFinite(Constraints.MaxHeight)
+                    ? Constraints.MaxHeight
+                    : Constraints.MinHeight,
+                MaxHeight: Constraints.MaxHeight
+            ),
+            StackFit.Passthrough => Constraints,
+            _ => throw new ArgumentOutOfRangeException(nameof(Fit), Fit, null),
+        };
 
     private void LayoutPositionedChild(RenderBox child, StackParentData parentData)
     {
-        var width = parentData.Left.HasValue && parentData.Right.HasValue
-            ? Math.Max(0, Size.Width - parentData.Left.Value - parentData.Right.Value)
-            : parentData.Width;
-        var height = parentData.Top.HasValue && parentData.Bottom.HasValue
-            ? Math.Max(0, Size.Height - parentData.Top.Value - parentData.Bottom.Value)
-            : parentData.Height;
+        var width =
+            parentData.Left.HasValue && parentData.Right.HasValue
+                ? Math.Max(0, Size.Width - parentData.Left.Value - parentData.Right.Value)
+                : parentData.Width;
+        var height =
+            parentData.Top.HasValue && parentData.Bottom.HasValue
+                ? Math.Max(0, Size.Height - parentData.Top.Value - parentData.Bottom.Value)
+                : parentData.Height;
 
         child.Layout(BoxConstraints.TightFor(width, height), parentUseSize: true);
 
         var alignedOffset = Alignment.ComputeOffset(Size, child.Size);
-        var x = parentData.Left
-            ?? (parentData.Right.HasValue ? Size.Width - parentData.Right.Value - child.Size.Width : alignedOffset.X);
-        var y = parentData.Top
-            ?? (parentData.Bottom.HasValue ? Size.Height - parentData.Bottom.Value - child.Size.Height : alignedOffset.Y);
+        var x =
+            parentData.Left
+            ?? (
+                parentData.Right.HasValue
+                    ? Size.Width - parentData.Right.Value - child.Size.Width
+                    : alignedOffset.X
+            );
+        var y =
+            parentData.Top
+            ?? (
+                parentData.Bottom.HasValue
+                    ? Size.Height - parentData.Bottom.Value - child.Size.Height
+                    : alignedOffset.Y
+            );
 
         parentData.Offset = new Offset((float)x, (float)y);
     }
@@ -173,10 +205,13 @@ public class RenderStack : RenderBox, IHasMultiChildrenRenderObject
         foreach (var child in Children.Reverse())
         {
             var parentData = (StackParentData)child.ParentData!;
-            if (result.AddWidthPaintOffset(
+            if (
+                result.AddWidthPaintOffset(
                     parentData.Offset,
                     position,
-                    (testResult, transformed) => child.HitTest(testResult, transformed)))
+                    (testResult, transformed) => child.HitTest(testResult, transformed)
+                )
+            )
             {
                 return true;
             }
@@ -200,7 +235,8 @@ public class RenderStack : RenderBox, IHasMultiChildrenRenderObject
     }
 
     /// <inheritdoc/>
-    public override void VisitChildren(Action<RenderObject> visitor) => Children.VisitChildren(visitor);
+    public override void VisitChildren(Action<RenderObject> visitor) =>
+        Children.VisitChildren(visitor);
 
     /// <inheritdoc/>
     public override void RedepthChildren() => VisitChildren(RedepthChild);

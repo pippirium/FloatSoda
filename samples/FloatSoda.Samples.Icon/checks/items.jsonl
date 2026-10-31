@@ -1,0 +1,4 @@
+{"id": "icon-1", "source": "IconDemo.cs:42-50", "flutter_ref": "icon.dart:74", "question": "1段目に、明るい背景の上へ黒い家のアイコンが出ているか(Color 省略時は黒)", "read_aloud": "1段目、明るい四角に黒い家のマークがあるか見て"}
+{"id": "icon-2", "source": "IconDemo.cs:60-64", "flutter_ref": "icon.dart:74", "question": "2段目の3つの星が、灰色の正方形にちょうど収まり、左から順に2倍ずつ大きくなっているか", "read_aloud": "2段目、星が三段階で大きくなってるか見て"}
+{"id": "icon-3", "source": "IconDemo.cs:75-79", "flutter_ref": "icon.dart:74", "question": "3段目に、水色の家・赤い歯車・白い虫眼鏡の3つのアイコンが同じ大きさで出ているか", "read_aloud": "3段目、水色の家、赤い歯車、白い虫眼鏡か見て"}
+{"id": "icon-4", "source": "IconDemo.cs:90-95", "flutter_ref": "icon.dart:74", "question": "4段目で、白い歯車のアイコンと「設定」の文字が横に並んでいるか", "read_aloud": "4段目、歯車と設定の文字が並んでるか見て"}

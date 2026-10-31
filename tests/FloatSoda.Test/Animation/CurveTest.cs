@@ -6,26 +6,26 @@ public class CurveTest
 {
     // 端点を保証すべき代表カーブ(単調・非オーバーシュート系)
     public static TheoryData<ICurve> EndpointCurves =>
-    [
-        Curves.Linear,
-        Curves.Decelerate,
-        Curves.Ease,
-        Curves.EaseIn,
-        Curves.EaseOut,
-        Curves.EaseInOut,
-        Curves.EaseInOutCubicEmphasized,
-        Curves.FastOutSlowIn,
-        Curves.FastEaseInToSlowEaseOut,
-        Curves.BounceIn,
-        Curves.BounceOut,
-        Curves.BounceInOut,
-        Curves.ElasticIn,
-        Curves.ElasticOut,
-        Curves.ElasticInOut,
-        new SawTooth(3),
-        new Interval(0.25, 0.75),
-        new Threshold(0.5),
-    ];
+        [
+            Curves.Linear,
+            Curves.Decelerate,
+            Curves.Ease,
+            Curves.EaseIn,
+            Curves.EaseOut,
+            Curves.EaseInOut,
+            Curves.EaseInOutCubicEmphasized,
+            Curves.FastOutSlowIn,
+            Curves.FastEaseInToSlowEaseOut,
+            Curves.BounceIn,
+            Curves.BounceOut,
+            Curves.BounceInOut,
+            Curves.ElasticIn,
+            Curves.ElasticOut,
+            Curves.ElasticInOut,
+            new SawTooth(3),
+            new Interval(0.25, 0.75),
+            new Threshold(0.5),
+        ];
 
     [Theory]
     [MemberData(nameof(EndpointCurves))]

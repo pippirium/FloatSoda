@@ -1,4 +1,4 @@
-using SkiaSharp;
+using FloatSoda.Geometrics;
 
 namespace FloatSoda.UI.FizzyPop;
 
@@ -9,13 +9,13 @@ namespace FloatSoda.UI.FizzyPop;
 public record ButtonStyle
 {
     /// <summary>通常時の背景色。</summary>
-    public SKColor BackgroundColor { get; init; } = new(0xFF, 0xFF, 0xFF, 0x59);
+    public Color BackgroundColor { get; init; } = new(0xFF, 0xFF, 0xFF, 0x59);
 
     /// <summary>押下中の背景色。</summary>
-    public SKColor PressedBackgroundColor { get; init; } = new(0xFF, 0xFF, 0xFF, 0x8C);
+    public Color PressedBackgroundColor { get; init; } = new(0xFF, 0xFF, 0xFF, 0x8C);
 
     /// <summary>無効時の背景色。</summary>
-    public SKColor DisabledBackgroundColor { get; init; } = new(0xFF, 0xFF, 0xFF, 0x26);
+    public Color DisabledBackgroundColor { get; init; } = new(0xFF, 0xFF, 0xFF, 0x26);
 
     /// <summary>既定のスタイル。</summary>
     public static ButtonStyle Default { get; } = new();

@@ -12,11 +12,14 @@ var renderer = new LayerBitmapRenderer();
 Save("plain", picture => picture);
 Save("opacity", picture => new OpacityLayer { Alpha = 128, Children = { picture } });
 Save("clip", picture => new ClipRectLayer(new SKRect(0, 0, 200, 150)) { Children = { picture } });
-Save("transform", picture => new TransformLayer
-{
-    Transform = SKMatrix.CreateRotationDegrees(15, 200, 150),
-    Children = { picture }
-});
+Save(
+    "transform",
+    picture => new TransformLayer
+    {
+        Transform = SKMatrix.CreateRotationDegrees(15, 200, 150),
+        Children = { picture },
+    }
+);
 
 Console.WriteLine($"保存先: {outputDirectory}");
 
@@ -29,8 +32,10 @@ void Save(string name, Func<ILayer, ILayer> wrap)
     using var bitmap = renderer.Render(root, size);
     bitmap.Save(Path.Combine(outputDirectory, $"{name}.png"));
 
-    Console.WriteLine($"{name}.png: 青(50,50)={bitmap.GetPixel(50, 50)} " +
-                      $"橙(300,230)={bitmap.GetPixel(300, 230)} 重なり(150,120)={bitmap.GetPixel(150, 120)}");
+    Console.WriteLine(
+        $"{name}.png: 青(50,50)={bitmap.GetPixel(50, 50)} "
+            + $"橙(300,230)={bitmap.GetPixel(300, 230)} 重なり(150,120)={bitmap.GetPixel(150, 120)}"
+    );
 }
 
 SKPicture CreatePicture()

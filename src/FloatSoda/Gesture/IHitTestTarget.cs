@@ -37,10 +37,10 @@ public class HitTestResult
 
     private readonly List<Matrix3x2> _localTransform = [];
 
-
     private void GlobalizeTransform()
     {
-        if (_localTransform.Count == 0) return;
+        if (_localTransform.Count == 0)
+            return;
 
         var last = _transforms[^1];
 
@@ -64,12 +64,11 @@ public class HitTestResult
         }
     }
 
-
     /// <summary>子要素のヒットテスト中に適用する座標オフセットを積みます。</summary>
     /// <param name="offset">現在の座標へ加算する論理ピクセル単位のオフセット。</param>
     /// <remarks>走査を戻る際は<see cref="PopTransform"/>を同じ回数だけ呼び出します。</remarks>
-    public void PushOffset(Offset offset) => PushTransform(
-        Matrix3x2.CreateTranslation((float)offset.X, (float)offset.Y));
+    public void PushOffset(Offset offset) =>
+        PushTransform(Matrix3x2.CreateTranslation((float)offset.X, (float)offset.Y));
 
     /// <summary>子要素のヒットテスト中に適用するアフィン座標変換を積みます。</summary>
     /// <param name="transform">現在の座標から子要素のローカル座標へ変換する行列。</param>
@@ -93,7 +92,8 @@ public class HitTestResult
 
     /// <summary>現在の累積座標変換を設定してヒットテスト経路へエントリを追加します。</summary>
     /// <param name="entry">追加する対象。指定されている座標変換は現在の累積値で置き換えられます。</param>
-    public void Add(HitTestEntry entry) => _pathInternal.Add(entry with { Transform = LastTransform });
+    public void Add(HitTestEntry entry) =>
+        _pathInternal.Add(entry with { Transform = LastTransform });
 
     /// <summary>描画時の子要素オフセットを座標へ反映し、子要素のヒットテストを実行します。</summary>
     /// <param name="offset">親座標系における子要素の論理ピクセル単位の位置。位置がない場合は<see langword="null"/>です。</param>
@@ -101,11 +101,16 @@ public class HitTestResult
     /// <param name="hitTest">この結果と子要素のローカル座標を受け取り、ヒット判定を行う処理。</param>
     /// <returns>子要素がヒットした場合は<see langword="true"/>、ヒットしなかった場合は<see langword="false"/>。</returns>
     /// <remarks>指定したオフセットは処理の呼び出し中だけ積まれ、処理が戻ると元の変換状態へ戻されます。</remarks>
-    public bool AddWidthPaintOffset(Offset? offset, Offset position, Func<HitTestResult, Offset, bool> hitTest)
+    public bool AddWidthPaintOffset(
+        Offset? offset,
+        Offset position,
+        Func<HitTestResult, Offset, bool> hitTest
+    )
     {
         var transform = offset is not null ? position - offset : position;
 
-        if (offset is not null) PushOffset(-offset.Value);
+        if (offset is not null)
+            PushOffset(-offset.Value);
 
         try
         {
@@ -113,7 +118,8 @@ public class HitTestResult
         }
         finally
         {
-            if (offset is not null) PopTransform();
+            if (offset is not null)
+                PopTransform();
         }
     }
 
@@ -126,11 +132,16 @@ public class HitTestResult
     public bool AddWithPaintTransform(
         Matrix3x2 transform,
         Offset position,
-        Func<HitTestResult, Offset, bool> hitTest)
+        Func<HitTestResult, Offset, bool> hitTest
+    )
     {
-        if (!Matrix3x2.Invert(transform, out var inverse)) return false;
+        if (!Matrix3x2.Invert(transform, out var inverse))
+            return false;
 
-        var transformed = Vector2.Transform(new Vector2((float)position.X, (float)position.Y), inverse);
+        var transformed = Vector2.Transform(
+            new Vector2((float)position.X, (float)position.Y),
+            inverse
+        );
         PushTransform(inverse);
         try
         {

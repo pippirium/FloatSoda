@@ -21,7 +21,7 @@ public class KeepOverlayAfterExitTest
         {
             Title = "Wrist",
             Target = TrackedDevice.LeftController,
-            Child = new SizedBox { Width = 1, Height = 1 }
+            Child = new SizedBox { Width = 1, Height = 1 },
         };
 
         Assert.False(window.KeepOverlayAfterExit);
@@ -34,7 +34,7 @@ public class KeepOverlayAfterExitTest
         {
             Title = "Board",
             KeepOverlayAfterExit = true,
-            Child = new SizedBox { Width = 1, Height = 1 }
+            Child = new SizedBox { Width = 1, Height = 1 },
         };
 
         Assert.True(window.KeepOverlayAfterExit);
@@ -46,7 +46,7 @@ public class KeepOverlayAfterExitTest
         var original = new WorldSpaceWindow
         {
             Title = "Panel",
-            Child = new SizedBox { Width = 1, Height = 1 }
+            Child = new SizedBox { Width = 1, Height = 1 },
         };
 
         var kept = original with { KeepOverlayAfterExit = true };
@@ -64,12 +64,12 @@ public class KeepOverlayAfterExitTest
         {
             Title = "Board",
             KeepOverlayAfterExit = true,
-            Child = new SizedBox { Width = 1, Height = 1 }
+            Child = new SizedBox { Width = 1, Height = 1 },
         };
         var world = new WorldSpaceWindow
         {
             Title = "Panel",
-            Child = new SizedBox { Width = 1, Height = 1 }
+            Child = new SizedBox { Width = 1, Height = 1 },
         };
 
         Assert.True(dashboard.KeepOverlayAfterExit);
@@ -83,13 +83,13 @@ public class KeepOverlayAfterExitTest
         {
             Title = "Panel",
             KeepOverlayAfterExit = true,
-            Child = new SizedBox { Width = 1, Height = 1 }
+            Child = new SizedBox { Width = 1, Height = 1 },
         };
         var wrist = new DeviceTrackedWindow
         {
             Title = "Wrist",
             Target = TrackedDevice.LeftController,
-            Child = new SizedBox { Width = 1, Height = 1 }
+            Child = new SizedBox { Width = 1, Height = 1 },
         };
 
         Assert.True(world.KeepOverlayAfterExit);

@@ -20,7 +20,10 @@ static class Step3
 
         using var app = new OVRApplication(new OVRAppInfo(new AppKey("com.example.render_path")));
 
-        var identity = new OverlayIdentity($"com.example.render_path.step3.{Guid.NewGuid()}", "RenderPath step 3");
+        var identity = new OverlayIdentity(
+            $"com.example.render_path.step3.{Guid.NewGuid()}",
+            "RenderPath step 3"
+        );
         using var overlay = new DeviceTrackedOverlay(identity);
         overlay.Transform.Position = new Vector3(0, 0, -1);
 
@@ -56,7 +59,7 @@ static class Step3
 
         return new ContainerLayer
         {
-            Children = { new PictureLayer { Picture = recorder.EndRecording() } }
+            Children = { new PictureLayer { Picture = recorder.EndRecording() } },
         };
     }
 }

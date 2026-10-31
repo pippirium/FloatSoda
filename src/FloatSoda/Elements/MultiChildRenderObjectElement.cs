@@ -8,7 +8,8 @@ namespace FloatSoda.Elements;
 /// </summary>
 /// <typeparam name="T">このElementが管理するRenderObjectの型。</typeparam>
 /// <seealso cref="MultiChildRenderObjectWidget{T}"/>
-public class MultiChildRenderObjectElement<T> : RenderObjectElement<T> where T : RenderObject
+public class MultiChildRenderObjectElement<T> : RenderObjectElement<T>
+    where T : RenderObject
 {
     /// <summary>
     /// このElementが現在管理している複数子用Widgetを取得します。
@@ -56,7 +57,8 @@ public class MultiChildRenderObjectElement<T> : RenderObjectElement<T> where T :
     /// <inheritdoc/>
     public override void InsertRenderObjectChild(RenderObject child)
     {
-        if (RenderObject is IHasMultiChildrenRenderObject ro) ro.AddChild(child);
+        if (RenderObject is IHasMultiChildrenRenderObject ro)
+            ro.AddChild(child);
     }
 
     /// <summary>
@@ -66,7 +68,8 @@ public class MultiChildRenderObjectElement<T> : RenderObjectElement<T> where T :
     /// <param name="slot">子の<see cref="IndexedSlot"/>。</param>
     public override void InsertRenderObjectChild(RenderObject? child, object? slot)
     {
-        if (child is null || RenderObject is not IHasMultiChildrenRenderObject ro) return;
+        if (child is null || RenderObject is not IHasMultiChildrenRenderObject ro)
+            return;
 
         ro.InsertChild(child, After(slot));
     }
@@ -79,15 +82,18 @@ public class MultiChildRenderObjectElement<T> : RenderObjectElement<T> where T :
     /// <param name="newSlot">移動後の<see cref="IndexedSlot"/>。</param>
     public override void MoveRenderObjectChild(RenderObject child, object? oldSlot, object? newSlot)
     {
-        if (RenderObject is IHasMultiChildrenRenderObject ro) ro.MoveChild(child, After(newSlot));
+        if (RenderObject is IHasMultiChildrenRenderObject ro)
+            ro.MoveChild(child, After(newSlot));
     }
 
     // 直前の兄弟がRenderObjectを持たないElement(ComponentElementなど)でも、Element.RenderObjectが子孫から探す。
-    private static RenderObject? After(object? slot) => (slot as IndexedSlot?)?.Previous?.RenderObject;
+    private static RenderObject? After(object? slot) =>
+        (slot as IndexedSlot?)?.Previous?.RenderObject;
 
     /// <inheritdoc/>
     public override void RemoveRenderObjectChild(RenderObject? child)
     {
-        if (child != null && RenderObject is IHasMultiChildrenRenderObject ro) ro.RemoveChild(child);
+        if (child is not null && RenderObject is IHasMultiChildrenRenderObject ro)
+            ro.RemoveChild(child);
     }
 }

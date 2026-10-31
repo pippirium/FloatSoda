@@ -20,7 +20,7 @@ public class PaintingContext(ContainerLayer containerLayer, SKRect estimatedBoun
     private SKCanvas? _canvas;
 
     /// <summary>画像への描画命令を記録中かどうかを取得します。</summary>
-    private bool IsRecording => _canvas != null;
+    private bool IsRecording => _canvas is not null;
 
     /// <summary>描画命令を記録するキャンバスを取得します。</summary>
     /// <value>このコンテキストの現在の画像へ記録するキャンバス。</value>
@@ -29,7 +29,8 @@ public class PaintingContext(ContainerLayer containerLayer, SKRect estimatedBoun
     {
         get
         {
-            if (_canvas == null) StartRecording();
+            if (_canvas is null)
+                StartRecording();
             return _canvas!;
         }
     }
@@ -48,7 +49,8 @@ public class PaintingContext(ContainerLayer containerLayer, SKRect estimatedBoun
     /// <remarks>記録していない場合は何もしません。確定した画像は現在の画像レイヤーへ設定されます。</remarks>
     public void StopRecordingIfNeeded()
     {
-        if (!IsRecording) return;
+        if (!IsRecording)
+            return;
 
         _currentLayer?.Picture = _recorder?.EndRecording();
         _currentLayer = null;
@@ -69,7 +71,8 @@ public class PaintingContext(ContainerLayer containerLayer, SKRect estimatedBoun
         ContainerLayer childLayer,
         Action<PaintingContext, Offset> painter,
         Offset offset,
-        SKRect? childPaintBounds = null)
+        SKRect? childPaintBounds = null
+    )
     {
         if (childLayer.HasChildren)
         {
@@ -95,7 +98,8 @@ public class PaintingContext(ContainerLayer containerLayer, SKRect estimatedBoun
         Offset offset,
         byte alpha,
         Action<PaintingContext, Offset> painter,
-        OpacityLayer? oldLayer = null)
+        OpacityLayer? oldLayer = null
+    )
     {
         var layer = oldLayer ?? new OpacityLayer();
 
@@ -114,7 +118,8 @@ public class PaintingContext(ContainerLayer containerLayer, SKRect estimatedBoun
     public TransformLayer PushTransform(
         SKMatrix transform,
         Action<PaintingContext, Offset> painter,
-        TransformLayer? oldLayer = null)
+        TransformLayer? oldLayer = null
+    )
     {
         var layer = oldLayer ?? new TransformLayer();
         layer.Transform = transform;
@@ -171,7 +176,8 @@ public class PaintingContext(ContainerLayer containerLayer, SKRect estimatedBoun
         SKRoundRect clipRect,
         Action<PaintingContext, Offset> painter,
         Clip clipBehavior = Clip.Antialias,
-        ClipRoundRectLayer? oldLayer = null)
+        ClipRoundRectLayer? oldLayer = null
+    )
     {
         var offsetBounds = bounds;
         offsetBounds.Offset(offset);
@@ -201,7 +207,8 @@ public class PaintingContext(ContainerLayer containerLayer, SKRect estimatedBoun
         SKRect clipRect,
         Action<PaintingContext, Offset> painter,
         Clip clipBehavior = Clip.Antialias,
-        ClipRectLayer? oldLayer = null)
+        ClipRectLayer? oldLayer = null
+    )
     {
         var offsetClipRect = clipRect;
         offsetClipRect.Offset(offset);
@@ -250,9 +257,13 @@ public class PaintingContext(ContainerLayer containerLayer, SKRect estimatedBoun
             RepaintCompositedChild(child);
         }
 
-        if (child.Layer is not TransformLayer childTransformLayer) return;
+        if (child.Layer is not TransformLayer childTransformLayer)
+            return;
 
-        childTransformLayer.Transform = SKMatrix.CreateTranslation((float)offset.X, (float)offset.Y);
+        childTransformLayer.Transform = SKMatrix.CreateTranslation(
+            (float)offset.X,
+            (float)offset.Y
+        );
         containerLayer.Children.Add(childTransformLayer);
     }
 
@@ -274,7 +285,10 @@ public class PaintingContext(ContainerLayer containerLayer, SKRect estimatedBoun
             childLayer.Children.Clear();
         }
 
-        var childContext = new PaintingContext(childLayer, SKRect.Create(Offset.Zero, size: child.Size));
+        var childContext = new PaintingContext(
+            childLayer,
+            SKRect.Create(Offset.Zero, size: child.Size)
+        );
         child.NeedsPaint = false;
         child.Paint(childContext, Offset.Zero);
         childContext.StopRecordingIfNeeded();

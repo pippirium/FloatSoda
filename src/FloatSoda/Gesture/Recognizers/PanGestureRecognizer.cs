@@ -46,10 +46,14 @@ public sealed class PanGestureRecognizer : GestureRecognizer
         {
             case PointerEventPhase.Move:
                 // スロップ超過で初めてドラッグ確定。単独メンバーでも Down 時点では開始しない。
-                if (!_started &&
-                    Distance(pointerEvent.Position, _initialPosition) > GestureConstants.TouchSlop)
+                if (
+                    !_started
+                    && Distance(pointerEvent.Position, _initialPosition)
+                        > GestureConstants.TouchSlop
+                )
                 {
-                    if (!_acceptedByArena) Resolve(pointerEvent.PointerId, GestureDisposition.Accepted);
+                    if (!_acceptedByArena)
+                        Resolve(pointerEvent.PointerId, GestureDisposition.Accepted);
 
                     if (_acceptedByArena)
                     {

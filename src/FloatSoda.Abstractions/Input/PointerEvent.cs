@@ -9,20 +9,27 @@ public enum PointerEventPhase
 {
     /// <summary>ポインターの主ボタンが離された段階です。</summary>
     Up,
+
     /// <summary>ポインターの主ボタンが押された段階です。</summary>
     Down,
+
     /// <summary>ポインターが入力領域内を移動した段階です。</summary>
     Move,
+
     /// <summary>新しいポインターが入力領域へ追加された段階です。</summary>
     Add,
+
     /// <summary>ポインターが入力領域から削除された段階です。</summary>
     Remove,
+
     /// <summary>ポインターがヒット領域へ入った段階です。</summary>
     Enter,
+
     /// <summary>ポインターがヒット領域から出た段階です。</summary>
     Exit,
+
     /// <summary>押下中のポインター列が完了せず中断された段階です。</summary>
-    Cancel
+    Cancel,
 };
 
 /// <summary>正規化されたポインター入力を識別子、段階、および座標とともに表します。</summary>
@@ -35,4 +42,5 @@ public readonly record struct PointerEvent(
     int PointerId,
     PointerEventPhase Phase,
     Offset Position,
-    Matrix3x2? Transform = null);
+    Matrix3x2? Transform = null
+);
