@@ -5,4 +5,5 @@ FloatSoda.Engine.ControllerRayPointerSource.ControllerRayPointerSource(System.Fu
 FloatSoda.Engine.ControllerRayPointerSource.Dispose() -> void
 FloatSoda.Engine.ControllerRayPointerSource.OnPointerEvent -> System.Action<FloatSoda.Abstractions.Input.RawPointerEvent>?
 FloatSoda.Engine.ControllerRayPointerSource.Pump() -> void
+FloatSoda.Engine.OverlayWindow.AbandonOverlay() -> void
 FloatSoda.Engine.OverlayWindow.OverlayWindow(FloatSoda.OVR.Overlay.IOverlay! overlay, FloatSoda.Engine.Renderer! renderer, FloatSoda.Abstractions.Geometries.Dpm dpm, System.Collections.Generic.IReadOnlyList<FloatSoda.OVR.Overlay.TrackedDevice>? pointerDevices = null) -> void

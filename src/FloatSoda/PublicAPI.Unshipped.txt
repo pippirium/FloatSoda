@@ -1,5 +1,9 @@
 #nullable enable
+FloatSoda.Core.WidgetBinding.RootWidget.get -> FloatSoda.Widgets.Widget?
+FloatSoda.Elements.RenderObjectToWidgetElement<T>.ChildWidget.get -> FloatSoda.Widgets.Widget?
 FloatSoda.FloatSodaApp.Post(System.Action! action) -> void
+FloatSoda.Widgets.OverlayWindow.KeepOverlayAfterExit.get -> bool
+FloatSoda.Widgets.OverlayWindow.KeepOverlayAfterExit.init -> void
 FloatSoda.Widgets.Settings.SettingsDropdown
 FloatSoda.Widgets.Settings.SettingsDropdown.Equals(FloatSoda.Widgets.Settings.SettingsDropdown? other) -> bool
 FloatSoda.Widgets.Settings.SettingsDropdown.OnChanged.get -> System.Action<string!>?

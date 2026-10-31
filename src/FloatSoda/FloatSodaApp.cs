@@ -67,7 +67,7 @@ public class FloatSodaApp : IDisposable
             renderFramePacer,
             loggerFactory?.CreateLogger<RenderPostTaskRunner>()
         );
-        _renderPostTaskRunner.BeforeGLFWTerminate = DisposeBindingsOnRenderThread;
+        _renderPostTaskRunner.BeforeGLFWTerminate = ReleaseBindingsOnRenderThread;
         _logger = loggerFactory?.CreateLogger<FloatSodaApp>();
         ActiveApps.TryAdd(this, 0);
     }
@@ -327,13 +327,21 @@ public class FloatSodaApp : IDisposable
         }
     }
 
-    private void DisposeBindingsOnRenderThread()
+    /// <summary>
+    /// 全ウィンドウの描画リソースをレンダースレッド上で解放します。
+    /// </summary>
+    /// <remarks>
+    /// オーバーレイを破棄せず残すかはウィンドウごとに <see cref="ShouldKeepOverlay"/> で決めます。
+    /// GLFWの終了前（<see cref="RenderPostTaskRunner.BeforeGLFWTerminate"/>）と、
+    /// アプリ破棄時にレンダースレッドが既に止まっている場合の両方から呼ばれます。
+    /// </remarks>
+    private void ReleaseBindingsOnRenderThread()
     {
         foreach (var (title, binding) in _bindings)
         {
             try
             {
-                binding.DisposeResources();
+                binding.ReleaseResources(destroy: !ShouldKeepOverlay(title));
             }
             catch (Exception exception)
             {
@@ -342,6 +350,27 @@ public class FloatSodaApp : IDisposable
         }
 
         _bindings.Clear();
+    }
+
+    /// <summary>
+    /// アプリ終了時にオーバーレイを破棄せず残すべきかを判定します。
+    /// </summary>
+    /// <param name="title">判定するウィンドウのタイトル。</param>
+    /// <returns>ルートが <see cref="OverlayWindow"/> かつ <see cref="OverlayWindow.KeepOverlayAfterExit"/> が
+    /// <see langword="true"/> の場合は<see langword="true"/>。それ以外と、まだルートが接続されていない場合は<see langword="false"/>。</returns>
+    /// <remarks>解放を予約したウィンドウを二重解放しないよう、判定後はそのウィンドウを管理対象から外します。</remarks>
+    private bool ShouldKeepOverlay(string title)
+    {
+        if (!_bindings.TryGetValue(title, out var binding))
+            return false;
+
+        var keep = binding.RootWidget is OverlayWindow { KeepOverlayAfterExit: true };
+        if (keep)
+        {
+            _bindings.TryRemove(title, out _);
+        }
+
+        return keep;
     }
 
     /// <summary>メインループへ停止を要求し、レンダースレッドとOpenVRリソースを解放します。</summary>
@@ -358,6 +387,7 @@ public class FloatSodaApp : IDisposable
 
         ActiveApps.TryRemove(this, out _);
 
+        // レンダースレッドを GLFW.Terminate() より先に停止し、解放を完了させる。
         if (disposing)
         {
             _cts.Cancel();

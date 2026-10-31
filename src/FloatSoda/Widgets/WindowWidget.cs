@@ -81,6 +81,19 @@ public abstract record OverlayWindow : WindowWidget
     public Dpm Dpm { get; init; } = Dpm.Default;
 
     /// <summary>
+    /// アプリの停止時にもオーバーレイをSteamVR上に残す場合は<see langword="true"/>。既定は<see langword="false"/>です。
+    /// </summary>
+    /// <remarks>
+    /// <see langword="true"/> のウィンドウは、アプリケーションの停止時にオーバーレイを破棄せず、
+    /// 最後に描画されたフレームのままSteamVR上に残します。<see langword="false"/>（既定）は従来通り破棄します。
+    /// 破棄を免れたオーバーレイの所有はOpenVRコンテキストへ移ります。プロセスが起動中に
+    /// <c>VREvent_Quit</c>（SteamVR側のシャットダウン要求）を受けるときは、他のオーバーレイと同様に破棄されます。
+    /// SteamVR自体の終了やコンパニオンの停止でもオーバーレイは消えます。
+    /// 残ったウィンドウは描画も入力も止まるため、最後のフレームの静止画になります。
+    /// </remarks>
+    public bool KeepOverlayAfterExit { get; init; }
+
+    /// <summary>
     /// このウィンドウ定義に対応する <see cref="IOverlay"/> を生成します。FloatSodaのメインループ上で呼ばれます。
     /// </summary>
     internal abstract IOverlay CreateOverlay();

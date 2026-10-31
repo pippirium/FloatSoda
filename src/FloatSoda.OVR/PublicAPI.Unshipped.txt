@@ -1,4 +1,10 @@
 #nullable enable
+FloatSoda.OVR.Overlay.DashboardOverlayIdentity.Detach() -> void
+FloatSoda.OVR.Overlay.DashboardOverlayIdentity.Detached.get -> bool
+FloatSoda.OVR.Overlay.IOverlayIdentity.Detach() -> void
+FloatSoda.OVR.Overlay.IOverlayIdentity.Detached.get -> bool
+FloatSoda.OVR.Overlay.OverlayIdentity.Detach() -> void
+FloatSoda.OVR.Overlay.OverlayIdentity.Detached.get -> bool
 FloatSoda.OVR.Overlay.OverlayKeyboard
 const FloatSoda.OVR.Overlay.OverlayKeyboard.InputModeMultiLine = 2 -> int
 const FloatSoda.OVR.Overlay.OverlayKeyboard.InputModeSingleLine = 1 -> int
