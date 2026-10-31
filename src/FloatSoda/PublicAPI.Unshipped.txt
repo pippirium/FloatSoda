@@ -1,1 +1,2 @@
 #nullable enable
+FloatSoda.FloatSodaApp.Post(System.Action! action) -> void

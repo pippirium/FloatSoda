@@ -53,7 +53,11 @@ internal sealed class FloatSodaHostedService(
     {
         try
         {
-            app.Run(applicationLifetime.ApplicationStopping, () => _started.TrySetResult(), applicationLifetime.StopApplication);
+            app.Run(
+                applicationLifetime.ApplicationStopping,
+                () => _started.TrySetResult(),
+                applicationLifetime.StopApplication
+            );
         }
         catch (OperationCanceledException)
             when (applicationLifetime.ApplicationStopping.IsCancellationRequested)

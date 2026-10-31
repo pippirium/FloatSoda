@@ -43,8 +43,11 @@ public sealed class ControllerRayPointerSource : IRawPointerSource
     /// <param name="intersection">交差判定を行う対象オーバーレイのサービス。</param>
     /// <param name="tileSize">交差 UV をピクセル座標へ換算するための、描画先テクスチャの現在サイズを返す処理。</param>
     /// <param name="devices">ポールするトラッキングデバイス。省略時は両手コントローラーです。</param>
-    public ControllerRayPointerSource(OverlayIntersection intersection, Func<SKSizeI> tileSize,
-        IReadOnlyList<TrackedDevice>? devices = null)
+    public ControllerRayPointerSource(
+        OverlayIntersection intersection,
+        Func<SKSizeI> tileSize,
+        IReadOnlyList<TrackedDevice>? devices = null
+    )
     {
         devices ??= [TrackedDevice.LeftController, TrackedDevice.RightController];
         _tileSize = tileSize;
@@ -64,7 +67,10 @@ public sealed class ControllerRayPointerSource : IRawPointerSource
     /// </summary>
     /// <param name="tileSize">交差 UV をピクセル座標へ換算するための、描画先テクスチャの現在サイズを返す処理。</param>
     /// <param name="pollers">1台ぶんの交差ポール関数のリスト。未ヒットのときは<see langword="null"/>を返します。</param>
-    public ControllerRayPointerSource(Func<SKSizeI> tileSize, IReadOnlyList<Func<PointerData?>> pollers)
+    public ControllerRayPointerSource(
+        Func<SKSizeI> tileSize,
+        IReadOnlyList<Func<PointerData?>> pollers
+    )
     {
         _tileSize = tileSize;
         _pollers = pollers;
@@ -87,7 +93,8 @@ public sealed class ControllerRayPointerSource : IRawPointerSource
         {
             var result = _pollers[index]();
 
-            if (result is null || hitPoller >= 0) continue;
+            if (result is null || hitPoller >= 0)
+                continue;
 
             hitPoller = index;
             hit = result;
@@ -95,7 +102,8 @@ public sealed class ControllerRayPointerSource : IRawPointerSource
 
         if (hit is not { } hitData)
         {
-            if (_activePoller < 0) return;
+            if (_activePoller < 0)
+                return;
 
             OnPointerEvent?.Invoke(new RawPointerEvent(RawPointerKind.Leave, _lastPosition));
             _activePoller = -1;

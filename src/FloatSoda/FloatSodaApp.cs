@@ -62,9 +62,11 @@ public class FloatSodaApp : IDisposable
         _inputActionMaps = inputActionMaps ?? [];
         _timeProvider = timeProvider ?? TimeProvider.System;
         _startTimestamp = _timeProvider.GetTimestamp();
-        _renderPostTaskRunner =
-            new RenderPostTaskRunner("RenderThread", renderFramePacer,
-                loggerFactory?.CreateLogger<RenderPostTaskRunner>());
+        _renderPostTaskRunner = new RenderPostTaskRunner(
+            "RenderThread",
+            renderFramePacer,
+            loggerFactory?.CreateLogger<RenderPostTaskRunner>()
+        );
         _renderPostTaskRunner.BeforeGLFWTerminate = DisposeBindingsOnRenderThread;
         _logger = loggerFactory?.CreateLogger<FloatSodaApp>();
         ActiveApps.TryAdd(this, 0);
@@ -115,12 +117,22 @@ public class FloatSodaApp : IDisposable
                 // OpenVR作成時のエラーをメインループへ戻し、レンダースレッドで握りつぶさない。
                 var overlay = overlayWindow.CreateOverlay();
                 binding.SetPendingOverlay(overlay);
-                binding.EnsureInitialized(window.Title, _renderPostTaskRunner,
-                    renderer => new EngineOverlayWindow(overlay, renderer, overlayWindow.Dpm));
+                binding.EnsureInitialized(
+                    window.Title,
+                    _renderPostTaskRunner,
+                    renderer => new EngineOverlayWindow(overlay, renderer, overlayWindow.Dpm)
+                );
             },
-            DesktopWindow => binding => binding.EnsureInitialized(window.Title, _renderPostTaskRunner,
-                renderer => new EngineDesktopWindow(renderer), visible: true),
-            _ => throw new NotSupportedException($"{window.GetType().Name} は未対応のウィンドウ種別です。")
+            DesktopWindow => binding =>
+                binding.EnsureInitialized(
+                    window.Title,
+                    _renderPostTaskRunner,
+                    renderer => new EngineDesktopWindow(renderer),
+                    visible: true
+                ),
+            _ => throw new NotSupportedException(
+                $"{window.GetType().Name} は未対応のウィンドウ種別です。"
+            ),
         };
 
         _pendingTasks.Enqueue(() =>
@@ -137,8 +149,7 @@ public class FloatSodaApp : IDisposable
     /// <summary>アプリケーションを初期化し、停止要求を受けるまでメインループを実行します。</summary>
     /// <remarks>メインループ終了時には、このインスタンスが保持するOpenVRおよびレンダースレッドのリソースを解放します。</remarks>
     [STAThread]
-    public void Run()
-        => Run(CancellationToken.None, static () => { }, static () => { });
+    public void Run() => Run(CancellationToken.None, static () => { }, static () => { });
 
     internal void Run(CancellationToken cancellationToken, Action started, Action stopping)
     {

@@ -80,8 +80,9 @@ public class GLView : IDisposable
             MakeCurrent();
             GL.LoadBindings(new GLFWBindingsContext());
 
-            grContext = GRContext.CreateGl(GRGlInterface.Create()) ??
-                        throw new InvalidOperationException("GRGContextの作成に失敗しました");
+            grContext =
+                GRContext.CreateGl(GRGlInterface.Create())
+                ?? throw new InvalidOperationException("GRGContextの作成に失敗しました");
             GrContext = grContext;
 
             (TextureHandle, Surface) = CreateTextureAndSurface(Size);
@@ -96,7 +97,8 @@ public class GLView : IDisposable
             {
                 unsafe
                 {
-                    if (_window != null) GLFW.DestroyWindow(_window);
+                    if (_window is not null)
+                        GLFW.DestroyWindow(_window);
                 }
             }
 
@@ -111,21 +113,47 @@ public class GLView : IDisposable
         try
         {
             GL.BindTexture(TextureTarget.Texture2D, textureHandle);
-            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Linear);
-            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Linear);
-            GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba8, size.Width, size.Height, 0,
+            GL.TexParameter(
+                TextureTarget.Texture2D,
+                TextureParameterName.TextureMinFilter,
+                (int)TextureMinFilter.Linear
+            );
+            GL.TexParameter(
+                TextureTarget.Texture2D,
+                TextureParameterName.TextureMagFilter,
+                (int)TextureMagFilter.Linear
+            );
+            GL.TexImage2D(
+                TextureTarget.Texture2D,
+                0,
+                PixelInternalFormat.Rgba8,
+                size.Width,
+                size.Height,
+                0,
                 PixelFormat.Rgba,
-                PixelType.UnsignedByte, IntPtr.Zero);
+                PixelType.UnsignedByte,
+                IntPtr.Zero
+            );
 
-            using var backendTexture = new GRBackendTexture(size.Width, size.Height, false, new GRGlTextureInfo
-            {
-                Id = (uint)textureHandle,
-                Target = (uint)TextureTarget.Texture2D,
-                Format = (uint)InternalFormat.Rgba8
-            });
+            using var backendTexture = new GRBackendTexture(
+                size.Width,
+                size.Height,
+                false,
+                new GRGlTextureInfo
+                {
+                    Id = (uint)textureHandle,
+                    Target = (uint)TextureTarget.Texture2D,
+                    Format = (uint)InternalFormat.Rgba8,
+                }
+            );
 
-            surface = SKSurface.Create(GrContext, backendTexture, GRSurfaceOrigin.BottomLeft, SKColorType.Rgba8888) ??
-                      throw new InvalidOperationException("SKSurfaceの作成に失敗しました。");
+            surface =
+                SKSurface.Create(
+                    GrContext,
+                    backendTexture,
+                    GRSurfaceOrigin.BottomLeft,
+                    SKColorType.Rgba8888
+                ) ?? throw new InvalidOperationException("SKSurfaceの作成に失敗しました。");
 
             return (textureHandle, surface);
         }
@@ -137,7 +165,8 @@ public class GLView : IDisposable
             }
             finally
             {
-                if (textureHandle != 0) GL.DeleteTexture(textureHandle);
+                if (textureHandle != 0)
+                    GL.DeleteTexture(textureHandle);
             }
 
             throw;
@@ -256,13 +285,15 @@ public class GLView : IDisposable
                 {
                     try
                     {
-                        if (TextureHandle != 0) GL.DeleteTexture(TextureHandle);
+                        if (TextureHandle != 0)
+                            GL.DeleteTexture(TextureHandle);
                     }
                     finally
                     {
                         unsafe
                         {
-                            if (_window != null) GLFW.DestroyWindow(_window);
+                            if (_window is not null)
+                                GLFW.DestroyWindow(_window);
                         }
                     }
                 }
