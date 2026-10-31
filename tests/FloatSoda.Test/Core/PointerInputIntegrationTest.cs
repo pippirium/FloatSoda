@@ -24,28 +24,26 @@ public class PointerInputIntegrationTest
     {
         var received = new List<string>();
         var binding = new WidgetBinding(new RenderView());
-        binding.AttachRootWidget(new PointerRegion
-        {
-            OnPointerEnter = _ => received.Add("enter"),
-            OnPointerExit = _ => received.Add("exit"),
-            Child = new Listener
+        binding.AttachRootWidget(
+            new PointerRegion
             {
-                Behaviour = HitTestBehaviour.Opaque,
-                OnPointerDown = _ => received.Add("down"),
-                OnPointerUp = _ => received.Add("up"),
-                OnPointerCancel = _ => received.Add("cancel"),
-                Child = new GestureDetector
+                OnPointerEnter = _ => received.Add("enter"),
+                OnPointerExit = _ => received.Add("exit"),
+                Child = new Listener
                 {
                     Behaviour = HitTestBehaviour.Opaque,
-                    OnTap = () => received.Add("tap"),
-                    Child = new SizedBox
+                    OnPointerDown = _ => received.Add("down"),
+                    OnPointerUp = _ => received.Add("up"),
+                    OnPointerCancel = _ => received.Add("cancel"),
+                    Child = new GestureDetector
                     {
-                        Width = 100,
-                        Height = 100,
-                    }
-                }
+                        Behaviour = HitTestBehaviour.Opaque,
+                        OnTap = () => received.Add("tap"),
+                        Child = new SizedBox { Width = 100, Height = 100 },
+                    },
+                },
             }
-        });
+        );
         binding.FlushBuildAndLayout();
 
         using var source = new FakeRawPointerSource();
@@ -65,8 +63,6 @@ public class PointerInputIntegrationTest
         source.Raise(new RawPointerEvent(RawPointerKind.ButtonUp, new Offset(10, 10)));
         controller.Flush();
 
-        Assert.Equal(
-            ["enter", "down", "cancel", "exit", "enter", "down", "up", "tap"],
-            received);
+        Assert.Equal(["enter", "down", "cancel", "exit", "enter", "down", "up", "tap"], received);
     }
 }

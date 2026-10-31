@@ -23,7 +23,7 @@ Widget root = new SizedBox
 {
     Width = 100,
     Height = 100,
-    Child = new ColoredBox { Color = SKColors.Tomato }
+    Child = new ColoredBox { Color = Colors.Tomato }
 };
 ```
 

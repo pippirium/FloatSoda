@@ -53,12 +53,12 @@ public record ExpressionPanel : StatelessWidget
                         Height = 100,
                         Child = new ColoredBox
                         {
-                            Color = SKColors.CornflowerBlue,
+                            Color = Colors.CornflowerBlue,
                             Child = new Center
                             {
                                 Child = new Text(Names[index])
                                 {
-                                    Style = new TextStyle { Color = SKColors.White, FontSize = 36, FontWeight = 700 },
+                                    Style = new TextStyle { Color = Colors.White, FontSize = 36, FontWeight = 700 },
                                 },
                             },
                         },

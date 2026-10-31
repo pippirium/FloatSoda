@@ -38,28 +38,32 @@ public record GestureDetector : StatelessWidget
 
         if (OnTap is not null)
         {
-            gestures[typeof(TapGestureRecognizer)] = new GestureRecognizerFactory<TapGestureRecognizer>(
-                () => new TapGestureRecognizer(),
-                r => r.OnTap = OnTap);
+            gestures[typeof(TapGestureRecognizer)] =
+                new GestureRecognizerFactory<TapGestureRecognizer>(
+                    () => new TapGestureRecognizer(),
+                    r => r.OnTap = OnTap
+                );
         }
 
         if (OnPanStart is not null || OnPanUpdate is not null || OnPanEnd is not null)
         {
-            gestures[typeof(PanGestureRecognizer)] = new GestureRecognizerFactory<PanGestureRecognizer>(
-                () => new PanGestureRecognizer(),
-                r =>
-                {
-                    r.OnPanStart = OnPanStart;
-                    r.OnPanUpdate = OnPanUpdate;
-                    r.OnPanEnd = OnPanEnd;
-                });
+            gestures[typeof(PanGestureRecognizer)] =
+                new GestureRecognizerFactory<PanGestureRecognizer>(
+                    () => new PanGestureRecognizer(),
+                    r =>
+                    {
+                        r.OnPanStart = OnPanStart;
+                        r.OnPanUpdate = OnPanUpdate;
+                        r.OnPanEnd = OnPanEnd;
+                    }
+                );
         }
 
         return new RawGestureDetector
         {
             Gestures = gestures,
             Behaviour = Behaviour,
-            Child = Child
+            Child = Child,
         };
     }
 }
@@ -109,8 +113,11 @@ internal class RawGestureDetectorState : State<RawGestureDetector>
     /// </summary>
     private void SyncAll(Dictionary<Type, GestureRecognizerFactory> gestures)
     {
-        var binding = Context.Owner?.GestureBinding
-            ?? throw new InvalidOperationException("GestureBinding が未設定です（BuildOwner に紐づいていません）。");
+        var binding =
+            Context.Owner?.GestureBinding
+            ?? throw new InvalidOperationException(
+                "GestureBinding が未設定です（BuildOwner に紐づいていません）。"
+            );
 
         var old = _recognizers;
         var updated = new Dictionary<Type, GestureRecognizer>(gestures.Count);
@@ -129,7 +136,8 @@ internal class RawGestureDetectorState : State<RawGestureDetector>
 
         foreach (var (type, recognizer) in old)
         {
-            if (!updated.ContainsKey(type)) recognizer.Dispose();
+            if (!updated.ContainsKey(type))
+                recognizer.Dispose();
         }
 
         _recognizers = updated;

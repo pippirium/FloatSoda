@@ -29,12 +29,26 @@ public static class OverlayKeyboard
     /// <param name="maxChars">入力可能な最大文字数。</param>
     /// <param name="userValue">VREvent にそのまま返されるユーザー値。</param>
     /// <returns>表示に成功した場合 <see langword="true"/>。SteamVR の OSK が他で使用中の場合 <see langword="false"/>。</returns>
-    public static bool TryShowForOverlay(ulong overlayHandle, string description,
-        string? existingText = null, uint flags = (uint)EKeyboardFlags.KeyboardFlag_Modal,
-        int inputMode = InputModeSingleLine, uint maxChars = 256, ulong userValue = 0)
+    public static bool TryShowForOverlay(
+        ulong overlayHandle,
+        string description,
+        string? existingText = null,
+        uint flags = (uint)EKeyboardFlags.KeyboardFlag_Modal,
+        int inputMode = InputModeSingleLine,
+        uint maxChars = 256,
+        ulong userValue = 0
+    )
     {
-        var error = OpenVR.Overlay.ShowKeyboardForOverlay(overlayHandle, inputMode, 0, flags,
-            description, maxChars, existingText ?? "", userValue);
+        var error = OpenVR.Overlay.ShowKeyboardForOverlay(
+            overlayHandle,
+            inputMode,
+            0,
+            flags,
+            description,
+            maxChars,
+            existingText ?? "",
+            userValue
+        );
 
         switch (error)
         {

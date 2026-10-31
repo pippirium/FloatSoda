@@ -1,7 +1,7 @@
-using FloatSoda.Animation;
 using FloatSoda.Abstractions.Geometries;
-using FloatSoda.Rendering.Layers;
+using FloatSoda.Animation;
 using FloatSoda.Core;
+using FloatSoda.Rendering.Layers;
 
 namespace FloatSoda.RenderObjects.Animation;
 
@@ -28,9 +28,10 @@ public class RenderAnimatedOpacity : RenderProxyBox
         get;
         set
         {
-            if (ReferenceEquals(field, value)) return;
+            if (ReferenceEquals(field, value))
+                return;
 
-            if (Attached && field != null)
+            if (Attached && field is not null)
             {
                 field.Changed -= UpdateOpacity;
             }
@@ -68,18 +69,20 @@ public class RenderAnimatedOpacity : RenderProxyBox
 
         Alpha = (byte)double.Round(Opacity.Value * 255);
 
-        if (oldAlpha != Alpha) MarkNeedsPaint();
+        if (oldAlpha != Alpha)
+            MarkNeedsPaint();
     }
 
     /// <inheritdoc/>
     public override void Paint(PaintingContext context, Offset offset)
     {
-        if (Child is null) return;
+        if (Child is null)
+            return;
 
         Layer = Alpha switch
         {
             0 => null,
-            _ => context.PushOpacity(offset, Alpha ?? 0, base.Paint, Layer as OpacityLayer)
+            _ => context.PushOpacity(offset, Alpha ?? 0, base.Paint, Layer as OpacityLayer),
         };
     }
 }

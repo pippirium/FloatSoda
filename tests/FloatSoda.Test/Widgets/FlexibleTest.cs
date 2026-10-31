@@ -58,12 +58,13 @@ public class FlexibleTest
     public void ApplyParentData_FlexとFitの変更時に親をLayoutDirtyにして結果を更新する()
     {
         var child = Box();
-        var renderFlex = new RenderFlex
+        var renderFlex = new RenderFlex { Direction = Axis.Horizontal, Children = { child } };
+        var initial = new Flexible
         {
-            Direction = Axis.Horizontal,
-            Children = { child }
+            Flex = 1,
+            Fit = FlexFit.Loose,
+            Child = new SizedBox(),
         };
-        var initial = new Flexible { Flex = 1, Fit = FlexFit.Loose, Child = new SizedBox() };
         initial.ApplyParentData(child);
         renderFlex.Layout(BoxConstraints.Tight(100, 20));
         Assert.Equal(new SKSize(10, 10), child.Size);
@@ -97,13 +98,9 @@ public class FlexibleTest
                 Child = new Row
                 {
                     CrossAxisAlignment = CrossAxisAlignment.Stretch,
-                    Children =
-                    [
-                        new Spacer { Flex = 2 },
-                        new Expanded { Child = new SizedBox() }
-                    ]
-                }
-            }
+                    Children = [new Spacer { Flex = 2 }, new Expanded { Child = new SizedBox() }],
+                },
+            },
         }.AttachToRenderTree(owner, null);
 
         pipeline.FlushLayout();
@@ -120,19 +117,21 @@ public class FlexibleTest
     [InlineData(int.MinValue)]
     public void Flex_0以下を指定するとArgumentOutOfRangeExceptionを投げる(int value)
     {
-        Assert.Throws<ArgumentOutOfRangeException>(() => new Flexible { Flex = value, Child = new SizedBox() });
-        Assert.Throws<ArgumentOutOfRangeException>(() => new Expanded { Flex = value, Child = new SizedBox() });
+        Assert.Throws<ArgumentOutOfRangeException>(() =>
+            new Flexible { Flex = value, Child = new SizedBox() }
+        );
+        Assert.Throws<ArgumentOutOfRangeException>(() =>
+            new Expanded { Flex = value, Child = new SizedBox() }
+        );
         Assert.Throws<ArgumentOutOfRangeException>(() => new Spacer { Flex = value });
     }
 
     [Fact]
     public void Fit_未定義値を指定するとArgumentOutOfRangeExceptionを投げる()
     {
-        Assert.Throws<ArgumentOutOfRangeException>(() => new Flexible
-        {
-            Fit = (FlexFit)999,
-            Child = new SizedBox()
-        });
+        Assert.Throws<ArgumentOutOfRangeException>(() =>
+            new Flexible { Fit = (FlexFit)999, Child = new SizedBox() }
+        );
     }
 
     [Fact]
@@ -147,19 +146,37 @@ public class FlexibleTest
         Assert.True(typeof(StatelessWidget).IsAssignableFrom(typeof(Spacer)));
         Assert.Equal([FlexFit.Tight, FlexFit.Loose], Enum.GetValues<FlexFit>());
 
-        Type[] types = [typeof(Flexible), typeof(Expanded), typeof(Spacer), typeof(FlexParentData), typeof(FlexFit)];
+        Type[] types =
+        [
+            typeof(Flexible),
+            typeof(Expanded),
+            typeof(Spacer),
+            typeof(FlexParentData),
+            typeof(FlexFit),
+        ];
         var exposedTypes = types
-            .SelectMany(type => type.GetMembers(BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static | BindingFlags.DeclaredOnly))
+            .SelectMany(type =>
+                type.GetMembers(
+                    BindingFlags.Public
+                        | BindingFlags.Instance
+                        | BindingFlags.Static
+                        | BindingFlags.DeclaredOnly
+                )
+            )
             .SelectMany(GetSignatureTypes);
-        Assert.DoesNotContain(exposedTypes, type => type.Namespace?.StartsWith("SkiaSharp", StringComparison.Ordinal) == true);
+        Assert.DoesNotContain(
+            exposedTypes,
+            type => type.Namespace?.StartsWith("SkiaSharp", StringComparison.Ordinal) == true
+        );
     }
 
     private static RenderObjectToWidgetElement<RenderView> Attach(
         int firstFlex,
         RenderView view,
         BuildOwner owner,
-        RenderObjectToWidgetElement<RenderView>? element)
-        => new RenderObjectToWidgetAdapter
+        RenderObjectToWidgetElement<RenderView>? element
+    ) =>
+        new RenderObjectToWidgetAdapter
         {
             Container = view,
             Child = new SizedBox
@@ -172,10 +189,10 @@ public class FlexibleTest
                     Children =
                     [
                         new Expanded { Flex = firstFlex, Child = new SizedBox() },
-                        new Expanded { Child = new SizedBox() }
-                    ]
-                }
-            }
+                        new Expanded { Child = new SizedBox() },
+                    ],
+                },
+            },
         }.AttachToRenderTree(owner, element);
 
     private static RenderFlex GetFlex(RenderView view)
@@ -184,25 +201,35 @@ public class FlexibleTest
         return Assert.IsType<RenderFlex>(constrainedBox.Child);
     }
 
-    private static RenderConstrainedBox Box() => new()
-    {
-        AdditionalConstraints = BoxConstraints.Tight(10, 10)
-    };
+    private static RenderConstrainedBox Box() =>
+        new() { AdditionalConstraints = BoxConstraints.Tight(10, 10) };
 
     private static void AssertInitProperty(Type type, string name, Type propertyType)
     {
-        var property = type.GetProperty(name, BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly);
+        var property = type.GetProperty(
+            name,
+            BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly
+        );
         Assert.NotNull(property);
         Assert.Equal(propertyType, property.PropertyType);
-        Assert.Contains(typeof(IsExternalInit), property.SetMethod!.ReturnParameter.GetRequiredCustomModifiers());
+        Assert.Contains(
+            typeof(IsExternalInit),
+            property.SetMethod!.ReturnParameter.GetRequiredCustomModifiers()
+        );
     }
 
-    private static IEnumerable<Type> GetSignatureTypes(MemberInfo member) => member switch
-    {
-        PropertyInfo property => [property.PropertyType],
-        FieldInfo field => [field.FieldType],
-        MethodInfo method => method.GetParameters().Select(parameter => parameter.ParameterType).Append(method.ReturnType),
-        ConstructorInfo constructor => constructor.GetParameters().Select(parameter => parameter.ParameterType),
-        _ => [],
-    };
+    private static IEnumerable<Type> GetSignatureTypes(MemberInfo member) =>
+        member switch
+        {
+            PropertyInfo property => [property.PropertyType],
+            FieldInfo field => [field.FieldType],
+            MethodInfo method => method
+                .GetParameters()
+                .Select(parameter => parameter.ParameterType)
+                .Append(method.ReturnType),
+            ConstructorInfo constructor => constructor
+                .GetParameters()
+                .Select(parameter => parameter.ParameterType),
+            _ => [],
+        };
 }

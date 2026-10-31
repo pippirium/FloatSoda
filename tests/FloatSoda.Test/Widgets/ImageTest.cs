@@ -50,7 +50,7 @@ public class ImageTest
             {
                 Width = Size.Width,
                 Height = Size.Height,
-                Child = new ImageWidget { Provider = new FileImageProvider(path) }
+                Child = new ImageWidget { Provider = new FileImageProvider(path) },
             };
 
             using var bitmap = Renderer.Render(widget, Size);
@@ -69,15 +69,18 @@ public class ImageTest
         var path = Path.Combine(Path.GetTempPath(), $"floatsoda-missing-{Guid.NewGuid():N}.png");
         Exception? reported = null;
 
-        var root = MountAndWaitForCompletion(new ImageWidget
-        {
-            Provider = new FileImageProvider(path),
-            ErrorBuilder = (_, exception) =>
+        var root = MountAndWaitForCompletion(
+            new ImageWidget
             {
-                reported = exception;
-                return new SizedBox { Width = 12, Height = 12 };
-            }
-        }, _ => reported is not null);
+                Provider = new FileImageProvider(path),
+                ErrorBuilder = (_, exception) =>
+                {
+                    reported = exception;
+                    return new SizedBox { Width = 12, Height = 12 };
+                },
+            },
+            _ => reported is not null
+        );
 
         Assert.IsType<FileNotFoundException>(reported);
         Assert.Equal(new SKSize(12, 12), FindRenderObject<RenderConstrainedBox>(root).Size);
@@ -93,15 +96,18 @@ public class ImageTest
         {
             Exception? reported = null;
 
-            MountAndWaitForCompletion(new ImageWidget
-            {
-                Provider = new FileImageProvider(path),
-                ErrorBuilder = (_, exception) =>
+            MountAndWaitForCompletion(
+                new ImageWidget
                 {
-                    reported = exception;
-                    return new SizedBox();
-                }
-            }, _ => reported is not null);
+                    Provider = new FileImageProvider(path),
+                    ErrorBuilder = (_, exception) =>
+                    {
+                        reported = exception;
+                        return new SizedBox();
+                    },
+                },
+                _ => reported is not null
+            );
 
             Assert.IsType<InvalidOperationException>(reported);
         }
@@ -121,9 +127,11 @@ public class ImageTest
             new ImageWidget
             {
                 Provider = new FileImageProvider(path),
-                LoadingBuilder = (_, _) => new FloatSoda.Widgets.Paint.ColoredBox { Color = new Color(255, 0, 0) }
+                LoadingBuilder = (_, _) =>
+                    new FloatSoda.Widgets.Paint.ColoredBox { Color = new Color(255, 0, 0) },
             },
-            r => FindRenderObjectOrDefault<RenderColoredBox>(r) is null);
+            r => FindRenderObjectOrDefault<RenderColoredBox>(r) is null
+        );
 
         Assert.Null(FindRenderObjectOrDefault<RenderImage>(root));
         Assert.Null(FindRenderObjectOrDefault<RenderColoredBox>(root));
@@ -134,15 +142,17 @@ public class ImageTest
     {
         var progressValues = new List<ImageLoadingProgress?>();
 
-        var (root, _) = Mount(new ImageWidget
-        {
-            Provider = new PendingImageProvider(Guid.NewGuid()),
-            LoadingBuilder = (_, progress) =>
+        var (root, _) = Mount(
+            new ImageWidget
             {
-                progressValues.Add(progress);
-                return new SizedBox { Width = 7, Height = 7 };
+                Provider = new PendingImageProvider(Guid.NewGuid()),
+                LoadingBuilder = (_, progress) =>
+                {
+                    progressValues.Add(progress);
+                    return new SizedBox { Width = 7, Height = 7 };
+                },
             }
-        });
+        );
 
         Assert.Equal([null], progressValues);
         Assert.Equal(new SKSize(7, 7), FindRenderObject<RenderConstrainedBox>(root).Size);
@@ -155,11 +165,14 @@ public class ImageTest
 
         try
         {
-            var root = MountAndWaitForCompletion(new ImageWidget
-            {
-                Provider = new FileImageProvider(path),
-                LoadingBuilder = (_, _) => new SizedBox { Width = 7, Height = 7 }
-            }, r => FindRenderObjectOrDefault<RenderImage>(r) is not null);
+            var root = MountAndWaitForCompletion(
+                new ImageWidget
+                {
+                    Provider = new FileImageProvider(path),
+                    LoadingBuilder = (_, _) => new SizedBox { Width = 7, Height = 7 },
+                },
+                r => FindRenderObjectOrDefault<RenderImage>(r) is not null
+            );
 
             Assert.Equal(new SKSize(8, 8), FindRenderObject<RenderImage>(root).Size);
         }
@@ -182,11 +195,15 @@ public class ImageTest
             var (root, owner) = Mount(new ImageWidget { Provider = new FileImageProvider(path) });
             Assert.NotNull(FindRenderObjectOrDefault<RenderImage>(root));
 
-            Update(root, owner, new ImageWidget
-            {
-                Provider = new PendingImageProvider(Guid.NewGuid()),
-                LoadingBuilder = (_, _) => new SizedBox { Width = 7, Height = 7 }
-            });
+            Update(
+                root,
+                owner,
+                new ImageWidget
+                {
+                    Provider = new PendingImageProvider(Guid.NewGuid()),
+                    LoadingBuilder = (_, _) => new SizedBox { Width = 7, Height = 7 },
+                }
+            );
 
             Assert.Null(FindRenderObjectOrDefault<RenderImage>(root));
             Assert.Equal(new SKSize(7, 7), FindRenderObject<RenderConstrainedBox>(root).Size);
@@ -208,7 +225,9 @@ public class ImageTest
             using (var preloaded = Preload(path))
             {
                 image = preloaded.Image;
-                var (root, owner) = Mount(new ImageWidget { Provider = new FileImageProvider(path) });
+                var (root, owner) = Mount(
+                    new ImageWidget { Provider = new FileImageProvider(path) }
+                );
 
                 Update(root, owner, new SizedBox());
             }
@@ -227,25 +246,43 @@ public class ImageTest
     {
         // 回帰テスト: 待機をキャンセルしないと、完了しない読み込みの参照がStateの破棄後も残り続ける。
         var recorder = new TokenRecorder();
-        var (root, owner) = Mount(new ImageWidget { Provider = new PendingImageProvider(Guid.NewGuid(), recorder) });
+        var (root, owner) = Mount(
+            new ImageWidget { Provider = new PendingImageProvider(Guid.NewGuid(), recorder) }
+        );
         Assert.False(recorder.Token.IsCancellationRequested);
 
         Update(root, owner, new SizedBox());
 
         // 待機のキャンセルから参照の返却までは、スレッドプール上の継続で進む。
-        Assert.True(SpinWait.SpinUntil(() => recorder.Token.IsCancellationRequested, TimeSpan.FromSeconds(3)));
+        Assert.True(
+            SpinWait.SpinUntil(
+                () => recorder.Token.IsCancellationRequested,
+                TimeSpan.FromSeconds(3)
+            )
+        );
     }
 
     [Fact]
     public void DidUpdateWidget_読み込みが未完了のままProviderを差し替え_前の読み込みを中断する()
     {
         var recorder = new TokenRecorder();
-        var (root, owner) = Mount(new ImageWidget { Provider = new PendingImageProvider(Guid.NewGuid(), recorder) });
+        var (root, owner) = Mount(
+            new ImageWidget { Provider = new PendingImageProvider(Guid.NewGuid(), recorder) }
+        );
 
-        Update(root, owner, new ImageWidget { Provider = new PendingImageProvider(Guid.NewGuid()) });
+        Update(
+            root,
+            owner,
+            new ImageWidget { Provider = new PendingImageProvider(Guid.NewGuid()) }
+        );
 
         // 待機のキャンセルから参照の返却までは、スレッドプール上の継続で進む。
-        Assert.True(SpinWait.SpinUntil(() => recorder.Token.IsCancellationRequested, TimeSpan.FromSeconds(3)));
+        Assert.True(
+            SpinWait.SpinUntil(
+                () => recorder.Token.IsCancellationRequested,
+                TimeSpan.FromSeconds(3)
+            )
+        );
     }
 
     [Fact]
@@ -260,7 +297,10 @@ public class ImageTest
             using (var preloaded = Preload(path))
             {
                 image = preloaded.Image;
-                using var bitmap = Renderer.Render(new ImageWidget { Provider = new FileImageProvider(path) }, Size);
+                using var bitmap = Renderer.Render(
+                    new ImageWidget { Provider = new FileImageProvider(path) },
+                    Size
+                );
             }
 
             Assert.Equal(IntPtr.Zero, image.Handle);
@@ -289,20 +329,28 @@ public class ImageTest
                         Fit = StackFit.Expand,
                         Children =
                         {
-                            new ImageWidget { Provider = new FileImageProvider(path), Fit = BoxFit.Fill },
+                            new ImageWidget
+                            {
+                                Provider = new FileImageProvider(path),
+                                Fit = BoxFit.Fill,
+                            },
                             new Center
                             {
                                 Child = new SizedBox
                                 {
                                     Width = 10,
                                     Height = 10,
-                                    Child = new FloatSoda.Widgets.Paint.ColoredBox { Color = new Color(255, 0, 0) }
-                                }
-                            }
-                        }
-                    }
+                                    Child = new FloatSoda.Widgets.Paint.ColoredBox
+                                    {
+                                        Color = new Color(255, 0, 0),
+                                    },
+                                },
+                            },
+                        },
+                    },
                 },
-                Size);
+                Size
+            );
 
             Assert.Equal(SKColors.Red, bitmap.GetPixel(20, 20));
             Assert.Equal(SKColors.Blue, bitmap.GetPixel(2, 2));
@@ -326,15 +374,19 @@ public class ImageTest
                 Children =
                 {
                     new ImageWidget { Provider = new GatedImageProvider(Guid.NewGuid(), gate) },
-                    new FloatSoda.Widgets.Paint.ColoredBox { Color = new Color(255, 0, 0) }
-                }
+                    new FloatSoda.Widgets.Paint.ColoredBox { Color = new Color(255, 0, 0) },
+                },
             },
-            buildScheduled.Set);
+            buildScheduled.Set
+        );
         Assert.Null(FindRenderObjectOrDefault<RenderImage>(root));
 
         buildScheduled.Reset();
         gate.Source.SetResult(CreateSolidImage());
-        Assert.True(buildScheduled.Wait(TimeSpan.FromSeconds(5)), "読み込みの完了が通知されませんでした。");
+        Assert.True(
+            buildScheduled.Wait(TimeSpan.FromSeconds(5)),
+            "読み込みの完了が通知されませんでした。"
+        );
         owner.BuildScope();
         root.RenderObject!.Owner!.FlushLayout();
 
@@ -371,9 +423,10 @@ public class ImageTest
                 {
                     Width = Size.Width,
                     Height = Size.Height,
-                    Child = new ImageWidget { Provider = new FileImageProvider(path) }
+                    Child = new ImageWidget { Provider = new FileImageProvider(path) },
                 },
-                Size);
+                Size
+            );
 
             // 8x4の画像を40x40へContainで収めると40x20になり、上下へ10pxずつ余白ができる。
             Assert.Equal(SKColors.Blue, bitmap.GetPixel(20, 20));
@@ -399,9 +452,14 @@ public class ImageTest
                 {
                     Width = Size.Width,
                     Height = Size.Height,
-                    Child = new ImageWidget { Provider = new FileImageProvider(path), Fit = BoxFit.Fill }
+                    Child = new ImageWidget
+                    {
+                        Provider = new FileImageProvider(path),
+                        Fit = BoxFit.Fill,
+                    },
                 },
-                Size);
+                Size
+            );
 
             Assert.Equal(SKColors.Blue, bitmap.GetPixel(20, 2));
             Assert.Equal(SKColors.Blue, bitmap.GetPixel(20, 37));
@@ -425,9 +483,14 @@ public class ImageTest
                 {
                     Width = Size.Width,
                     Height = Size.Height,
-                    Child = new ImageWidget { Provider = new FileImageProvider(path), Fit = BoxFit.None }
+                    Child = new ImageWidget
+                    {
+                        Provider = new FileImageProvider(path),
+                        Fit = BoxFit.None,
+                    },
                 },
-                Size);
+                Size
+            );
 
             // 8x8が中央(16,16)-(24,24)へ置かれ、その外側は描画されない。
             Assert.Equal(SKColors.Blue, bitmap.GetPixel(20, 20));
@@ -456,10 +519,11 @@ public class ImageTest
                     {
                         Provider = new FileImageProvider(path),
                         Fit = BoxFit.Contain,
-                        Alignment = Alignment.TopLeft
-                    }
+                        Alignment = Alignment.TopLeft,
+                    },
                 },
-                Size);
+                Size
+            );
 
             // Containで40x20になった画像が上端へ寄るため、上が塗られ下が余白になる。
             Assert.Equal(SKColors.Blue, bitmap.GetPixel(20, 2));
@@ -502,9 +566,14 @@ public class ImageTest
                 {
                     Width = Size.Width,
                     Height = Size.Height,
-                    Child = new ImageWidget { Provider = new FileImageProvider(path), Fit = BoxFit.Cover }
+                    Child = new ImageWidget
+                    {
+                        Provider = new FileImageProvider(path),
+                        Fit = BoxFit.Cover,
+                    },
                 },
-                Size);
+                Size
+            );
 
             // 領域全体が埋まる(余白が残らない)。
             Assert.Equal(SKColors.Red, rendered.GetPixel(2, 2));
@@ -524,7 +593,9 @@ public class ImageTest
     {
         using var image = CreateSolidImage();
 
-        Assert.Throws<ArgumentOutOfRangeException>(() => new RenderImage { Image = image, Fit = (BoxFit)99 });
+        Assert.Throws<ArgumentOutOfRangeException>(() =>
+            new RenderImage { Image = image, Fit = (BoxFit)99 }
+        );
     }
 
     [Fact]
@@ -532,8 +603,9 @@ public class ImageTest
     {
         using var image = CreateSolidImage();
 
-        Assert.Throws<ArgumentOutOfRangeException>(
-            () => new RenderImage { Image = image, Alignment = new Alignment(float.NaN, 0) });
+        Assert.Throws<ArgumentOutOfRangeException>(() =>
+            new RenderImage { Image = image, Alignment = new Alignment(float.NaN, 0) }
+        );
     }
 
     private static SKImage CreateSolidImage()
@@ -552,42 +624,47 @@ public class ImageTest
     /// <summary>読み込みの完了をテストから制御するための共有状態。recordの等価性を変えないよう、プロバイダーの外に持つ。</summary>
     private sealed class LoadGate
     {
-        public TaskCompletionSource<SKImage> Source { get; } = new(TaskCreationOptions.RunContinuationsAsynchronously);
+        public TaskCompletionSource<SKImage> Source { get; } =
+            new(TaskCreationOptions.RunContinuationsAsynchronously);
     }
 
     /// <summary>テストが<see cref="LoadGate.Source"/>を完了させるまで読み込みが終わらないプロバイダー。</summary>
     private sealed record GatedImageProvider(Guid Key, LoadGate Gate) : ImageProvider
     {
-        protected override ValueTask<SKImage> LoadAsync(CancellationToken cancellationToken) => new(Gate.Source.Task);
+        protected override ValueTask<SKImage> LoadAsync(CancellationToken cancellationToken) =>
+            new(Gate.Source.Task);
     }
 
     /// <summary>読み込みが完了しないプロバイダー。</summary>
-    private sealed record PendingImageProvider(Guid Key, TokenRecorder? Recorder = null) : ImageProvider
+    private sealed record PendingImageProvider(Guid Key, TokenRecorder? Recorder = null)
+        : ImageProvider
     {
         private readonly TaskCompletionSource<SKImage> _source = new();
 
         protected override ValueTask<SKImage> LoadAsync(CancellationToken cancellationToken)
         {
-            if (Recorder is not null) Recorder.Token = cancellationToken;
+            if (Recorder is not null)
+                Recorder.Token = cancellationToken;
             return new ValueTask<SKImage>(_source.Task);
         }
     }
 
     private static (RenderObjectToWidgetElement<RenderView> Root, BuildOwner Owner) Mount(
         Widget widget,
-        Action? onBuildScheduled = null)
+        Action? onBuildScheduled = null
+    )
     {
         var renderView = new RenderView(100, 100);
         var pipeline = new RenderPipeline
         {
             OnNeedVisualUpdate = () => { },
-            RenderView = renderView
+            RenderView = renderView,
         };
         var owner = new BuildOwner(onBuildScheduled ?? (() => { }));
         var root = new RenderObjectToWidgetAdapter
         {
             Container = renderView,
-            Child = new Align { Child = widget }
+            Child = new Align { Child = widget },
         }.AttachToRenderTree(owner, null);
 
         renderView.PrepareInitialFrame();
@@ -602,7 +679,8 @@ public class ImageTest
     /// </summary>
     private static RenderObjectToWidgetElement<RenderView> MountAndWaitForCompletion(
         Widget widget,
-        Func<RenderObjectToWidgetElement<RenderView>, bool> settled)
+        Func<RenderObjectToWidgetElement<RenderView>, bool> settled
+    )
     {
         using var buildScheduled = new ManualResetEventSlim();
         var (root, owner) = Mount(widget, buildScheduled.Set);
@@ -610,7 +688,10 @@ public class ImageTest
         var deadline = DateTime.UtcNow + TimeSpan.FromSeconds(5);
         while (!settled(root))
         {
-            Assert.True(DateTime.UtcNow < deadline, "読み込みの完了がツリーへ反映されませんでした。");
+            Assert.True(
+                DateTime.UtcNow < deadline,
+                "読み込みの完了がツリーへ反映されませんでした。"
+            );
             buildScheduled.Wait(TimeSpan.FromMilliseconds(20));
             buildScheduled.Reset();
             owner.BuildScope();
@@ -620,21 +701,28 @@ public class ImageTest
         return root;
     }
 
-    private static void Update(RenderObjectToWidgetElement<RenderView> root, BuildOwner owner, Widget widget)
+    private static void Update(
+        RenderObjectToWidgetElement<RenderView> root,
+        BuildOwner owner,
+        Widget widget
+    )
     {
         new RenderObjectToWidgetAdapter
         {
             Container = (RenderView)root.RenderObject!,
-            Child = new Align { Child = widget }
+            Child = new Align { Child = widget },
         }.AttachToRenderTree(owner, root);
         owner.BuildScope();
         root.RenderObject!.Owner!.FlushLayout();
     }
 
-    private static T FindRenderObject<T>(RenderObjectToWidgetElement<RenderView> root) where T : RenderObject =>
-        FindRenderObjectOrDefault<T>(root) ?? throw new InvalidOperationException($"{typeof(T).Name} が見つかりません。");
+    private static T FindRenderObject<T>(RenderObjectToWidgetElement<RenderView> root)
+        where T : RenderObject =>
+        FindRenderObjectOrDefault<T>(root)
+        ?? throw new InvalidOperationException($"{typeof(T).Name} が見つかりません。");
 
-    private static T? FindRenderObjectOrDefault<T>(RenderObjectToWidgetElement<RenderView> root) where T : RenderObject
+    private static T? FindRenderObjectOrDefault<T>(RenderObjectToWidgetElement<RenderView> root)
+        where T : RenderObject
     {
         T? found = null;
         Visit(root.RenderObject!);
@@ -642,7 +730,8 @@ public class ImageTest
 
         void Visit(RenderObject node)
         {
-            if (found is not null) return;
+            if (found is not null)
+                return;
             if (node is T match)
             {
                 found = match;

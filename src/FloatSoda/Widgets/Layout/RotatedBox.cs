@@ -14,5 +14,6 @@ public sealed record RotatedBox : SingleChildRenderObjectWidget<RenderRotatedBox
     public override RenderRotatedBox CreateRenderObject() => new() { QuarterTurns = QuarterTurns };
 
     /// <inheritdoc/>
-    public override void UpdateRenderObject(RenderRotatedBox renderObject) => renderObject.QuarterTurns = QuarterTurns;
+    public override void UpdateRenderObject(RenderRotatedBox renderObject) =>
+        renderObject.QuarterTurns = QuarterTurns;
 }

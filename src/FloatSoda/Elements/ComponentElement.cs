@@ -24,7 +24,6 @@ public abstract class ComponentElement : Element
     /// </summary>
     public virtual void FirstBuild() => Rebuild();
 
-
     /// <summary>
     /// 現在のWidgetから子Widgetを構築し、既存の子Elementを再利用できる場合は更新して置き換えます。
     /// </summary>
@@ -44,7 +43,8 @@ public abstract class ComponentElement : Element
     /// <inheritdoc/>
     public override void VisitChildren(Action<Element> visitor)
     {
-        if (Child != null) visitor(Child);
+        if (Child is not null)
+            visitor(Child);
     }
 }
 
@@ -78,7 +78,8 @@ public class StatelessElement : ComponentElement
 /// <typeparam name="T">このElementが管理するStatefulWidgetの型。</typeparam>
 /// <seealso cref="StatefulWidget{T}"/>
 /// <seealso cref="State{T}"/>
-public class StatefulElement<T> : ComponentElement where T : StatefulWidget<T>
+public class StatefulElement<T> : ComponentElement
+    where T : StatefulWidget<T>
 {
     /// <summary>
     /// このElementが所有するStateを取得します。
@@ -127,7 +128,6 @@ public class StatefulElement<T> : ComponentElement where T : StatefulWidget<T>
         base.PerformRebuild();
     }
 
-
     /// <summary>
     /// 所有するStateから子Widgetを構築します。
     /// </summary>
@@ -167,7 +167,8 @@ public class StatefulElement<T> : ComponentElement where T : StatefulWidget<T>
     {
         base.Deactivate();
 
-        if (_stateDisposed) return;
+        if (_stateDisposed)
+            return;
         _stateDisposed = true;
         State.Dispose();
     }

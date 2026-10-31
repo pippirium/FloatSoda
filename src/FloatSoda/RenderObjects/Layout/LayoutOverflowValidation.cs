@@ -10,7 +10,11 @@ internal static class LayoutOverflowValidation
     {
         if (!float.IsFinite(alignment.X) || !float.IsFinite(alignment.Y))
         {
-            throw new ArgumentOutOfRangeException(parameterName, alignment, "配置値には有限値を指定してください。");
+            throw new ArgumentOutOfRangeException(
+                parameterName,
+                alignment,
+                "配置値には有限値を指定してください。"
+            );
         }
     }
 
@@ -19,16 +23,31 @@ internal static class LayoutOverflowValidation
     {
         if (value is not null && (!double.IsFinite(value.Value) || value.Value < 0))
         {
-            throw new ArgumentOutOfRangeException(parameterName, value, "最小寸法には0以上の有限値を指定してください。");
+            throw new ArgumentOutOfRangeException(
+                parameterName,
+                value,
+                "最小寸法には0以上の有限値を指定してください。"
+            );
         }
     }
 
     /// <summary>最大寸法が0以上の値または正の無限大であることを検証します。</summary>
     internal static void ValidateMaximum(double? value, string parameterName)
     {
-        if (value is not null && (double.IsNaN(value.Value) || double.IsNegativeInfinity(value.Value) || value.Value < 0))
+        if (
+            value is not null
+            && (
+                double.IsNaN(value.Value)
+                || double.IsNegativeInfinity(value.Value)
+                || value.Value < 0
+            )
+        )
         {
-            throw new ArgumentOutOfRangeException(parameterName, value, "最大寸法には0以上の値または正の無限大を指定してください。");
+            throw new ArgumentOutOfRangeException(
+                parameterName,
+                value,
+                "最大寸法には0以上の値または正の無限大を指定してください。"
+            );
         }
     }
 
@@ -37,7 +56,10 @@ internal static class LayoutOverflowValidation
     {
         if (minimum > maximum)
         {
-            throw new ArgumentException("最小寸法は最大寸法以下である必要があります。", parameterName);
+            throw new ArgumentException(
+                "最小寸法は最大寸法以下である必要があります。",
+                parameterName
+            );
         }
     }
 }

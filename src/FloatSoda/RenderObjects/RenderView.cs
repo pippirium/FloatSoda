@@ -1,9 +1,9 @@
 ﻿using FloatSoda.Abstractions.Geometries;
 using FloatSoda.Abstractions.Input;
-using FloatSoda.Rendering.Layers;
 using FloatSoda.Core;
 using FloatSoda.Geometrics;
 using FloatSoda.Gesture;
+using FloatSoda.Rendering.Layers;
 using SkiaSharp;
 
 namespace FloatSoda.RenderObjects;
@@ -65,7 +65,8 @@ public class RenderView : RenderObject, IHasSingleChildRenderObject
         get;
         set
         {
-            if (field == value) return;
+            if (field == value)
+                return;
             field = value;
             MarkNeedsLayout();
         }
@@ -77,7 +78,7 @@ public class RenderView : RenderObject, IHasSingleChildRenderObject
     /// </summary>
     public override void PerformLayout()
     {
-        if (Child == null)
+        if (Child is null)
         {
             Size = FixedSize ?? SKSize.Empty;
             return;
@@ -91,11 +92,11 @@ public class RenderView : RenderObject, IHasSingleChildRenderObject
         Size = FixedSize ?? Child.Size;
     }
 
-
     /// <inheritdoc/>
     public override void Paint(PaintingContext context, Offset offset)
     {
-        if (Child != null) context.PaintChild(Child, offset);
+        if (Child is not null)
+            context.PaintChild(Child, offset);
     }
 
     /// <inheritdoc/>
@@ -113,7 +114,8 @@ public class RenderView : RenderObject, IHasSingleChildRenderObject
     }
 
     /// <inheritdoc/>
-    public override void VisitChildren(Action<RenderObject> visitor) => _child.VisitChildren(visitor);
+    public override void VisitChildren(Action<RenderObject> visitor) =>
+        _child.VisitChildren(visitor);
 
     /// <inheritdoc/>
     public override void RedepthChildren() => VisitChildren(RedepthChild);

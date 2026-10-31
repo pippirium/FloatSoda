@@ -32,10 +32,11 @@ public class ClipRectFlutterParityTest
                 {
                     ClipBehavior = Clip.None,
                     Clipper = new TenPixelClipper(),
-                    Child = new ColoredBox { Color = new Color(255, 0, 0) }
-                }
+                    Child = new ColoredBox { Color = new Color(255, 0, 0) },
+                },
             },
-            new SKSizeI(20, 20));
+            new SKSizeI(20, 20)
+        );
 
         Assert.Equal(SKColors.Red, bitmap.GetPixel(15, 15));
     }

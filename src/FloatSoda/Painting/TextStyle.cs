@@ -1,5 +1,5 @@
-using FloatSoda.Geometrics;
 using FloatSoda.Core.Providers;
+using FloatSoda.Geometrics;
 using RichTextKitStyle = Topten.RichTextKit.Style;
 
 namespace FloatSoda.Painting;
@@ -38,7 +38,11 @@ public sealed record TextStyle
         {
             if (value is { } size && (size <= 0 || !double.IsFinite(size)))
             {
-                throw new ArgumentOutOfRangeException(nameof(FontSize), value, "フォントサイズは0より大きい有限値で指定してください。");
+                throw new ArgumentOutOfRangeException(
+                    nameof(FontSize),
+                    value,
+                    "フォントサイズは0より大きい有限値で指定してください。"
+                );
             }
 
             field = value;
@@ -63,7 +67,11 @@ public sealed record TextStyle
         {
             if (value is < 1 or > 1000)
             {
-                throw new ArgumentOutOfRangeException(nameof(FontWeight), value, "フォントの太さは1から1000までで指定してください。");
+                throw new ArgumentOutOfRangeException(
+                    nameof(FontWeight),
+                    value,
+                    "フォントの太さは1から1000までで指定してください。"
+                );
             }
 
             field = value;
@@ -84,8 +92,10 @@ public sealed record TextStyle
     /// </returns>
     public TextStyle Merge(TextStyle? other)
     {
-        if (other is null) return this;
-        if (!other.Inherit) return other;
+        if (other is null)
+            return this;
+        if (!other.Inherit)
+            return other;
 
         return this with
         {
@@ -93,16 +103,17 @@ public sealed record TextStyle
             Color = other.Color ?? Color,
             Font = other.Font ?? Font,
             FontWeight = other.FontWeight ?? FontWeight,
-            IsItalic = other.IsItalic ?? IsItalic
+            IsItalic = other.IsItalic ?? IsItalic,
         };
     }
 
-    internal RichTextKitStyle ToRichTextKitStyle() => new()
-    {
-        FontSize = (float)(FontSize ?? DefaultFontSize),
-        TextColor = Color ?? DefaultColor,
-        FontFamily = FontResolver.Shared.Register(Font ?? DefaultFont),
-        FontWeight = FontWeight ?? DefaultFontWeight,
-        FontItalic = IsItalic ?? false
-    };
+    internal RichTextKitStyle ToRichTextKitStyle() =>
+        new()
+        {
+            FontSize = (float)(FontSize ?? DefaultFontSize),
+            TextColor = Color ?? DefaultColor,
+            FontFamily = FontResolver.Shared.Register(Font ?? DefaultFont),
+            FontWeight = FontWeight ?? DefaultFontWeight,
+            FontItalic = IsItalic ?? false,
+        };
 }

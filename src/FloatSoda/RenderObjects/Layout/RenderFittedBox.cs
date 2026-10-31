@@ -22,7 +22,8 @@ public sealed class RenderFittedBox : RenderProxyBox
         set
         {
             ValidateFit(value, nameof(Fit));
-            if (field == value) return;
+            if (field == value)
+                return;
 
             var previous = field;
             field = value;
@@ -46,7 +47,8 @@ public sealed class RenderFittedBox : RenderProxyBox
         set
         {
             ValidateAlignment(value, nameof(Alignment));
-            if (field == value) return;
+            if (field == value)
+                return;
             field = value;
             ClearPaintData();
             MarkNeedsPaint();
@@ -61,7 +63,8 @@ public sealed class RenderFittedBox : RenderProxyBox
         set
         {
             ValidateClipBehavior(value, nameof(ClipBehavior));
-            if (field == value) return;
+            if (field == value)
+                return;
             field = value;
             MarkNeedsPaint();
         }
@@ -85,8 +88,13 @@ public sealed class RenderFittedBox : RenderProxyBox
     /// <inheritdoc/>
     internal override SKSize ComputeDryLayout(BoxConstraints constraints)
     {
-        if (Child is null) return constraints.Smallest;
-        return ComputeFittedLayoutSize(constraints, Child.GetDryLayout(BoxConstraints.Unbounded), Fit);
+        if (Child is null)
+            return constraints.Smallest;
+        return ComputeFittedLayoutSize(
+            constraints,
+            Child.GetDryLayout(BoxConstraints.Unbounded),
+            Fit
+        );
     }
 
     /// <inheritdoc/>
@@ -106,40 +114,52 @@ public sealed class RenderFittedBox : RenderProxyBox
                 SKRect.Create(Size),
                 (clipContext, _) => PaintChildWithTransform(clipContext, offset),
                 ClipBehavior,
-                Layer as ClipRectLayer);
+                Layer as ClipRectLayer
+            );
             return;
         }
 
         _transformLayer = context.PushTransform(
-            ToSkMatrix(_effectiveTransform!.Value * Matrix3x2.CreateTranslation((float)offset.X, (float)offset.Y)),
+            ToSkMatrix(
+                _effectiveTransform!.Value
+                    * Matrix3x2.CreateTranslation((float)offset.X, (float)offset.Y)
+            ),
             (transformContext, _) => transformContext.PaintChild(Child, Offset.Zero),
-            _transformLayer);
+            _transformLayer
+        );
         Layer = _transformLayer;
     }
 
     /// <inheritdoc/>
     public override bool HitTestChildren(HitTestResult result, Offset position)
     {
-        if (Child is null || Size.IsEmpty || Child.Size.IsEmpty) return false;
+        if (Child is null || Size.IsEmpty || Child.Size.IsEmpty)
+            return false;
 
         UpdatePaintData();
         return result.AddWithPaintTransform(
             _effectiveTransform!.Value,
             position,
-            (hitTestResult, transformed) => Child.HitTest(hitTestResult, transformed));
+            (hitTestResult, transformed) => Child.HitTest(hitTestResult, transformed)
+        );
     }
 
     private void PaintChildWithTransform(PaintingContext context, Offset offset)
     {
         _transformLayer = context.PushTransform(
-            ToSkMatrix(_effectiveTransform!.Value * Matrix3x2.CreateTranslation((float)offset.X, (float)offset.Y)),
+            ToSkMatrix(
+                _effectiveTransform!.Value
+                    * Matrix3x2.CreateTranslation((float)offset.X, (float)offset.Y)
+            ),
             (transformContext, _) => transformContext.PaintChild(Child!, Offset.Zero),
-            _transformLayer);
+            _transformLayer
+        );
     }
 
     private void UpdatePaintData()
     {
-        if (_effectiveTransform is not null) return;
+        if (_effectiveTransform is not null)
+            return;
 
         if (Child is null)
         {
@@ -161,11 +181,13 @@ public sealed class RenderFittedBox : RenderProxyBox
         var scaleX = fittedSizes.Destination.Width / fittedSizes.Source.Width;
         var scaleY = fittedSizes.Destination.Height / fittedSizes.Source.Height;
 
-        _hasVisualOverflow = fittedSizes.Source.Width < Child.Size.Width
-                             || fittedSizes.Source.Height < Child.Size.Height;
-        _effectiveTransform = Matrix3x2.CreateTranslation((float)-sourceOffset.X, (float)-sourceOffset.Y)
-                              * Matrix3x2.CreateScale(scaleX, scaleY)
-                              * Matrix3x2.CreateTranslation((float)destinationOffset.X, (float)destinationOffset.Y);
+        _hasVisualOverflow =
+            fittedSizes.Source.Width < Child.Size.Width
+            || fittedSizes.Source.Height < Child.Size.Height;
+        _effectiveTransform =
+            Matrix3x2.CreateTranslation((float)-sourceOffset.X, (float)-sourceOffset.Y)
+            * Matrix3x2.CreateScale(scaleX, scaleY)
+            * Matrix3x2.CreateTranslation((float)destinationOffset.X, (float)destinationOffset.Y);
     }
 
     private void ClearPaintData()
@@ -176,7 +198,11 @@ public sealed class RenderFittedBox : RenderProxyBox
 
     private static bool AffectsLayout(BoxFit fit) => fit == BoxFit.ScaleDown;
 
-    private static SKSize ComputeFittedLayoutSize(BoxConstraints constraints, SKSize childSize, BoxFit fit)
+    private static SKSize ComputeFittedLayoutSize(
+        BoxConstraints constraints,
+        SKSize childSize,
+        BoxFit fit
+    )
     {
         var sizeConstraints = fit == BoxFit.ScaleDown ? constraints.Loosen : constraints;
         var unconstrainedSize = ConstrainPreservingAspectRatio(sizeConstraints, childSize);
@@ -185,8 +211,10 @@ public sealed class RenderFittedBox : RenderProxyBox
 
     private static SKSize ConstrainPreservingAspectRatio(BoxConstraints constraints, SKSize size)
     {
-        if (constraints.IsTight) return constraints.Smallest;
-        if (size.IsEmpty) return constraints.Constrain(size);
+        if (constraints.IsTight)
+            return constraints.Smallest;
+        if (size.IsEmpty)
+            return constraints.Constrain(size);
 
         double width = size.Width;
         double height = size.Height;
@@ -219,27 +247,32 @@ public sealed class RenderFittedBox : RenderProxyBox
         return constraints.Constrain(width, height);
     }
 
-    private static SKMatrix ToSkMatrix(Matrix3x2 matrix) => new()
-    {
-        ScaleX = matrix.M11,
-        SkewX = matrix.M21,
-        TransX = matrix.M31,
-        SkewY = matrix.M12,
-        ScaleY = matrix.M22,
-        TransY = matrix.M32,
-        Persp0 = 0,
-        Persp1 = 0,
-        Persp2 = 1,
-    };
+    private static SKMatrix ToSkMatrix(Matrix3x2 matrix) =>
+        new()
+        {
+            ScaleX = matrix.M11,
+            SkewX = matrix.M21,
+            TransX = matrix.M31,
+            SkewY = matrix.M12,
+            ScaleY = matrix.M22,
+            TransY = matrix.M32,
+            Persp0 = 0,
+            Persp1 = 0,
+            Persp2 = 1,
+        };
 
-    internal static void ValidateFit(BoxFit value, string parameterName)
-        => BoxFitExtensions.Validate(value, parameterName);
+    internal static void ValidateFit(BoxFit value, string parameterName) =>
+        BoxFitExtensions.Validate(value, parameterName);
 
     internal static void ValidateAlignment(Alignment value, string parameterName)
     {
         if (!float.IsFinite(value.X) || !float.IsFinite(value.Y))
         {
-            throw new ArgumentOutOfRangeException(parameterName, value, "配置値には有限値を指定してください。");
+            throw new ArgumentOutOfRangeException(
+                parameterName,
+                value,
+                "配置値には有限値を指定してください。"
+            );
         }
     }
 
@@ -247,7 +280,11 @@ public sealed class RenderFittedBox : RenderProxyBox
     {
         if (!Enum.IsDefined(value))
         {
-            throw new ArgumentOutOfRangeException(parameterName, value, "定義済みのクリップ方法を指定してください。");
+            throw new ArgumentOutOfRangeException(
+                parameterName,
+                value,
+                "定義済みのクリップ方法を指定してください。"
+            );
         }
     }
 }

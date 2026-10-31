@@ -1,9 +1,9 @@
 using FloatSoda.Abstractions.Engine;
 using FloatSoda.Abstractions.Geometries;
 using FloatSoda.Abstractions.Input;
-using FloatSoda.Rendering.Layers;
 using FloatSoda.OVR;
 using FloatSoda.OVR.Overlay;
+using FloatSoda.Rendering.Layers;
 using SkiaSharp;
 
 namespace FloatSoda.Engine;
@@ -18,6 +18,13 @@ public class OverlayWindow : IEngineWindow
     /// <summary>このウィンドウが描画先とするOpenVRオーバーレイを取得します。</summary>
     public IOverlay Overlay { get; }
 
+    /// <summary>既定のコントローラーを使用するオーバーレイウィンドウを作成します。</summary>
+    /// <param name="overlay">描画先となるOpenVRオーバーレイ。</param>
+    /// <param name="renderer">レイヤーツリーを描画するレンダラー。</param>
+    /// <param name="dpm">オーバーレイの物理幅へ換算する密度。</param>
+    public OverlayWindow(IOverlay overlay, Renderer renderer, Dpm dpm)
+        : this(overlay, renderer, dpm, null) { }
+
     /// <summary>指定されたオーバーレイを描画先とするウィンドウを作成します。</summary>
     /// <param name="overlay">描画先となるOpenVRオーバーレイ。</param>
     /// <param name="renderer">レイヤーツリーをテクスチャへ描画するレンダラー。</param>
@@ -31,8 +38,12 @@ public class OverlayWindow : IEngineWindow
     /// 交差させる<see cref="ControllerRayPointerSource"/>を生成します（入力横取りフラグは使用しません）。
     /// どちらでもないオーバーレイでは<see cref="PointerSource"/>は<see langword="null"/>のままです。
     /// </remarks>
-    public OverlayWindow(IOverlay overlay, Renderer renderer, Dpm dpm,
-        IReadOnlyList<TrackedDevice>? pointerDevices = null)
+    public OverlayWindow(
+        IOverlay overlay,
+        Renderer renderer,
+        Dpm dpm,
+        IReadOnlyList<TrackedDevice>? pointerDevices = null
+    )
     {
         Overlay = overlay;
         this.renderer = renderer;
@@ -42,17 +53,26 @@ public class OverlayWindow : IEngineWindow
         if (overlay is IDashboardOverlay)
         {
             overlay.Input.Method = VROverlayInputMethod.Mouse;
-            overlay.Input.SetMouseScale(renderer.GLView.Size.Width, renderer.GLView.Size.Height);
-            PointerSource = new OverlayMouseRawPointerSource(overlay.EventDispatcher);
+            // 物理的なパネル倍率とUIのピクセル座標を分離する。
+            overlay.Input.SetMouseScale(1, 1);
+            PointerSource = new OverlayMouseRawPointerSource(
+                overlay.EventDispatcher,
+                position => new FloatSoda.Abstractions.Geometries.Offset(
+                    position.X * renderer.GLView.Size.Width,
+                    position.Y * renderer.GLView.Size.Height
+                )
+            );
         }
-
         // デバイス追従・ワールド固定はコントローラーレイを毎フレーム交差させて届く。
         // MakeOverlaysInteractiveIfVisible を使わないため入力横取りは発生しない。
         else if (overlay is IMovableOverlay movable)
         {
-            PointerSource = new ControllerRayPointerSource(movable.Intersection,
-                () => new SKSizeI((int)renderer.GLView.Size.Width, (int)renderer.GLView.Size.Height),
-                pointerDevices);
+            PointerSource = new ControllerRayPointerSource(
+                movable.Intersection,
+                () =>
+                    new SKSizeI((int)renderer.GLView.Size.Width, (int)renderer.GLView.Size.Height),
+                pointerDevices
+            );
         }
     }
 
@@ -78,16 +98,16 @@ public class OverlayWindow : IEngineWindow
     /// <summary>
     /// 描画先テクスチャをリサイズし、ピクセル幅と物理密度（dots per meter）から
     /// オーバーレイの物理幅（WidthInMeters = width / dpm）を更新します。
-    /// マウス入力を受けるオーバーレイではマウススケールもピクセルサイズへ追従させます。
+    /// ダッシュボードのマウススケールは0〜1を維持し、入力時に描画先サイズへ変換します。
     /// </summary>
     public void Resize(SkiaSharp.SKSizeI size)
     {
         renderer.Resize(size.Width, size.Height);
         Overlay.WidthInMeters.Value = dpm.ToMeters(size.Width);
 
-        if (PointerSource != null)
+        if (PointerSource is OverlayMouseRawPointerSource)
         {
-            Overlay.Input.SetMouseScale(size.Width, size.Height);
+            Overlay.Input.SetMouseScale(1, 1);
         }
     }
 
@@ -102,7 +122,8 @@ public class OverlayWindow : IEngineWindow
     /// </summary>
     public void PollInputEvents()
     {
-        if (PointerSource == null) return;
+        if (PointerSource is null)
+            return;
 
         Overlay.EventDispatcher.PollEvents();
 

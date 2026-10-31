@@ -31,8 +31,8 @@ public class ListenableBuilderTest
             }
         }
 
-        public void Notify(string? propertyName = null)
-            => _propertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        public void Notify(string? propertyName = null) =>
+            _propertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 
     private sealed class Holder
@@ -62,8 +62,8 @@ public class ListenableBuilderTest
 
         public void HideBuilder() => SetState(() => Widget!.Holder.ShowBuilder = false);
 
-        public override Widget Build(IBuildContext context)
-            => new Row
+        public override Widget Build(IBuildContext context) =>
+            new Row
             {
                 Children =
                 [
@@ -77,7 +77,7 @@ public class ListenableBuilderTest
                                 return Widget.Holder.NotifyDuringChildDispose
                                     ? new NotifyOnDispose { Notifier = Widget.Holder.Current }
                                     : new SizedBox { Width = 10, Height = 10 };
-                            }
+                            },
                         }
                         : new SizedBox { Width = 10, Height = 10 },
                     new Builder
@@ -86,9 +86,9 @@ public class ListenableBuilderTest
                         {
                             Widget.Holder.SiblingBuildCount++;
                             return new SizedBox { Width = 10, Height = 10 };
-                        }
-                    }
-                ]
+                        },
+                    },
+                ],
             };
     }
 
@@ -101,7 +101,8 @@ public class ListenableBuilderTest
 
     private sealed class NotifyOnDisposeState : State<NotifyOnDispose>
     {
-        public override Widget Build(IBuildContext context) => new SizedBox { Width = 10, Height = 10 };
+        public override Widget Build(IBuildContext context) =>
+            new SizedBox { Width = 10, Height = 10 };
 
         public override void Dispose()
         {
@@ -191,7 +192,8 @@ public class ListenableBuilderTest
         var reentered = false;
         holder.First.PropertyChanged += (_, _) =>
         {
-            if (reentered) return;
+            if (reentered)
+                return;
 
             reentered = true;
             holder.First.Notify();
@@ -220,16 +222,12 @@ public class ListenableBuilderTest
     [Fact]
     public void RequiredProperties_Null_ArgumentNullExceptionを投げる()
     {
-        Assert.Throws<ArgumentNullException>(() => new ListenableBuilder
-        {
-            Listenable = null!,
-            ChildBuilder = _ => new SizedBox()
-        });
-        Assert.Throws<ArgumentNullException>(() => new ListenableBuilder
-        {
-            Listenable = new TestNotifier(),
-            ChildBuilder = null!
-        });
+        Assert.Throws<ArgumentNullException>(() =>
+            new ListenableBuilder { Listenable = null!, ChildBuilder = _ => new SizedBox() }
+        );
+        Assert.Throws<ArgumentNullException>(() =>
+            new ListenableBuilder { Listenable = new TestNotifier(), ChildBuilder = null! }
+        );
     }
 
     [Fact]
@@ -244,18 +242,28 @@ public class ListenableBuilderTest
         Assert.NotNull(listenable.GetCustomAttribute<RequiredMemberAttribute>());
         Assert.NotNull(childBuilder.GetCustomAttribute<RequiredMemberAttribute>());
 
-        var publicSignatureTypes = type
-            .GetMembers(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly)
+        var publicSignatureTypes = type.GetMembers(
+                BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly
+            )
             .SelectMany(GetSignatureTypes);
-        Assert.DoesNotContain(publicSignatureTypes, signatureType =>
-            signatureType.Namespace?.StartsWith("R3", StringComparison.Ordinal) == true ||
-            signatureType.Namespace?.StartsWith("CommunityToolkit", StringComparison.Ordinal) == true);
-        Assert.DoesNotContain(typeof(ListenableBuilder).Assembly.GetReferencedAssemblies(), reference =>
-            reference.Name?.StartsWith("R3", StringComparison.Ordinal) == true ||
-            reference.Name?.StartsWith("CommunityToolkit", StringComparison.Ordinal) == true);
+        Assert.DoesNotContain(
+            publicSignatureTypes,
+            signatureType =>
+                signatureType.Namespace?.StartsWith("R3", StringComparison.Ordinal) == true
+                || signatureType.Namespace?.StartsWith("CommunityToolkit", StringComparison.Ordinal)
+                    == true
+        );
+        Assert.DoesNotContain(
+            typeof(ListenableBuilder).Assembly.GetReferencedAssemblies(),
+            reference =>
+                reference.Name?.StartsWith("R3", StringComparison.Ordinal) == true
+                || reference.Name?.StartsWith("CommunityToolkit", StringComparison.Ordinal) == true
+        );
     }
 
-    private static (Holder Holder, BuildOwner Owner) MountHost(bool notifyDuringChildDispose = false)
+    private static (Holder Holder, BuildOwner Owner) MountHost(
+        bool notifyDuringChildDispose = false
+    )
     {
         var first = new TestNotifier();
         var second = new TestNotifier();
@@ -264,31 +272,33 @@ public class ListenableBuilderTest
             First = first,
             Second = second,
             Current = first,
-            NotifyDuringChildDispose = notifyDuringChildDispose
+            NotifyDuringChildDispose = notifyDuringChildDispose,
         };
         var renderView = new RenderView(100, 100);
-        _ = new RenderPipeline
-        {
-            OnNeedVisualUpdate = () => { },
-            RenderView = renderView
-        };
+        _ = new RenderPipeline { OnNeedVisualUpdate = () => { }, RenderView = renderView };
         var owner = new BuildOwner(() => { });
 
         _ = new RenderObjectToWidgetAdapter
         {
             Container = renderView,
-            Child = new Host { Holder = holder }
+            Child = new Host { Holder = holder },
         }.AttachToRenderTree(owner, null);
 
         return (holder, owner);
     }
 
-    private static IEnumerable<Type> GetSignatureTypes(MemberInfo member) => member switch
-    {
-        PropertyInfo property => [property.PropertyType],
-        FieldInfo field => [field.FieldType],
-        MethodInfo method => method.GetParameters().Select(parameter => parameter.ParameterType).Append(method.ReturnType),
-        ConstructorInfo constructor => constructor.GetParameters().Select(parameter => parameter.ParameterType),
-        _ => []
-    };
+    private static IEnumerable<Type> GetSignatureTypes(MemberInfo member) =>
+        member switch
+        {
+            PropertyInfo property => [property.PropertyType],
+            FieldInfo field => [field.FieldType],
+            MethodInfo method => method
+                .GetParameters()
+                .Select(parameter => parameter.ParameterType)
+                .Append(method.ReturnType),
+            ConstructorInfo constructor => constructor
+                .GetParameters()
+                .Select(parameter => parameter.ParameterType),
+            _ => [],
+        };
 }

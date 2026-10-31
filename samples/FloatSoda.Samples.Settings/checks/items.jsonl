@@ -1,0 +1,5 @@
+{"id": "settings-1", "source": "SettingsDemo.cs:57-120", "flutter_ref": "", "question": "見出しとGeneral/Displayの設定項目が表示されるか。", "read_aloud": "見出しとGeneral、Displayの設定画面が見えるか確認して"}
+{"id": "settings-2", "source": "SettingsDemo.cs:72-87", "flutter_ref": "", "question": "Notificationsを押すたびにON/OFFが切り替わるか。", "read_aloud": "Notificationsを二回押してON/OFFが切り替わるか確認して"}
+{"id": "settings-3", "source": "SettingsDemo.cs:99-106", "flutter_ref": "", "question": "Sliderの押下とドラッグで値が変わり両端が0/1になるか。", "read_aloud": "UI scaleを左右にドラッグし両端が0と1になるか確認して"}
+{"id": "settings-4", "source": "SettingsDemo.cs:111-117", "flutter_ref": "", "question": "Dropdownを開いて候補を選ぶと選択名が変わるか。", "read_aloud": "Quality presetを開いて別の候補を選択して"}
+{"id": "settings-5", "source": "SettingsDemo.cs:32-47", "flutter_ref": "", "question": "変更した値がサンプルの再起動後も復元されるか。", "read_aloud": "再起動後も選択した設定値が残っているか確認して"}

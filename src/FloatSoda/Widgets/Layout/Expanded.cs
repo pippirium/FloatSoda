@@ -16,7 +16,11 @@ public sealed record Expanded : ParentDataWidget<FlexParentData>
         {
             if (value <= 0)
             {
-                throw new ArgumentOutOfRangeException(nameof(Flex), value, "Flex には 1 以上の整数を指定してください。");
+                throw new ArgumentOutOfRangeException(
+                    nameof(Flex),
+                    value,
+                    "Flex には 1 以上の整数を指定してください。"
+                );
             }
 
             field = value;
@@ -27,7 +31,8 @@ public sealed record Expanded : ParentDataWidget<FlexParentData>
     protected override bool ApplyParentData(FlexParentData parentData)
     {
         var changed = parentData.Flex != Flex || parentData.Fit != Geometrics.FlexFit.Tight;
-        if (!changed) return false;
+        if (!changed)
+            return false;
 
         parentData.Flex = Flex;
         parentData.Fit = Geometrics.FlexFit.Tight;

@@ -14,6 +14,7 @@ public interface ISimulation
     /// <param name="time">シミュレーション開始からの経過秒数。</param>
     /// <returns>指定時刻における1秒あたりの値の変化量。</returns>
     double Dx(double time);
+
     /// <summary>指定時刻でシミュレーションが完了しているかを判定します。</summary>
     /// <param name="time">シミュレーション開始からの経過秒数。</param>
     /// <returns>完了している場合は<see langword="true"/>、継続中の場合は<see langword="false"/>。</returns>
@@ -26,10 +27,10 @@ public interface ISimulation
 /// <param name="duration">補間に要する時間。</param>
 /// <param name="curve">正規化された進行率へ適用する曲線。</param>
 /// <seealso cref="AnimationController"/>
-public class InterpolationSimulation(double begin, double end, TimeSpan duration, ICurve curve) : ISimulation
+public class InterpolationSimulation(double begin, double end, TimeSpan duration, ICurve curve)
+    : ISimulation
 {
     private readonly double _durationInSeconds = duration.TotalSeconds;
-
 
     /// <inheritdoc />
     public double X(double time)
@@ -40,10 +41,9 @@ public class InterpolationSimulation(double begin, double end, TimeSpan duration
         {
             0 => begin,
             1 => end,
-            _ => begin + (end - begin) * curve.Transform(t)
+            _ => begin + (end - begin) * curve.Transform(t),
         };
     }
-
 
     /// <inheritdoc />
     public double Dx(double time)

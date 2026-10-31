@@ -13,21 +13,27 @@ var useDesktop = args.Contains("--desktop");
 var hostArgs = args.Where(argument => argument != "--desktop").ToArray();
 
 var builder = Host.CreateApplicationBuilder(hostArgs);
-builder.Services.AddFloatSoda(new FloatSodaOptions
-{
-    AppKey = new AppKey("FloatSoda.Samples.Image"),
-});
+builder.Services.AddFloatSoda(
+    new FloatSodaOptions { AppKey = new AppKey("FloatSoda.Samples.Image") }
+);
 
 using var host = builder.Build();
 var app = host.Services.GetRequiredService<FloatSodaApp>();
 
 var demo = new ImageDemo
 {
-    ImagePath = Path.Combine(AppContext.BaseDirectory, "assets", "logo-sketch.png")
+    ImagePath = Path.Combine(AppContext.BaseDirectory, "assets", "logo-sketch.png"),
 };
 
-app.CreateWindow(useDesktop
-    ? new DesktopWindow { Title = "Image Test", Child = demo }
-    : new DashboardWindow { Dpm = new Dpm(1000), Title = "Image Test", Child = demo });
+app.CreateWindow(
+    useDesktop
+        ? new DesktopWindow { Title = "Image Test", Child = demo }
+        : new DashboardWindow
+        {
+            Dpm = new Dpm(1000),
+            Title = "Image Test",
+            Child = demo,
+        }
+);
 
 await host.RunAsync();

@@ -15,26 +15,23 @@ public class HitTestTest
     private static RenderView Build(RenderBox child)
     {
         var view = new RenderView { Child = child };
-        var pipeline = new RenderPipeline
-        {
-            OnNeedVisualUpdate = () => { },
-            RenderView = view
-        };
+        var pipeline = new RenderPipeline { OnNeedVisualUpdate = () => { }, RenderView = view };
         view.PrepareInitialFrame();
         pipeline.FlushLayout();
         return view;
     }
 
-    private static RenderPointerListener BuildListener() => new()
-    {
-        Child = new RenderColoredBox
+    private static RenderPointerListener BuildListener() =>
+        new()
         {
-            Child = new RenderConstrainedBox
+            Child = new RenderColoredBox
             {
-                AdditionalConstraints = BoxConstraints.Tight(100, 100)
-            }
-        }
-    };
+                Child = new RenderConstrainedBox
+                {
+                    AdditionalConstraints = BoxConstraints.Tight(100, 100),
+                },
+            },
+        };
 
     [Fact]
     public void FlexChild_IsHit_AtItsPaintOffset()
@@ -49,7 +46,7 @@ public class HitTestTest
             {
                 new RenderConstrainedBox { AdditionalConstraints = BoxConstraints.Tight(100, 100) },
                 listener,
-            }
+            },
         };
         var view = Build(flex);
 
@@ -71,7 +68,7 @@ public class HitTestTest
             {
                 new RenderConstrainedBox { AdditionalConstraints = BoxConstraints.Tight(100, 100) },
                 listener,
-            }
+            },
         };
         var view = Build(flex);
 
@@ -96,7 +93,8 @@ public class HitTestTest
             result.Path,
             entry => Assert.IsType<RenderColoredBox>(entry.Target),
             entry => Assert.Same(listener, entry.Target),
-            entry => Assert.Same(view, entry.Target));
+            entry => Assert.Same(view, entry.Target)
+        );
     }
 
     [Fact]
@@ -131,6 +129,7 @@ public class HitTestTest
                 PointerEventPhase.Exit,
                 PointerEventPhase.Cancel,
             ],
-            received);
+            received
+        );
     }
 }

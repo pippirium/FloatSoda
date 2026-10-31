@@ -11,7 +11,6 @@ public abstract class RenderObjectElement : Element
 {
     private RenderObjectElement? _ancestorRenderObjectElement;
 
-
     /// <summary>
     /// 最近傍の祖先RenderObjectElementへ、このElementのRenderObjectを子として接続します。
     /// </summary>
@@ -39,7 +38,8 @@ public abstract class RenderObjectElement : Element
 
     private void ApplyParentData()
     {
-        if (RenderObject is not { } renderObject) return;
+        if (RenderObject is not { } renderObject)
+            return;
 
         var ancestor = Parent;
         while (ancestor is not null && ancestor != _ancestorRenderObjectElement)
@@ -53,17 +53,16 @@ public abstract class RenderObjectElement : Element
         }
     }
 
-
     /// <summary>
     /// 接続先として記録された祖先RenderObjectElementから、このElementのRenderObjectを切り離します。
     /// </summary>
     public override void DetachRenderObject()
     {
-        if (_ancestorRenderObjectElement == null) return;
+        if (_ancestorRenderObjectElement is null)
+            return;
         _ancestorRenderObjectElement.RemoveRenderObjectChild(RenderObject);
         _ancestorRenderObjectElement = null;
     }
-
 
     /// <summary>
     /// このElementのRenderObjectへ子RenderObjectを挿入します。
@@ -77,7 +76,8 @@ public abstract class RenderObjectElement : Element
     /// <param name="child">挿入する子RenderObject。子を持たないことを表す場合は<see langword="null"/>。</param>
     /// <param name="slot">子の<see cref="Element.Slot"/>。</param>
     /// <remarks>基底実装はslotを使わず、<see cref="InsertRenderObjectChild(RenderObject?)"/>を呼び出します。</remarks>
-    public virtual void InsertRenderObjectChild(RenderObject? child, object? slot) => InsertRenderObjectChild(child);
+    public virtual void InsertRenderObjectChild(RenderObject? child, object? slot) =>
+        InsertRenderObjectChild(child);
 
     /// <summary>
     /// このElementのRenderObjectの中で、子RenderObjectを新しいslotが示す位置へ移動します。
@@ -86,15 +86,17 @@ public abstract class RenderObjectElement : Element
     /// <param name="oldSlot">移動前のslot。</param>
     /// <param name="newSlot">移動後のslot。</param>
     /// <remarks>基底実装は何もしません。子の順序を持つElementが上書きします。</remarks>
-    public virtual void MoveRenderObjectChild(RenderObject child, object? oldSlot, object? newSlot) { }
-
+    public virtual void MoveRenderObjectChild(
+        RenderObject child,
+        object? oldSlot,
+        object? newSlot
+    ) { }
 
     /// <summary>
     /// このElementのRenderObjectから子RenderObjectを取り除きます。
     /// </summary>
     /// <param name="child">取り除く子RenderObject。対象がない場合は<see langword="null"/>。</param>
     public virtual void RemoveRenderObjectChild(RenderObject? child) { }
-
 
     /// <summary>
     /// Elementツリーを親方向へ探索し、最も近いRenderObjectElementを取得します。
@@ -106,7 +108,7 @@ public abstract class RenderObjectElement : Element
     {
         var ancestor = Parent;
 
-        while (ancestor != null && ancestor is not RenderObjectElement)
+        while (ancestor is not null && ancestor is not RenderObjectElement)
         {
             ancestor = ancestor.Parent;
         }
@@ -126,10 +128,11 @@ public abstract class RenderObjectElement : Element
     protected List<Element> UpdateChildren(
         List<Element> oldChildren,
         List<Widget> newWidgets,
-        HashSet<Element>? forgottenChildren = null)
+        HashSet<Element>? forgottenChildren = null
+    )
     {
-        Element? ReplaceWithNullIfForgotten(Element child)
-            => forgottenChildren != null && forgottenChildren.Contains(child) ? null : child;
+        Element? ReplaceWithNullIfForgotten(Element child) =>
+            forgottenChildren is not null && forgottenChildren.Contains(child) ? null : child;
 
         int newChildrenTop = 0;
         int oldChildrenTop = 0;
@@ -146,9 +149,14 @@ public abstract class RenderObjectElement : Element
         {
             var oldChild = ReplaceWithNullIfForgotten(oldChildren[oldChildrenTop]);
             var newWidget = newWidgets[newChildrenTop];
-            if (oldChild == null || !Widget.CanUpdate(oldChild.Widget!, newWidget)) break;
+            if (oldChild is null || !Widget.CanUpdate(oldChild.Widget!, newWidget))
+                break;
 
-            var newChild = UpdateChild(oldChild, newWidget, new IndexedSlot(newChildrenTop, previousChild));
+            var newChild = UpdateChild(
+                oldChild,
+                newWidget,
+                new IndexedSlot(newChildrenTop, previousChild)
+            );
             newChildren[newChildrenTop] = newChild;
             previousChild = newChild;
             newChildrenTop++;
@@ -160,7 +168,8 @@ public abstract class RenderObjectElement : Element
         {
             var oldChild = ReplaceWithNullIfForgotten(oldChildren[oldChildrenBottom]);
             var newWidget = newWidgets[newChildrenBottom];
-            if (oldChild == null || !Widget.CanUpdate(oldChild.Widget!, newWidget)) break;
+            if (oldChild is null || !Widget.CanUpdate(oldChild.Widget!, newWidget))
+                break;
 
             oldChildrenBottom--;
             newChildrenBottom--;
@@ -174,10 +183,10 @@ public abstract class RenderObjectElement : Element
             while (oldChildrenTop <= oldChildrenBottom)
             {
                 var oldChild = ReplaceWithNullIfForgotten(oldChildren[oldChildrenTop]);
-                if (oldChild != null)
+                if (oldChild is not null)
                 {
                     var key = oldChild.Widget?.Key;
-                    if (key != null)
+                    if (key is not null)
                     {
                         oldKeyedChildren[key] = oldChild;
                     }
@@ -198,7 +207,11 @@ public abstract class RenderObjectElement : Element
             Element? oldChild = null;
 
             var key = newWidget.Key;
-            if (key != null && oldKeyedChildren != null && oldKeyedChildren.TryGetValue(key, out var matched))
+            if (
+                key is not null
+                && oldKeyedChildren is not null
+                && oldKeyedChildren.TryGetValue(key, out var matched)
+            )
             {
                 if (Widget.CanUpdate(matched.Widget!, newWidget))
                 {
@@ -207,7 +220,11 @@ public abstract class RenderObjectElement : Element
                 }
             }
 
-            var newChild = UpdateChild(oldChild, newWidget, new IndexedSlot(newChildrenTop, previousChild));
+            var newChild = UpdateChild(
+                oldChild,
+                newWidget,
+                new IndexedSlot(newChildrenTop, previousChild)
+            );
             newChildren[newChildrenTop] = newChild;
             previousChild = newChild;
             newChildrenTop++;
@@ -220,7 +237,11 @@ public abstract class RenderObjectElement : Element
         {
             var oldChild = oldChildren[oldChildrenTop];
             var newWidget = newWidgets[newChildrenTop];
-            var newChild = UpdateChild(oldChild, newWidget, new IndexedSlot(newChildrenTop, previousChild));
+            var newChild = UpdateChild(
+                oldChild,
+                newWidget,
+                new IndexedSlot(newChildrenTop, previousChild)
+            );
             newChildren[newChildrenTop] = newChild;
             previousChild = newChild;
             newChildrenTop++;
@@ -228,7 +249,7 @@ public abstract class RenderObjectElement : Element
         }
 
         // 6. 再利用されずに残った古い要素を破棄
-        if (oldKeyedChildren != null)
+        if (oldKeyedChildren is not null)
         {
             foreach (var remaining in oldKeyedChildren.Values)
             {
@@ -236,7 +257,7 @@ public abstract class RenderObjectElement : Element
             }
         }
 
-        return newChildren.Where(c => c != null).Select(c => c!).ToList();
+        return newChildren.Where(c => c is not null).Select(c => c!).ToList();
     }
 }
 
@@ -245,7 +266,8 @@ public abstract class RenderObjectElement : Element
 /// </summary>
 /// <typeparam name="T">このElementが管理するRenderObjectの型。</typeparam>
 /// <seealso cref="RenderObjectWidget{T}"/>
-public abstract class RenderObjectElement<T> : RenderObjectElement where T : RenderObject
+public abstract class RenderObjectElement<T> : RenderObjectElement
+    where T : RenderObject
 {
     /// <summary>
     /// このElementが管理するRenderObjectを取得します。
@@ -254,7 +276,6 @@ public abstract class RenderObjectElement<T> : RenderObjectElement where T : Ren
     public abstract override RenderObject? RenderObject { get; protected set; }
     private RenderObjectWidget<T>? WidgetCascaded => Widget as RenderObjectWidget<T>;
 
-
     /// <summary>
     /// Elementツリーへ接続し、対応するWidgetからRenderObjectを生成してRenderObjectツリーへ接続します。
     /// </summary>
@@ -262,11 +283,11 @@ public abstract class RenderObjectElement<T> : RenderObjectElement where T : Ren
     public override void Mount(Element? parent)
     {
         base.Mount(parent);
-        if (Widget is RenderObjectWidget<T> renderObjectWidget) RenderObject = renderObjectWidget.CreateRenderObject();
+        if (Widget is RenderObjectWidget<T> renderObjectWidget)
+            RenderObject = renderObjectWidget.CreateRenderObject();
         AttachRenderObject();
         Dirty = false;
     }
-
 
     /// <summary>
     /// 管理するWidgetを置き換え、その構成を既存のRenderObjectへ直ちに反映します。
@@ -277,7 +298,6 @@ public abstract class RenderObjectElement<T> : RenderObjectElement where T : Ren
         base.Update(newWidget);
         PerformRebuild();
     }
-
 
     /// <summary>
     /// 現在のWidgetの構成を管理対象のRenderObjectへ反映し、再構築が必要な状態を解除します。

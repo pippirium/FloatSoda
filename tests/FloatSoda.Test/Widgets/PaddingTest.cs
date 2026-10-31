@@ -14,20 +14,17 @@ public class PaddingTest
     private static (
         RenderPipeline Pipeline,
         RenderView View,
-        RenderObjectToWidgetElement<RenderView> Root) Mount(Widget widget)
+        RenderObjectToWidgetElement<RenderView> Root
+    ) Mount(Widget widget)
     {
         var view = new RenderView();
-        var pipeline = new RenderPipeline
-        {
-            OnNeedVisualUpdate = () => { },
-            RenderView = view
-        };
+        var pipeline = new RenderPipeline { OnNeedVisualUpdate = () => { }, RenderView = view };
         view.PrepareInitialFrame();
 
         var root = new RenderObjectToWidgetAdapter
         {
             Container = view,
-            Child = widget
+            Child = widget,
         }.AttachToRenderTree(new BuildOwner(() => { }), null);
 
         return (pipeline, view, root);
@@ -39,7 +36,7 @@ public class PaddingTest
         var initial = new Padding
         {
             Spacing = EdgeInsets.All(10),
-            Child = new SizedBox { Width = 100, Height = 50 }
+            Child = new SizedBox { Width = 100, Height = 50 },
         };
         var (pipeline, view, root) = Mount(initial);
         pipeline.FlushLayout();
@@ -48,14 +45,12 @@ public class PaddingTest
         new RenderObjectToWidgetAdapter
         {
             Container = view,
-            Child = initial with { Spacing = EdgeInsets.All(20) }
+            Child = initial with { Spacing = EdgeInsets.All(20) },
         }.AttachToRenderTree(root.Owner!, root);
         root.Owner!.BuildScope();
         pipeline.FlushLayout();
 
         Assert.Equal(new SKSize(140, 90), view.Size);
-        Assert.Equal(
-            EdgeInsets.All(20),
-            Assert.IsType<RenderPadding>(view.Child).Padding);
+        Assert.Equal(EdgeInsets.All(20), Assert.IsType<RenderPadding>(view.Child).Padding);
     }
 }

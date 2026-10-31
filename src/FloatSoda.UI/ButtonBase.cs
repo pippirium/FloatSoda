@@ -34,10 +34,7 @@ public class ButtonBaseState : State<ButtonBase>
     {
         // TODO: ジェスチャ/ヒットテスト実装後に GestureDetector を配線する
         // (押下・ホバー・フォーカスの状態機械は必ずこのクラスに置き、DS層には持ち出さない)
-        var state = new InteractionState
-        {
-            IsDisabled = Widget!.IsDisabled
-        };
+        var state = new InteractionState { IsDisabled = Widget!.IsDisabled };
         return Widget.Builder(context, state);
     }
 }

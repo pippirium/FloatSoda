@@ -1,0 +1,6 @@
+# git blame で飛ばすコミット。整形だけのコミットを登録する。
+# GitHub の blame は自動で読む。ローカルでは次を一度実行する:
+#   git config blame.ignoreRevsFile .git-blame-ignore-revs
+
+# style: CSharpier でリポジトリ全体を一括整形する (#375)
+30e837eb655b92b9ebf1f8e8d8cda74abfa6d174

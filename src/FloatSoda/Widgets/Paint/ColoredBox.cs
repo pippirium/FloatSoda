@@ -13,17 +13,14 @@ public record ColoredBox : SingleChildRenderObjectWidget<RenderColoredBox>
     /// 背景の塗りつぶしに使用する色を取得します。
     /// </summary>
     public required Color Color { get; init; }
-    
+
     /// <summary>
     /// このウィジェットの背景色を描画するRenderObjectを生成します。
     /// </summary>
     /// <returns>指定された背景色を保持する新しいRenderObject。</returns>
     public override RenderColoredBox CreateRenderObject()
     {
-        return new RenderColoredBox
-        {
-            Color = Color
-        };
+        return new RenderColoredBox { Color = Color };
     }
 
     /// <summary>
@@ -35,5 +32,6 @@ public record ColoredBox : SingleChildRenderObjectWidget<RenderColoredBox>
     /// 次のパイプライン更新時に背景を再描画します。
     /// 色が変更されなかった場合、Dirty状態は変更されません。
     /// </remarks>
-    public override void UpdateRenderObject(RenderColoredBox renderObject) => renderObject.Color = Color;
+    public override void UpdateRenderObject(RenderColoredBox renderObject) =>
+        renderObject.Color = Color;
 }

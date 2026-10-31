@@ -18,7 +18,8 @@ public sealed record IntrinsicWidth : SingleChildRenderObjectWidget<RenderIntrin
         get;
         init
         {
-            if (value != 0) RenderIntrinsicWidth.ValidateStep(value, nameof(StepWidth));
+            if (value != 0)
+                RenderIntrinsicWidth.ValidateStep(value, nameof(StepWidth));
             field = value;
         }
     }
@@ -26,8 +27,10 @@ public sealed record IntrinsicWidth : SingleChildRenderObjectWidget<RenderIntrin
     private double? EffectiveStepWidth => StepWidth == 0 ? null : StepWidth;
 
     /// <inheritdoc/>
-    public override RenderIntrinsicWidth CreateRenderObject() => new() { StepWidth = EffectiveStepWidth };
+    public override RenderIntrinsicWidth CreateRenderObject() =>
+        new() { StepWidth = EffectiveStepWidth };
 
     /// <inheritdoc/>
-    public override void UpdateRenderObject(RenderIntrinsicWidth renderObject) => renderObject.StepWidth = EffectiveStepWidth;
+    public override void UpdateRenderObject(RenderIntrinsicWidth renderObject) =>
+        renderObject.StepWidth = EffectiveStepWidth;
 }

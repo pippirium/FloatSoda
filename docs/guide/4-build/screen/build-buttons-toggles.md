@@ -14,7 +14,7 @@
 
 - [最初のオーバーレイを作る](../../../tutorials/first-overlay.md)を終え、ダッシュボードにオーバーレイが出ること
 - `SetState()` で値を変えると画面が変わることを知っていること
-- ソースの先頭に、`FloatSoda.Geometrics`、`FloatSoda.Widgets.Gesture`、`FloatSoda.Widgets.Layout`、`FloatSoda.Widgets.Paint`、`FloatSoda.Painting`、`SkiaSharp` の `using` があること
+- ソースの先頭に、`FloatSoda.Geometrics`、`FloatSoda.Widgets.Gesture`、`FloatSoda.Widgets.Layout`、`FloatSoda.Widgets.Paint`、`FloatSoda.Painting` の `using` があること
 
 `SetState()` の仕組みが分からない場合は、[値が変わると、画面が変わる仕組み](../mechanics/state-and-rebuild.md)を先に読みます。
 
@@ -44,12 +44,12 @@ public class CountButtonState : State<CountButton>
                 Height = 100,
                 Child = new ColoredBox
                 {
-                    Color = SKColors.CornflowerBlue,
+                    Color = Colors.CornflowerBlue,
                     Child = new Center
                     {
                         Child = new Text($"押した回数: {_count}")
                         {
-                            Style = new TextStyle { Color = SKColors.WhiteSmoke, FontSize = 40, FontWeight = 700 },
+                            Style = new TextStyle { Color = Colors.WhiteSmoke, FontSize = 40, FontWeight = 700 },
                         },
                     },
                 },
@@ -98,12 +98,12 @@ public class ToggleButtonState : State<ToggleButton>
                 Height = 100,
                 Child = new ColoredBox
                 {
-                    Color = _isOn ? SKColors.SeaGreen : SKColors.Gray,
+                    Color = _isOn ? Colors.SeaGreen : Colors.Gray,
                     Child = new Center
                     {
                         Child = new Text(_isOn ? "ON" : "OFF")
                         {
-                            Style = new TextStyle { Color = SKColors.White, FontSize = 40, FontWeight = 700 },
+                            Style = new TextStyle { Color = Colors.White, FontSize = 40, FontWeight = 700 },
                         },
                     },
                 },

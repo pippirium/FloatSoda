@@ -33,9 +33,10 @@ public class WindowElement : InheritedElement
 
     private void ApplySizeToRenderView()
     {
-        for (var ancestor = Parent; ancestor != null; ancestor = ancestor.Parent)
+        for (var ancestor = Parent; ancestor is not null; ancestor = ancestor.Parent)
         {
-            if (ancestor is not RenderObjectElement { RenderObject: RenderView view }) continue;
+            if (ancestor is not RenderObjectElement { RenderObject: RenderView view })
+                continue;
 
             view.FixedSize = (Widget as WindowWidget)?.Size;
             return;

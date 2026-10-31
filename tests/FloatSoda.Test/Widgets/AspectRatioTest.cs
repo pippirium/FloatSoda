@@ -50,7 +50,9 @@ public class AspectRatioTest
     {
         var renderObject = new RenderAspectRatio { AspectRatio = 2 };
 
-        Assert.Throws<InvalidOperationException>(() => renderObject.Layout(BoxConstraints.Unbounded));
+        Assert.Throws<InvalidOperationException>(() =>
+            renderObject.Layout(BoxConstraints.Unbounded)
+        );
     }
 
     [Theory]
@@ -59,10 +61,14 @@ public class AspectRatioTest
     [InlineData(double.NaN)]
     [InlineData(double.PositiveInfinity)]
     [InlineData(double.NegativeInfinity)]
-    public void Constructor_Ratioが正の有限値ではない_ArgumentOutOfRangeExceptionを投げる(double ratio)
+    public void Constructor_Ratioが正の有限値ではない_ArgumentOutOfRangeExceptionを投げる(
+        double ratio
+    )
     {
         Assert.Throws<ArgumentOutOfRangeException>(() => new AspectRatio { Ratio = ratio });
-        Assert.Throws<ArgumentOutOfRangeException>(() => new RenderAspectRatio { AspectRatio = ratio });
+        Assert.Throws<ArgumentOutOfRangeException>(() =>
+            new RenderAspectRatio { AspectRatio = ratio }
+        );
     }
 
     [Fact]
@@ -76,7 +82,7 @@ public class AspectRatioTest
         new RenderObjectToWidgetAdapter
         {
             Container = view,
-            Child = initial with { Ratio = 1 }
+            Child = initial with { Ratio = 1 },
         }.AttachToRenderTree(root.Owner!, root);
         root.Owner!.BuildScope();
 
@@ -92,32 +98,56 @@ public class AspectRatioTest
         var property = typeof(AspectRatio).GetProperty(nameof(AspectRatio.Ratio))!;
 
         Assert.Equal(typeof(double), property.PropertyType);
-        Assert.Contains(typeof(IsExternalInit), property.SetMethod!.ReturnParameter.GetRequiredCustomModifiers());
+        Assert.Contains(
+            typeof(IsExternalInit),
+            property.SetMethod!.ReturnParameter.GetRequiredCustomModifiers()
+        );
         Assert.True(Attribute.IsDefined(property, typeof(RequiredMemberAttribute)));
-        Assert.True(typeof(SingleChildRenderObjectWidget<RenderAspectRatio>).IsAssignableFrom(typeof(AspectRatio)));
+        Assert.True(
+            typeof(SingleChildRenderObjectWidget<RenderAspectRatio>).IsAssignableFrom(
+                typeof(AspectRatio)
+            )
+        );
         AssertNoSkiaMembers(typeof(AspectRatio));
         AssertNoSkiaMembers(typeof(RenderAspectRatio));
     }
 
-    private static (RenderPipeline Pipeline, RenderView View, RenderObjectToWidgetElement<RenderView> Root) Mount(Widget widget)
+    private static (
+        RenderPipeline Pipeline,
+        RenderView View,
+        RenderObjectToWidgetElement<RenderView> Root
+    ) Mount(Widget widget)
     {
         var view = new RenderView(100, 100) { FixedSize = new SKSize(100, 100) };
         var pipeline = new RenderPipeline { OnNeedVisualUpdate = () => { }, RenderView = view };
         view.PrepareInitialFrame();
-        var root = new RenderObjectToWidgetAdapter { Container = view, Child = widget }
-            .AttachToRenderTree(new BuildOwner(() => { }), null);
+        var root = new RenderObjectToWidgetAdapter
+        {
+            Container = view,
+            Child = widget,
+        }.AttachToRenderTree(new BuildOwner(() => { }), null);
         return (pipeline, view, root);
     }
 
-    private static void AssertNoSkiaMembers(Type type) => Assert.DoesNotContain(
-        type.GetMembers(BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static | BindingFlags.DeclaredOnly),
-        member => member switch
-        {
-            PropertyInfo property => IsSkiaType(property.PropertyType),
-            MethodInfo method => IsSkiaType(method.ReturnType)
-                                 || method.GetParameters().Any(parameter => IsSkiaType(parameter.ParameterType)),
-            _ => false
-        });
+    private static void AssertNoSkiaMembers(Type type) =>
+        Assert.DoesNotContain(
+            type.GetMembers(
+                BindingFlags.Public
+                    | BindingFlags.Instance
+                    | BindingFlags.Static
+                    | BindingFlags.DeclaredOnly
+            ),
+            member =>
+                member switch
+                {
+                    PropertyInfo property => IsSkiaType(property.PropertyType),
+                    MethodInfo method => IsSkiaType(method.ReturnType)
+                        || method
+                            .GetParameters()
+                            .Any(parameter => IsSkiaType(parameter.ParameterType)),
+                    _ => false,
+                }
+        );
 
     private static bool IsSkiaType(Type type) =>
         type.Namespace?.StartsWith("SkiaSharp", StringComparison.Ordinal) == true;

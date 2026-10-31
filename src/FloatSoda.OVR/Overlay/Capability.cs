@@ -31,24 +31,31 @@ public sealed class OverlayVibration(ulong overlayHandle)
     /// <param name="amplitude">The vibration amplitude.</param>
     public void Trigger(TimeSpan duration, float frequency, float amplitude)
     {
-        OpenVR.Overlay.TriggerLaserMouseHapticVibration(
-            overlayHandle,
-            (float)duration.TotalSeconds,
-            frequency,
-            amplitude
-        ).ThrowIfError();
+        OpenVR
+            .Overlay.TriggerLaserMouseHapticVibration(
+                overlayHandle,
+                (float)duration.TotalSeconds,
+                frequency,
+                amplitude
+            )
+            .ThrowIfError();
     }
 
     /// <summary>Triggers a predefined vibration clip.</summary>
     /// <param name="clip">The vibration parameters to use.</param>
-    public void Trigger(VibrationClip clip) => Trigger(clip.Duration, clip.Frequency, clip.Amplitude);
+    public void Trigger(VibrationClip clip) =>
+        Trigger(clip.Duration, clip.Frequency, clip.Amplitude);
 }
 
 /// <summary>Defines the duration, frequency, and amplitude of haptic feedback.</summary>
 /// <param name="Duration">How long the vibration lasts.</param>
 /// <param name="Frequency">The vibration frequency in hertz.</param>
 /// <param name="Amplitude">The vibration amplitude.</param>
-public readonly record struct VibrationClip(TimeSpan Duration, float Frequency = 2000, float Amplitude = 0.25f);
+public readonly record struct VibrationClip(
+    TimeSpan Duration,
+    float Frequency = 2000,
+    float Amplitude = 0.25f
+);
 
 /// <summary>Reads or changes an overlay's physical width.</summary>
 /// <param name="overlayHandle">The overlay handle to control.</param>
@@ -112,7 +119,6 @@ public abstract class OverlayTransform
         }
     }
 
-
     /// <summary>Builds the affine transformation matrix for the current position and rotation.</summary>
     protected Matrix4x4 GetMatrix() =>
         Matrix4x4.CreateFromQuaternion(_rotation) * Matrix4x4.CreateTranslation(_position);
@@ -137,7 +143,6 @@ public sealed class WorldOverlayTransform(ulong overlayHandle) : OverlayTransfor
     }
 
     private ETrackingUniverseOrigin _origin = ETrackingUniverseOrigin.TrackingUniverseStanding;
-
 
     /// <inheritdoc />
     public override void Apply()
@@ -173,8 +178,12 @@ public sealed class DeviceTrackedOverlayTransform(ulong overlayHandle) : Overlay
         }
 
         var matrix = GetMatrix().ToHmdMatrix34_t();
-        OpenVR.Overlay
-            .SetOverlayTransformTrackedDeviceRelative(overlayHandle, deviceIndex, ref matrix)
+        OpenVR
+            .Overlay.SetOverlayTransformTrackedDeviceRelative(
+                overlayHandle,
+                deviceIndex,
+                ref matrix
+            )
             .ThrowIfError();
 
         PendingReapply = false;
@@ -187,7 +196,8 @@ public sealed class OverlayTexture(ulong overlayHandle)
 {
     /// <summary>Loads the overlay texture from an image file.</summary>
     /// <param name="path">The image path passed to OpenVR.</param>
-    public void FromFile(string path) => OpenVR.Overlay.SetOverlayFromFile(overlayHandle, path).ThrowIfError();
+    public void FromFile(string path) =>
+        OpenVR.Overlay.SetOverlayFromFile(overlayHandle, path).ThrowIfError();
 
     /// <summary>Sets the overlay texture from an OpenVR texture descriptor.</summary>
     /// <param name="texture">The texture descriptor to submit.</param>
@@ -287,13 +297,16 @@ public readonly record struct OverlayHit(Vector2 UV, Vector3 Normal, Vector3 Poi
     /// <summary>Converts OpenVR intersection results to an <see cref="OverlayHit"/>.</summary>
     /// <param name="result">The native OpenVR intersection results.</param>
     /// <returns>The converted overlay hit.</returns>
-    public static OverlayHit FromVROverlayIntersectionResults(VROverlayIntersectionResults_t result) => new()
-    {
-        UV = new Vector2(result.vUVs.v0, result.vUVs.v1),
-        Normal = new Vector3(result.vNormal.v0, result.vNormal.v1, result.vNormal.v2),
-        Point = new Vector3(result.vPoint.v0, result.vPoint.v1, result.vPoint.v2),
-        Distance = result.fDistance
-    };
+    public static OverlayHit FromVROverlayIntersectionResults(
+        VROverlayIntersectionResults_t result
+    ) =>
+        new()
+        {
+            UV = new Vector2(result.vUVs.v0, result.vUVs.v1),
+            Normal = new Vector3(result.vNormal.v0, result.vNormal.v1, result.vNormal.v2),
+            Point = new Vector3(result.vPoint.v0, result.vPoint.v1, result.vPoint.v2),
+            Distance = result.fDistance,
+        };
 }
 
 /// <summary>Defines a ray used to test an overlay intersection.</summary>
@@ -303,16 +316,28 @@ public readonly record struct OverlayHit(Vector2 UV, Vector3 Normal, Vector3 Poi
 public readonly record struct IntersectionParams(
     Vector3 Origin,
     Vector3 Direction,
-    ETrackingUniverseOrigin TrackingOrigin)
+    ETrackingUniverseOrigin TrackingOrigin
+)
 {
     /// <summary>Converts these values to OpenVR intersection parameters.</summary>
     /// <returns>The converted native OpenVR parameters.</returns>
-    public VROverlayIntersectionParams_t ToVROverlayIntersectionParams() => new()
-    {
-        vSource = new HmdVector3_t { v0 = Origin.X, v1 = Origin.Y, v2 = Origin.Z },
-        vDirection = new HmdVector3_t { v0 = Direction.X, v1 = Direction.Y, v2 = Direction.Z },
-        eOrigin = TrackingOrigin
-    };
+    public VROverlayIntersectionParams_t ToVROverlayIntersectionParams() =>
+        new()
+        {
+            vSource = new HmdVector3_t
+            {
+                v0 = Origin.X,
+                v1 = Origin.Y,
+                v2 = Origin.Z,
+            },
+            vDirection = new HmdVector3_t
+            {
+                v0 = Direction.X,
+                v1 = Direction.Y,
+                v2 = Direction.Z,
+            },
+            eOrigin = TrackingOrigin,
+        };
 }
 
 /// <summary>Tests rays against an overlay surface.</summary>

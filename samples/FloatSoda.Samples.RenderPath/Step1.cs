@@ -11,7 +11,10 @@ static class Step1
     {
         using var app = new OVRApplication(new OVRAppInfo(new AppKey("com.example.render_path")));
 
-        var identity = new OverlayIdentity($"com.example.render_path.step1.{Guid.NewGuid()}", "RenderPath step 1");
+        var identity = new OverlayIdentity(
+            $"com.example.render_path.step1.{Guid.NewGuid()}",
+            "RenderPath step 1"
+        );
         using var overlay = new DeviceTrackedOverlay(identity);
 
         overlay.Transform.Position = new Vector3(0, 0, -1); // 追従先(既定は HMD)の 1 m 前

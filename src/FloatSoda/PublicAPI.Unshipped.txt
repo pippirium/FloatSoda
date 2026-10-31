@@ -1,0 +1,114 @@
+#nullable enable
+FloatSoda.Core.WidgetBinding.RootWidget.get -> FloatSoda.Widgets.Widget?
+FloatSoda.Elements.RenderObjectToWidgetElement<T>.ChildWidget.get -> FloatSoda.Widgets.Widget?
+FloatSoda.FloatSodaApp.Post(System.Action! action) -> void
+FloatSoda.Widgets.OverlayWindow.KeepOverlayAfterExit.get -> bool
+FloatSoda.Widgets.OverlayWindow.KeepOverlayAfterExit.init -> void
+FloatSoda.Widgets.Settings.SettingsDropdown
+FloatSoda.Widgets.Settings.SettingsDropdown.Equals(FloatSoda.Widgets.Settings.SettingsDropdown? other) -> bool
+FloatSoda.Widgets.Settings.SettingsDropdown.OnChanged.get -> System.Action<string!>?
+FloatSoda.Widgets.Settings.SettingsDropdown.OnChanged.init -> void
+FloatSoda.Widgets.Settings.SettingsDropdown.Options.get -> System.Collections.Generic.IReadOnlyList<string!>!
+FloatSoda.Widgets.Settings.SettingsDropdown.Options.init -> void
+FloatSoda.Widgets.Settings.SettingsDropdown.SettingsDropdown() -> void
+FloatSoda.Widgets.Settings.SettingsDropdown.Value.get -> string!
+FloatSoda.Widgets.Settings.SettingsDropdown.Value.init -> void
+FloatSoda.Widgets.Settings.SettingsDropdownState
+FloatSoda.Widgets.Settings.SettingsDropdownState.SettingsDropdownState() -> void
+FloatSoda.Widgets.Settings.SettingsPage
+FloatSoda.Widgets.Settings.SettingsPage.Equals(FloatSoda.Widgets.Settings.SettingsPage? other) -> bool
+FloatSoda.Widgets.Settings.SettingsPage.Sections.get -> System.Collections.Generic.List<FloatSoda.Widgets.Widget!>!
+FloatSoda.Widgets.Settings.SettingsPage.Sections.init -> void
+FloatSoda.Widgets.Settings.SettingsPage.SettingsPage() -> void
+FloatSoda.Widgets.Settings.SettingsPage.Title.get -> string!
+FloatSoda.Widgets.Settings.SettingsPage.Title.init -> void
+FloatSoda.Widgets.Settings.SettingsSection
+FloatSoda.Widgets.Settings.SettingsSection.Children.get -> System.Collections.Generic.List<FloatSoda.Widgets.Widget!>!
+FloatSoda.Widgets.Settings.SettingsSection.Children.init -> void
+FloatSoda.Widgets.Settings.SettingsSection.Equals(FloatSoda.Widgets.Settings.SettingsSection? other) -> bool
+FloatSoda.Widgets.Settings.SettingsSection.SettingsSection() -> void
+FloatSoda.Widgets.Settings.SettingsSection.Title.get -> string!
+FloatSoda.Widgets.Settings.SettingsSection.Title.init -> void
+FloatSoda.Widgets.Settings.SettingsSlider
+FloatSoda.Widgets.Settings.SettingsSlider.Equals(FloatSoda.Widgets.Settings.SettingsSlider? other) -> bool
+FloatSoda.Widgets.Settings.SettingsSlider.Max.get -> double
+FloatSoda.Widgets.Settings.SettingsSlider.Max.init -> void
+FloatSoda.Widgets.Settings.SettingsSlider.Min.get -> double
+FloatSoda.Widgets.Settings.SettingsSlider.Min.init -> void
+FloatSoda.Widgets.Settings.SettingsSlider.OnChanged.get -> System.Action<double>?
+FloatSoda.Widgets.Settings.SettingsSlider.OnChanged.init -> void
+FloatSoda.Widgets.Settings.SettingsSlider.SettingsSlider() -> void
+FloatSoda.Widgets.Settings.SettingsSlider.TrackWidth.get -> double
+FloatSoda.Widgets.Settings.SettingsSlider.TrackWidth.init -> void
+FloatSoda.Widgets.Settings.SettingsSlider.Value.get -> double
+FloatSoda.Widgets.Settings.SettingsSlider.Value.init -> void
+FloatSoda.Widgets.Settings.SettingsSliderState
+FloatSoda.Widgets.Settings.SettingsSliderState.SettingsSliderState() -> void
+FloatSoda.Widgets.Settings.SettingsSwitch
+FloatSoda.Widgets.Settings.SettingsSwitch.Equals(FloatSoda.Widgets.Settings.SettingsSwitch? other) -> bool
+FloatSoda.Widgets.Settings.SettingsSwitch.OnChanged.get -> System.Action<bool>?
+FloatSoda.Widgets.Settings.SettingsSwitch.OnChanged.init -> void
+FloatSoda.Widgets.Settings.SettingsSwitch.SettingsSwitch() -> void
+FloatSoda.Widgets.Settings.SettingsSwitch.Value.get -> bool
+FloatSoda.Widgets.Settings.SettingsSwitch.Value.init -> void
+FloatSoda.Widgets.Settings.SettingsTile
+FloatSoda.Widgets.Settings.SettingsTile.Description.get -> string?
+FloatSoda.Widgets.Settings.SettingsTile.Description.init -> void
+FloatSoda.Widgets.Settings.SettingsTile.Equals(FloatSoda.Widgets.Settings.SettingsTile? other) -> bool
+FloatSoda.Widgets.Settings.SettingsTile.SettingsTile() -> void
+FloatSoda.Widgets.Settings.SettingsTile.Title.get -> string!
+FloatSoda.Widgets.Settings.SettingsTile.Title.init -> void
+FloatSoda.Widgets.Settings.SettingsTile.Trailing.get -> FloatSoda.Widgets.Widget?
+FloatSoda.Widgets.Settings.SettingsTile.Trailing.init -> void
+override FloatSoda.Widgets.Settings.SettingsDropdown.<Clone>$() -> FloatSoda.Widgets.Settings.SettingsDropdown!
+override FloatSoda.Widgets.Settings.SettingsDropdown.CreateState() -> FloatSoda.Widgets.State<FloatSoda.Widgets.Settings.SettingsDropdown!>!
+override FloatSoda.Widgets.Settings.SettingsDropdown.Equals(object? obj) -> bool
+override FloatSoda.Widgets.Settings.SettingsDropdown.GetHashCode() -> int
+override FloatSoda.Widgets.Settings.SettingsDropdown.ToString() -> string!
+override FloatSoda.Widgets.Settings.SettingsDropdownState.Build(FloatSoda.Elements.IBuildContext! context) -> FloatSoda.Widgets.Widget!
+override FloatSoda.Widgets.Settings.SettingsPage.<Clone>$() -> FloatSoda.Widgets.Settings.SettingsPage!
+override FloatSoda.Widgets.Settings.SettingsPage.Build(FloatSoda.Elements.IBuildContext! context) -> FloatSoda.Widgets.Widget!
+override FloatSoda.Widgets.Settings.SettingsPage.Equals(object? obj) -> bool
+override FloatSoda.Widgets.Settings.SettingsPage.GetHashCode() -> int
+override FloatSoda.Widgets.Settings.SettingsPage.ToString() -> string!
+override FloatSoda.Widgets.Settings.SettingsSection.<Clone>$() -> FloatSoda.Widgets.Settings.SettingsSection!
+override FloatSoda.Widgets.Settings.SettingsSection.Build(FloatSoda.Elements.IBuildContext! context) -> FloatSoda.Widgets.Widget!
+override FloatSoda.Widgets.Settings.SettingsSection.Equals(object? obj) -> bool
+override FloatSoda.Widgets.Settings.SettingsSection.GetHashCode() -> int
+override FloatSoda.Widgets.Settings.SettingsSection.ToString() -> string!
+override FloatSoda.Widgets.Settings.SettingsSlider.<Clone>$() -> FloatSoda.Widgets.Settings.SettingsSlider!
+override FloatSoda.Widgets.Settings.SettingsSlider.CreateState() -> FloatSoda.Widgets.State<FloatSoda.Widgets.Settings.SettingsSlider!>!
+override FloatSoda.Widgets.Settings.SettingsSlider.Equals(object? obj) -> bool
+override FloatSoda.Widgets.Settings.SettingsSlider.GetHashCode() -> int
+override FloatSoda.Widgets.Settings.SettingsSlider.ToString() -> string!
+override FloatSoda.Widgets.Settings.SettingsSliderState.Build(FloatSoda.Elements.IBuildContext! context) -> FloatSoda.Widgets.Widget!
+override FloatSoda.Widgets.Settings.SettingsSliderState.Dispose() -> void
+override FloatSoda.Widgets.Settings.SettingsSwitch.<Clone>$() -> FloatSoda.Widgets.Settings.SettingsSwitch!
+override FloatSoda.Widgets.Settings.SettingsSwitch.Build(FloatSoda.Elements.IBuildContext! context) -> FloatSoda.Widgets.Widget!
+override FloatSoda.Widgets.Settings.SettingsSwitch.Equals(object? obj) -> bool
+override FloatSoda.Widgets.Settings.SettingsSwitch.GetHashCode() -> int
+override FloatSoda.Widgets.Settings.SettingsSwitch.ToString() -> string!
+override FloatSoda.Widgets.Settings.SettingsTile.<Clone>$() -> FloatSoda.Widgets.Settings.SettingsTile!
+override FloatSoda.Widgets.Settings.SettingsTile.Build(FloatSoda.Elements.IBuildContext! context) -> FloatSoda.Widgets.Widget!
+override FloatSoda.Widgets.Settings.SettingsTile.Equals(object? obj) -> bool
+override FloatSoda.Widgets.Settings.SettingsTile.GetHashCode() -> int
+override FloatSoda.Widgets.Settings.SettingsTile.ToString() -> string!
+override sealed FloatSoda.Widgets.Settings.SettingsDropdown.Equals(FloatSoda.Widgets.StatefulWidget<FloatSoda.Widgets.Settings.SettingsDropdown!>? other) -> bool
+override sealed FloatSoda.Widgets.Settings.SettingsPage.Equals(FloatSoda.Widgets.StatelessWidget? other) -> bool
+override sealed FloatSoda.Widgets.Settings.SettingsSection.Equals(FloatSoda.Widgets.StatelessWidget? other) -> bool
+override sealed FloatSoda.Widgets.Settings.SettingsSlider.Equals(FloatSoda.Widgets.StatefulWidget<FloatSoda.Widgets.Settings.SettingsSlider!>? other) -> bool
+override sealed FloatSoda.Widgets.Settings.SettingsSwitch.Equals(FloatSoda.Widgets.StatelessWidget? other) -> bool
+override sealed FloatSoda.Widgets.Settings.SettingsTile.Equals(FloatSoda.Widgets.StatelessWidget? other) -> bool
+static FloatSoda.Widgets.Settings.SettingsDropdown.operator !=(FloatSoda.Widgets.Settings.SettingsDropdown? left, FloatSoda.Widgets.Settings.SettingsDropdown? right) -> bool
+static FloatSoda.Widgets.Settings.SettingsDropdown.operator ==(FloatSoda.Widgets.Settings.SettingsDropdown? left, FloatSoda.Widgets.Settings.SettingsDropdown? right) -> bool
+static FloatSoda.Widgets.Settings.SettingsPage.operator !=(FloatSoda.Widgets.Settings.SettingsPage? left, FloatSoda.Widgets.Settings.SettingsPage? right) -> bool
+static FloatSoda.Widgets.Settings.SettingsPage.operator ==(FloatSoda.Widgets.Settings.SettingsPage? left, FloatSoda.Widgets.Settings.SettingsPage? right) -> bool
+static FloatSoda.Widgets.Settings.SettingsSection.operator !=(FloatSoda.Widgets.Settings.SettingsSection? left, FloatSoda.Widgets.Settings.SettingsSection? right) -> bool
+static FloatSoda.Widgets.Settings.SettingsSection.operator ==(FloatSoda.Widgets.Settings.SettingsSection? left, FloatSoda.Widgets.Settings.SettingsSection? right) -> bool
+static FloatSoda.Widgets.Settings.SettingsSlider.operator !=(FloatSoda.Widgets.Settings.SettingsSlider? left, FloatSoda.Widgets.Settings.SettingsSlider? right) -> bool
+static FloatSoda.Widgets.Settings.SettingsSlider.operator ==(FloatSoda.Widgets.Settings.SettingsSlider? left, FloatSoda.Widgets.Settings.SettingsSlider? right) -> bool
+static FloatSoda.Widgets.Settings.SettingsSliderState.ClampValue(double value, double min, double max) -> double
+static FloatSoda.Widgets.Settings.SettingsSwitch.operator !=(FloatSoda.Widgets.Settings.SettingsSwitch? left, FloatSoda.Widgets.Settings.SettingsSwitch? right) -> bool
+static FloatSoda.Widgets.Settings.SettingsSwitch.operator ==(FloatSoda.Widgets.Settings.SettingsSwitch? left, FloatSoda.Widgets.Settings.SettingsSwitch? right) -> bool
+static FloatSoda.Widgets.Settings.SettingsTile.operator !=(FloatSoda.Widgets.Settings.SettingsTile? left, FloatSoda.Widgets.Settings.SettingsTile? right) -> bool
+static FloatSoda.Widgets.Settings.SettingsTile.operator ==(FloatSoda.Widgets.Settings.SettingsTile? left, FloatSoda.Widgets.Settings.SettingsTile? right) -> bool

@@ -1,0 +1,5 @@
+{"id": "default-text-style-1", "source": "DefaultTextStyleDemo.cs:26-39", "flutter_ref": "text.dart:55", "question": "Style を省略した1行目が、祖先の DefaultTextStyle の書式(FontSize 30・白)で描かれているか", "read_aloud": "1行目が白くて大きめの文字で出てるか見て"}
+{"id": "default-text-style-2", "source": "DefaultTextStyleDemo.cs:43-46", "flutter_ref": "text.dart:55", "question": "2行目は色だけが水色に変わり、文字の大きさは1行目と同じか", "read_aloud": "2行目、水色で、1行目と同じ大きさか見て"}
+{"id": "default-text-style-3", "source": "DefaultTextStyleDemo.cs:49-52", "flutter_ref": "text.dart:55", "question": "3行目は白のまま太字になり、文字の大きさは1行目と同じか", "read_aloud": "3行目、白い太字で1行目と同じ大きさか見て"}
+{"id": "default-text-style-4", "source": "DefaultTextStyleDemo.cs:57-68", "flutter_ref": "text.dart:55", "question": "4行目(Inherit = false)が、明るい帯の上に黒い文字で、1〜3行目より小さく描かれているか", "read_aloud": "4行目、明るい帯の上に黒い小さめの文字か見て"}
+{"id": "default-text-style-5", "source": "DefaultTextStyleDemo.cs:72-81", "flutter_ref": "text.dart:55", "question": "5行目が、内側の DefaultTextStyle の書式(赤・斜体・1行目より小さい)で描かれているか", "read_aloud": "5行目、赤い斜めの小さい文字になってるか見て"}

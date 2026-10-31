@@ -10,24 +10,29 @@ public class VRNotificationException(string message, EVRNotificationError errorC
 {
     /// <summary>Creates an exception with a message derived from <paramref name="errorCode"/>.</summary>
     public VRNotificationException(EVRNotificationError errorCode)
-        : this(GetMessage(errorCode), errorCode)
-    {
-    }
+        : this(GetMessage(errorCode), errorCode) { }
 
-    private static string GetMessage(EVRNotificationError error) => error switch
-    {
-        EVRNotificationError.InvalidNotificationId => ExceptionMessages.VRNotificationException_InvalidNotificationId,
-        EVRNotificationError.NotificationQueueFull => ExceptionMessages.VRNotificationException_NotificationQueueFull,
-        EVRNotificationError.InvalidOverlayHandle => ExceptionMessages.VRNotificationException_InvalidOverlayHandle,
-        EVRNotificationError.SystemWithUserValueAlreadyExists => ExceptionMessages.VRNotificationException_SystemWithUserValueAlreadyExists,
-        EVRNotificationError.ServiceUnavailable => ExceptionMessages.VRNotificationException_ServiceUnavailable,
-        _ => string.Format(ExceptionMessages.VRNotificationException_UnexpectedError, error)
-    };
+    private static string GetMessage(EVRNotificationError error) =>
+        error switch
+        {
+            EVRNotificationError.InvalidNotificationId =>
+                ExceptionMessages.VRNotificationException_InvalidNotificationId,
+            EVRNotificationError.NotificationQueueFull =>
+                ExceptionMessages.VRNotificationException_NotificationQueueFull,
+            EVRNotificationError.InvalidOverlayHandle =>
+                ExceptionMessages.VRNotificationException_InvalidOverlayHandle,
+            EVRNotificationError.SystemWithUserValueAlreadyExists =>
+                ExceptionMessages.VRNotificationException_SystemWithUserValueAlreadyExists,
+            EVRNotificationError.ServiceUnavailable =>
+                ExceptionMessages.VRNotificationException_ServiceUnavailable,
+            _ => string.Format(ExceptionMessages.VRNotificationException_UnexpectedError, error),
+        };
 
     /// <summary>Throws a <see cref="VRNotificationException"/> if <paramref name="error"/> indicates a failure.</summary>
     public static void ThrowIfError(EVRNotificationError error)
     {
-        if (error == EVRNotificationError.OK) return;
+        if (error == EVRNotificationError.OK)
+            return;
 
         throw new VRNotificationException(error);
     }

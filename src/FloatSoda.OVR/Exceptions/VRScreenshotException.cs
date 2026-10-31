@@ -12,23 +12,28 @@ public class VRScreenshotException(string message, EVRScreenshotError errorCode)
     public VRScreenshotException(EVRScreenshotError errorCode)
         : this(GetMessage(errorCode), errorCode) { }
 
-    private static string GetMessage(EVRScreenshotError error) => error switch
-    {
-        EVRScreenshotError.None => ExceptionMessages.VRScreenshotException_None,
-        EVRScreenshotError.RequestFailed => ExceptionMessages.VRScreenshotException_RequestFailed,
-        EVRScreenshotError.IncompatibleVersion => ExceptionMessages.VRScreenshotException_IncompatibleVersion,
-        EVRScreenshotError.NotFound => ExceptionMessages.VRScreenshotException_NotFound,
-        EVRScreenshotError.BufferTooSmall => ExceptionMessages.VRScreenshotException_BufferTooSmall,
-        EVRScreenshotError.ScreenshotAlreadyInProgress => ExceptionMessages
-            .VRScreenshotException_ScreenshotAlreadyInProgress,
+    private static string GetMessage(EVRScreenshotError error) =>
+        error switch
+        {
+            EVRScreenshotError.None => ExceptionMessages.VRScreenshotException_None,
+            EVRScreenshotError.RequestFailed =>
+                ExceptionMessages.VRScreenshotException_RequestFailed,
+            EVRScreenshotError.IncompatibleVersion =>
+                ExceptionMessages.VRScreenshotException_IncompatibleVersion,
+            EVRScreenshotError.NotFound => ExceptionMessages.VRScreenshotException_NotFound,
+            EVRScreenshotError.BufferTooSmall =>
+                ExceptionMessages.VRScreenshotException_BufferTooSmall,
+            EVRScreenshotError.ScreenshotAlreadyInProgress =>
+                ExceptionMessages.VRScreenshotException_ScreenshotAlreadyInProgress,
 
-        _ => string.Format(ExceptionMessages.VRScreenshotException_UnexpectedError, error)
-    };
+            _ => string.Format(ExceptionMessages.VRScreenshotException_UnexpectedError, error),
+        };
 
     /// <summary>Throws a <see cref="VRScreenshotException"/> if <paramref name="error"/> indicates a failure.</summary>
     public static void ThrowIfError(EVRScreenshotError error)
     {
-        if (error == EVRScreenshotError.None) return;
+        if (error == EVRScreenshotError.None)
+            return;
 
         throw new VRScreenshotException(error);
     }

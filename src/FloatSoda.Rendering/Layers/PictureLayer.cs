@@ -25,7 +25,6 @@ public class PictureLayer : ILayer
     /// </value>
     public SKRect PaintBounds { get; private set; }
 
-
     /// <summary>
     /// ピクチャーに記録された描画境界をこのレイヤーの描画境界として設定します。
     /// </summary>
@@ -57,8 +56,5 @@ public class PictureLayer : ILayer
     /// <remarks>
     /// ピクチャーの所有権は移転しません。描画境界は複製後のレイアウトで計算されます。
     /// </remarks>
-    public ILayer Clone() => new PictureLayer()
-    {
-        Picture = Picture
-    };
+    public ILayer Clone() => new PictureLayer() { Picture = Picture };
 }

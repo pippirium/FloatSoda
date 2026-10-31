@@ -25,7 +25,10 @@ public class OffstageVisibilityTest
     [Fact]
     public void PerformLayout_Offstageでも子をレイアウトする()
     {
-        var child = new RenderConstrainedBox { AdditionalConstraints = BoxConstraints.Tight(20, 10) };
+        var child = new RenderConstrainedBox
+        {
+            AdditionalConstraints = BoxConstraints.Tight(20, 10),
+        };
         var offstage = new RenderOffstage { Offstage = true, Child = child };
 
         offstage.Layout(BoxConstraints.Loose(100, 100));
@@ -44,8 +47,8 @@ public class OffstageVisibilityTest
             Child = new Offstage
             {
                 IsOffstage = true,
-                Child = new ColoredBox { Color = new Color(255, 0, 0) }
-            }
+                Child = new ColoredBox { Color = new Color(255, 0, 0) },
+            },
         };
 
         using var bitmap = Renderer.Render(widget, Size);
@@ -68,14 +71,18 @@ public class OffstageVisibilityTest
             Child = new Offstage
             {
                 IsOffstage = false,
-                Child = new ColoredBox { Color = new Color(255, 0, 0) }
-            }
+                Child = new ColoredBox { Color = new Color(255, 0, 0) },
+            },
         };
 
         using var bitmap = Renderer.Render(widget, Size);
         Assert.Equal(SKColors.Red, bitmap.GetPixel(20, 20));
 
-        var renderOffstage = new RenderOffstage { Offstage = false, Child = new RenderColoredBox() };
+        var renderOffstage = new RenderOffstage
+        {
+            Offstage = false,
+            Child = new RenderColoredBox(),
+        };
         renderOffstage.Layout(BoxConstraints.Tight(40, 40));
         Assert.True(renderOffstage.HitTest(new HitTestResult(), new Offset(20, 20)));
     }
@@ -83,7 +90,12 @@ public class OffstageVisibilityTest
     [Theory]
     [InlineData(true, 255, 0, 0)]
     [InlineData(false, 0, 0, 255)]
-    public void Visibility_Visibleに応じてChildまたはReplacementを描画する(bool visible, byte red, byte green, byte blue)
+    public void Visibility_Visibleに応じてChildまたはReplacementを描画する(
+        bool visible,
+        byte red,
+        byte green,
+        byte blue
+    )
     {
         var widget = new SizedBox
         {
@@ -93,8 +105,8 @@ public class OffstageVisibilityTest
             {
                 Visible = visible,
                 Child = new ColoredBox { Color = new Color(255, 0, 0) },
-                Replacement = new ColoredBox { Color = new Color(0, 0, 255) }
-            }
+                Replacement = new ColoredBox { Color = new Color(0, 0, 255) },
+            },
         };
 
         using var bitmap = Renderer.Render(widget, Size);
@@ -105,22 +117,26 @@ public class OffstageVisibilityTest
     [Fact]
     public void Visibility_非表示時_ChildのListenerがヒットテスト経路へ漏れない()
     {
-        var hiddenView = BuildView(new Visibility
-        {
-            Visible = false,
-            Child = ListenerBox(),
-            Replacement = new SizedBox { Width = 40, Height = 40 }
-        });
+        var hiddenView = BuildView(
+            new Visibility
+            {
+                Visible = false,
+                Child = ListenerBox(),
+                Replacement = new SizedBox { Width = 40, Height = 40 },
+            }
+        );
         var hiddenResult = new HitTestResult();
         hiddenView.HitTest(hiddenResult, new Offset(20, 20));
         Assert.DoesNotContain(hiddenResult.Path, entry => entry.Target is RenderPointerListener);
 
-        var visibleView = BuildView(new Visibility
-        {
-            Visible = true,
-            Child = ListenerBox(),
-            Replacement = new SizedBox { Width = 40, Height = 40 }
-        });
+        var visibleView = BuildView(
+            new Visibility
+            {
+                Visible = true,
+                Child = ListenerBox(),
+                Replacement = new SizedBox { Width = 40, Height = 40 },
+            }
+        );
         var visibleResult = new HitTestResult();
         visibleView.HitTest(visibleResult, new Offset(20, 20));
         Assert.Contains(visibleResult.Path, entry => entry.Target is RenderPointerListener);
@@ -141,24 +157,32 @@ public class OffstageVisibilityTest
     {
         var child = typeof(Visibility).GetProperty(nameof(Visibility.Child));
         Assert.NotNull(child);
-        Assert.NotNull(child!.GetCustomAttributes(typeof(RequiredMemberAttribute), inherit: false).SingleOrDefault());
+        Assert.NotNull(
+            child!
+                .GetCustomAttributes(typeof(RequiredMemberAttribute), inherit: false)
+                .SingleOrDefault()
+        );
     }
 
-    private static Widget ListenerBox() => new Listener
-    {
-        Child = new ColoredBox
+    private static Widget ListenerBox() =>
+        new Listener
         {
-            Color = new Color(255, 0, 0),
-            Child = new SizedBox { Width = 40, Height = 40 }
-        }
-    };
+            Child = new ColoredBox
+            {
+                Color = new Color(255, 0, 0),
+                Child = new SizedBox { Width = 40, Height = 40 },
+            },
+        };
 
     private static RenderView BuildView(Widget widget)
     {
         var view = new RenderView(Size.Width, Size.Height);
         var pipeline = new RenderPipeline { OnNeedVisualUpdate = () => { }, RenderView = view };
         var owner = new BuildOwner(() => { });
-        _ = new RenderObjectToWidgetAdapter { Container = view, Child = widget }.AttachToRenderTree(owner, null);
+        _ = new RenderObjectToWidgetAdapter { Container = view, Child = widget }.AttachToRenderTree(
+            owner,
+            null
+        );
         view.PrepareInitialFrame();
         pipeline.FlushLayout();
         return view;

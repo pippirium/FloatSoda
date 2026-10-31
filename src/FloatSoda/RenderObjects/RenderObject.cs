@@ -1,10 +1,10 @@
 ﻿using System.Diagnostics;
 using FloatSoda.Abstractions.Geometries;
 using FloatSoda.Abstractions.Input;
-using FloatSoda.Rendering.Layers;
 using FloatSoda.Core;
 using FloatSoda.Geometrics;
 using FloatSoda.Gesture;
+using FloatSoda.Rendering.Layers;
 using SkiaSharp;
 
 namespace FloatSoda.RenderObjects;
@@ -58,7 +58,7 @@ public abstract class RenderObject : IHitTestTarget
     public virtual bool IsRepaintBoundary { get; }
 
     /// <summary>描画パイプラインへ接続されているかどうかを取得します。</summary>
-    public bool Attached => Owner != null;
+    public bool Attached => Owner is not null;
 
     /// <summary>レイアウトDirtyの伝播が停止するRenderObjectを取得または設定します。</summary>
     /// <value>再レイアウト境界。境界がまだ決定されていない場合は<see langword="null"/>です。</value>
@@ -85,9 +85,10 @@ public abstract class RenderObject : IHitTestTarget
     {
         Debug.WriteLine("Call Layout");
 
-        var relayoutBoundary = !parentUseSize || SizedByParent || constraints.IsTight || Parent == null
-            ? this
-            : Parent.RelayoutBoundary;
+        var relayoutBoundary =
+            !parentUseSize || SizedByParent || constraints.IsTight || Parent is null
+                ? this
+                : Parent.RelayoutBoundary;
 
         if (!NeedsLayout && Constraints == constraints)
         {
@@ -102,7 +103,7 @@ public abstract class RenderObject : IHitTestTarget
 
         Constraints = constraints;
 
-        if (RelayoutBoundary != null && relayoutBoundary != RelayoutBoundary)
+        if (RelayoutBoundary is not null && relayoutBoundary != RelayoutBoundary)
         {
             VisitChildren(child => child.CleanChildRelayoutBoundary());
         }
@@ -135,10 +136,12 @@ public abstract class RenderObject : IHitTestTarget
     /// <remarks>レイアウトDirtyにはしません。子孫のレイアウト結果は境界の付け替えでは変わらないためです。</remarks>
     private static void PropagateRelayoutBoundaryToChild(RenderObject child)
     {
-        if (child.RelayoutBoundary == child) return;
+        if (child.RelayoutBoundary == child)
+            return;
 
         var parentRelayoutBoundary = child.Parent?.RelayoutBoundary;
-        if (child.RelayoutBoundary == parentRelayoutBoundary) return;
+        if (child.RelayoutBoundary == parentRelayoutBoundary)
+            return;
 
         child.RelayoutBoundary = parentRelayoutBoundary;
         child.VisitChildren(PropagateRelayoutBoundaryToChild);
@@ -167,7 +170,8 @@ public abstract class RenderObject : IHitTestTarget
     /// </remarks>
     public void MarkNeedsLayout()
     {
-        if (NeedsLayout) return;
+        if (NeedsLayout)
+            return;
         if (RelayoutBoundary != this)
         {
             MarkParentNeedsLayout();
@@ -191,7 +195,6 @@ public abstract class RenderObject : IHitTestTarget
         Parent?.MarkNeedsLayout();
     }
 
-
     /// <summary>このRenderObjectを指定した描画パイプラインへ接続します。</summary>
     /// <param name="owner">接続先のパイプライン。パイプラインを関連付けずに接続する場合は<see langword="null"/>です。</param>
     /// <remarks>
@@ -205,14 +208,15 @@ public abstract class RenderObject : IHitTestTarget
 
         Owner = owner;
 
-        if (NeedsLayout && RelayoutBoundary != null)
+        if (NeedsLayout && RelayoutBoundary is not null)
         {
             NeedsLayout = false;
 
             MarkNeedsLayout();
         }
 
-        if (!NeedsPaint || Layer is null) return;
+        if (!NeedsPaint || Layer is null)
+            return;
 
         NeedsPaint = false;
         MarkNeedsPaint();
@@ -261,12 +265,10 @@ public abstract class RenderObject : IHitTestTarget
     /// <remarks>子を保持する派生型がオーバーライドします。</remarks>
     public virtual void VisitChildren(Action<RenderObject> visitor) { }
 
-
     /// <summary>指定した子が必要とする親データを準備します。</summary>
     /// <param name="child">このRenderObjectへ組み込む子。</param>
     /// <remarks>親固有の<see cref="IParentData"/>を使用する派生型がオーバーライドします。</remarks>
     public virtual void SetupParentData(RenderObject child) { }
-
 
     /// <summary>指定した位置を原点として、このRenderObjectを描画コンテキストへ記録します。</summary>
     /// <param name="context">描画命令と合成レイヤーを記録するコンテキスト。</param>
@@ -281,7 +283,8 @@ public abstract class RenderObject : IHitTestTarget
     /// </remarks>
     public void MarkNeedsPaint()
     {
-        if (NeedsPaint) return;
+        if (NeedsPaint)
+            return;
 
         NeedsPaint = true;
 
@@ -320,7 +323,6 @@ public abstract class RenderObject : IHitTestTarget
         MarkNeedsLayout();
     }
 
-    
     /// <summary>ヒットテストで選択されたこのRenderObjectへポインターイベントを配信します。</summary>
     /// <param name="pointerEvent">配信するポインターイベント。</param>
     /// <param name="entry">ヒットテスト時に生成された、このRenderObjectに対応する結果。</param>

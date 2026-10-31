@@ -83,7 +83,8 @@ public abstract class Element : IBuildContext, IComparable<Element>
     }
 
     /// <inheritdoc/>
-    public T? DependOnInheritedWidgetOfExactType<T>() where T : InheritedWidget
+    public T? DependOnInheritedWidgetOfExactType<T>()
+        where T : InheritedWidget
     {
         if (InheritedWidgets?.TryGetValue(typeof(T), out var ancestor) ?? false)
         {
@@ -94,7 +95,8 @@ public abstract class Element : IBuildContext, IComparable<Element>
     }
 
     /// <inheritdoc/>
-    public virtual InheritedElement? GetElementForInheritedWidgetOfExactType<T>() where T : InheritedWidget
+    public virtual InheritedElement? GetElementForInheritedWidgetOfExactType<T>()
+        where T : InheritedWidget
     {
         if (InheritedWidgets?.TryGetValue(typeof(T), out var inheritedElement) ?? false)
         {
@@ -114,6 +116,7 @@ public abstract class Element : IBuildContext, IComparable<Element>
     /// </summary>
     /// <remarks>この値を直接変更しても、再構築は予約されません。</remarks>
     public bool InDirtyList { get; set; }
+
     /// <summary>
     /// このElementが再構築を必要としているかどうかを取得または設定します。
     /// </summary>
@@ -137,16 +140,15 @@ public abstract class Element : IBuildContext, IComparable<Element>
     public virtual void Mount(Element? parent)
     {
         Parent = parent;
-        Depth = parent != null ? parent.Depth + 1 : 1;
+        Depth = parent is not null ? parent.Depth + 1 : 1;
 
-        if (Parent != null)
+        if (Parent is not null)
         {
             Owner = Parent.Owner;
         }
 
         UpdateInheritance();
     }
-
 
     /// <summary>
     /// 親がこのElementへ割り当てた、親の子リストの中での位置を取得します。
@@ -183,9 +185,9 @@ public abstract class Element : IBuildContext, IComparable<Element>
     /// <returns>更新または生成された子Element。子を取り除いた場合は<see langword="null"/>。</returns>
     protected Element? UpdateChild(Element? child, Widget? newWidget, object? newSlot)
     {
-        if (newWidget == null)
+        if (newWidget is null)
         {
-            if (child != null)
+            if (child is not null)
             {
                 DeactivateChild(child);
             }
@@ -193,9 +195,8 @@ public abstract class Element : IBuildContext, IComparable<Element>
             return null;
         }
 
-
-        if (child == null) return InflateWidget(newWidget, newSlot);
-
+        if (child is null)
+            return InflateWidget(newWidget, newSlot);
 
         // Flutter と同じく、同じインスタンスのときだけ更新を省く。
         // record の == は値の等価性なので、値が等しい別インスタンスも Update へ流すために参照で比べる。
@@ -223,7 +224,8 @@ public abstract class Element : IBuildContext, IComparable<Element>
     /// <param name="newSlot">新しいslot。</param>
     protected void UpdateSlotForChild(Element child, object? newSlot)
     {
-        if (Equals(child.Slot, newSlot)) return;
+        if (Equals(child.Slot, newSlot))
+            return;
 
         Visit(child);
         return;
@@ -233,7 +235,8 @@ public abstract class Element : IBuildContext, IComparable<Element>
             element.UpdateSlot(newSlot);
 
             // RenderObjectElementの子のslotは、そのRenderObjectElementが決める。引き継ぐのはそこまで。
-            if (element is RenderObjectElement) return;
+            if (element is RenderObjectElement)
+                return;
             element.VisitChildren(Visit);
         }
     }
@@ -250,7 +253,6 @@ public abstract class Element : IBuildContext, IComparable<Element>
     /// <param name="newWidget">このElementと同じ位置を引き継ぐ新しいWidget。</param>
     /// <remarks>基底実装はWidgetの置き換えだけを行い、再構築を予約しません。</remarks>
     public virtual void Update(Widget newWidget) => Widget = newWidget;
-
 
     /// <summary>
     /// 指定したWidgetに対応するElementを生成し、このElementの子としてマウントします。
@@ -327,7 +329,8 @@ public abstract class Element : IBuildContext, IComparable<Element>
     /// </remarks>
     public void MarkNeedsBuild()
     {
-        if (Dirty) return;
+        if (Dirty)
+            return;
 
         Dirty = true;
         Owner?.ScheduledBuildFor(this);
@@ -363,10 +366,14 @@ public abstract class Element : IBuildContext, IComparable<Element>
     /// </returns>
     public int CompareTo(Element? other)
     {
-        if (Depth < other.Depth) return -1;
-        if (Depth > other.Depth) return 1;
-        if (!Dirty && other.Dirty) return -1;
-        if (Dirty && !other.Dirty) return 1;
+        if (Depth < other.Depth)
+            return -1;
+        if (Depth > other.Depth)
+            return 1;
+        if (!Dirty && other.Dirty)
+            return -1;
+        if (Dirty && !other.Dirty)
+            return 1;
         return 0;
     }
 }

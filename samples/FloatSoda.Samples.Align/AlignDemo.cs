@@ -12,101 +12,112 @@ namespace FloatSoda.Samples.Align;
 public sealed record AlignDemo : StatelessWidget
 {
     /// <inheritdoc />
-    public override Widget Build(IBuildContext context) => new SizedBox
-    {
-        Width = 940,
-        Height = 420,
-        Child = new ColoredBox
+    public override Widget Build(IBuildContext context) =>
+        new SizedBox
         {
-            Color = new Color(16, 20, 31),
-            Child = new Padding
+            Width = 940,
+            Height = 420,
+            Child = new ColoredBox
             {
-                Spacing = EdgeInsets.All(32),
-                Child = new Row
+                Color = new Color(16, 20, 31),
+                Child = new Padding
                 {
-                    Children =
+                    Spacing = EdgeInsets.All(32),
+                    Child = new Row
                     {
-                        // Alignment のプリセットで、与えられた領域内の配置位置を決める。
-                        Cell("TopLeft", new AlignWidget
+                        Children =
                         {
-                            Alignment = Alignment.TopLeft,
-                            Child = Marker(new Color(124, 205, 255))
-                        }),
-                        new SizedBox { Width = 24 },
-
-                        Cell("Center", new AlignWidget
-                        {
-                            Alignment = Alignment.Center,
-                            Child = Marker(new Color(124, 205, 255))
-                        }),
-                        new SizedBox { Width = 24 },
-
-                        Cell("BottomRight", new AlignWidget
-                        {
-                            Alignment = Alignment.BottomRight,
-                            Child = Marker(new Color(124, 205, 255))
-                        }),
-                        new SizedBox { Width = 24 },
-
-                        // Center は Align.Center への薄いラッパー。上の Center と同じ結果になる。
-                        Cell("Center ウィジェット", new Center
-                        {
-                            Child = Marker(new Color(255, 111, 97))
-                        }),
-                        new SizedBox { Width = 24 },
-
-                        // WidthFactor / HeightFactor を指定すると、Align 自身が
-                        // 「子の寸法 x 係数」まで収縮する。
-                        // ただし収縮できるのは親の制約が緩いときだけで、tight な制約の下では
-                        // Constrain によって親の寸法へ戻される。ここでは Center を挟んで
-                        // 緩い制約を作り、ColoredBox で Align 自身の範囲を可視化している。
-                        Cell("係数 2.0 で収縮", new Center
-                        {
-                            Child = new ColoredBox
-                            {
-                                Color = new Color(92, 76, 44),
-                                Child = new AlignWidget
+                            // Alignment のプリセットで、与えられた領域内の配置位置を決める。
+                            Cell(
+                                "TopLeft",
+                                new AlignWidget
+                                {
+                                    Alignment = Alignment.TopLeft,
+                                    Child = Marker(new Color(124, 205, 255)),
+                                }
+                            ),
+                            new SizedBox { Width = 24 },
+                            Cell(
+                                "Center",
+                                new AlignWidget
                                 {
                                     Alignment = Alignment.Center,
-                                    WidthFactor = 2.0,
-                                    HeightFactor = 2.0,
-                                    Child = Marker(new Color(255, 209, 102))
+                                    Child = Marker(new Color(124, 205, 255)),
                                 }
-                            }
-                        })
-                    }
-                }
-            }
-        }
-    };
+                            ),
+                            new SizedBox { Width = 24 },
+                            Cell(
+                                "BottomRight",
+                                new AlignWidget
+                                {
+                                    Alignment = Alignment.BottomRight,
+                                    Child = Marker(new Color(124, 205, 255)),
+                                }
+                            ),
+                            new SizedBox { Width = 24 },
+                            // Center は Align.Center への薄いラッパー。上の Center と同じ結果になる。
+                            Cell(
+                                "Center ウィジェット",
+                                new Center { Child = Marker(new Color(255, 111, 97)) }
+                            ),
+                            new SizedBox { Width = 24 },
+                            // WidthFactor / HeightFactor を指定すると、Align 自身が
+                            // 「子の寸法 x 係数」まで収縮する。
+                            // ただし収縮できるのは親の制約が緩いときだけで、tight な制約の下では
+                            // Constrain によって親の寸法へ戻される。ここでは Center を挟んで
+                            // 緩い制約を作り、ColoredBox で Align 自身の範囲を可視化している。
+                            Cell(
+                                "係数 2.0 で収縮",
+                                new Center
+                                {
+                                    Child = new ColoredBox
+                                    {
+                                        Color = new Color(92, 76, 44),
+                                        Child = new AlignWidget
+                                        {
+                                            Alignment = Alignment.Center,
+                                            WidthFactor = 2.0,
+                                            HeightFactor = 2.0,
+                                            Child = Marker(new Color(255, 209, 102)),
+                                        },
+                                    },
+                                }
+                            ),
+                        },
+                    },
+                },
+            },
+        };
 
     /// <summary>ラベル付きの枠を作り、その中で Align の効果を見せる。</summary>
-    private static Widget Cell(string label, Widget child) => new Column
-    {
-        MainAxisSize = MainAxisSize.Min,
-        Children =
+    private static Widget Cell(string label, Widget child) =>
+        new Column
         {
-            new ColoredBox
+            MainAxisSize = MainAxisSize.Min,
+            Children =
             {
-                Color = new Color(40, 47, 64),
-                Child = new SizedBox
+                new ColoredBox
                 {
-                    Width = 150,
-                    Height = 150,
-                    Child = child
-                }
+                    Color = new Color(40, 47, 64),
+                    Child = new SizedBox
+                    {
+                        Width = 150,
+                        Height = 150,
+                        Child = child,
+                    },
+                },
+                new SizedBox { Height = 10 },
+                new Text(label)
+                {
+                    Style = new TextStyle { FontSize = 18, Color = new Color(169, 180, 204) },
+                },
             },
-            new SizedBox { Height = 10 },
-            new Text(label)
-            {
-                Style = new TextStyle { FontSize = 18, Color = new Color(169, 180, 204) }
-            }
-        }
-    };
+        };
 
-    private static Widget Marker(Color color) => new ColoredBox
-    {
-        Color = color,
-        Child = new SizedBox { Width = 48, Height = 48 }
-    };
+    private static Widget Marker(Color color) =>
+        new ColoredBox
+        {
+            Color = color,
+            Child = new SizedBox { Width = 48, Height = 48 },
+        };
 }

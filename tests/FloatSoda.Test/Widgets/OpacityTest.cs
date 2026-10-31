@@ -21,8 +21,8 @@ public class OpacityTest
             Child = new Opacity
             {
                 Value = 0.5,
-                Child = new ColoredBox { Color = new Color(255, 0, 0) }
-            }
+                Child = new ColoredBox { Color = new Color(255, 0, 0) },
+            },
         };
 
         using var bitmap = Renderer.Render(widget, Size);
@@ -42,8 +42,8 @@ public class OpacityTest
             Child = new Opacity
             {
                 Value = 0,
-                Child = new ColoredBox { Color = new Color(255, 0, 0) }
-            }
+                Child = new ColoredBox { Color = new Color(255, 0, 0) },
+            },
         };
 
         using var bitmap = Renderer.Render(widget, Size);
@@ -56,7 +56,9 @@ public class OpacityTest
     [InlineData(1.01)]
     [InlineData(double.NaN)]
     [InlineData(double.PositiveInfinity)]
-    public void Opacity_Valueが0から1の範囲外または非有限値_ArgumentOutOfRangeExceptionを投げる(double value)
+    public void Opacity_Valueが0から1の範囲外または非有限値_ArgumentOutOfRangeExceptionを投げる(
+        double value
+    )
     {
         Assert.Throws<ArgumentOutOfRangeException>(() => new Opacity { Value = value });
     }

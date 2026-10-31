@@ -8,13 +8,15 @@ namespace FloatSoda.Elements;
 /// </summary>
 /// <typeparam name="T">このElementが管理するRenderObjectの型。</typeparam>
 /// <seealso cref="SingleChildRenderObjectWidget{T}"/>
-public class SingleChildRenderObjectElement<T> : RenderObjectElement<T> where T : RenderObject
+public class SingleChildRenderObjectElement<T> : RenderObjectElement<T>
+    where T : RenderObject
 {
     /// <summary>
     /// このElementが現在管理している単一子用Widgetを取得します。
     /// Widgetが割り当てられていない場合、または型が一致しない場合は<see langword="null"/>です。
     /// </summary>
-    public SingleChildRenderObjectWidget<T>? WidgetCasted => Widget as SingleChildRenderObjectWidget<T>;
+    public SingleChildRenderObjectWidget<T>? WidgetCasted =>
+        Widget as SingleChildRenderObjectWidget<T>;
 
     private Element? Child { get; set; }
 
@@ -31,7 +33,6 @@ public class SingleChildRenderObjectElement<T> : RenderObjectElement<T> where T 
         Child = UpdateChild(Child, WidgetCasted?.Child);
     }
 
-
     /// <summary>
     /// 管理するWidgetを置き換え、Widget型とキーが一致する場合は既存の子Elementを再利用して子を更新します。
     /// </summary>
@@ -45,18 +46,21 @@ public class SingleChildRenderObjectElement<T> : RenderObjectElement<T> where T 
     /// <inheritdoc/>
     public override void InsertRenderObjectChild(RenderObject? child)
     {
-        if (RenderObject is IHasSingleChildRenderObject ro) ro.Child = child;
+        if (RenderObject is IHasSingleChildRenderObject ro)
+            ro.Child = child;
     }
 
     /// <inheritdoc/>
     public override void RemoveRenderObjectChild(RenderObject? child)
     {
-        if (RenderObject is IHasSingleChildRenderObject ro) ro.Child = null;
+        if (RenderObject is IHasSingleChildRenderObject ro)
+            ro.Child = null;
     }
 
     /// <inheritdoc/>
     public override void VisitChildren(Action<Element> visitor)
     {
-        if (Child != null) visitor(Child);
+        if (Child is not null)
+            visitor(Child);
     }
 }

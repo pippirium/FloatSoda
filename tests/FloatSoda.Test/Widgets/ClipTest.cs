@@ -94,7 +94,11 @@ public class ClipTest
         var log = new List<string>();
 
         // Flutter の RenderClipRRect と同じく、Clipper がないときは角丸の形を見ない
-        Tap(new ClipRoundRect { BorderRadius = BorderRadius.Circular(40), Child = Tappable(log) }, 2, 2);
+        Tap(
+            new ClipRoundRect { BorderRadius = BorderRadius.Circular(40), Child = Tappable(log) },
+            2,
+            2
+        );
 
         Assert.Equal(["tap"], log);
     }
@@ -121,7 +125,9 @@ public class ClipTest
         binding.HandlePointerEvent(new PointerEvent(1, PointerEventPhase.Add, new Offset(10, 10)));
         for (var x = 10; x < 20; x++)
         {
-            binding.HandlePointerEvent(new PointerEvent(1, PointerEventPhase.Move, new Offset(x, 10)));
+            binding.HandlePointerEvent(
+                new PointerEvent(1, PointerEventPhase.Move, new Offset(x, 10))
+            );
         }
 
         Assert.Equal(1, clipper.GetClipCount);
@@ -138,12 +144,14 @@ public class ClipTest
     [Fact]
     public void ClipBehavior_ClipRoundRectでNoneを指定_角の外も描画する()
     {
-        using var bitmap = RenderRed(new ClipRoundRect
-        {
-            BorderRadius = BorderRadius.Circular(40),
-            ClipBehavior = Clip.None,
-            Child = Red()
-        });
+        using var bitmap = RenderRed(
+            new ClipRoundRect
+            {
+                BorderRadius = BorderRadius.Circular(40),
+                ClipBehavior = Clip.None,
+                Child = Red(),
+            }
+        );
 
         Assert.Equal(SKColors.Red, bitmap.GetPixel(2, 2));
     }
@@ -151,12 +159,14 @@ public class ClipTest
     [Fact]
     public void ClipBehavior_ClipCustomPathでNoneを指定_パスの外も描画する()
     {
-        using var bitmap = RenderRed(new ClipCustomPath
-        {
-            Clipper = new LeftHalfPath(),
-            ClipBehavior = Clip.None,
-            Child = Red()
-        });
+        using var bitmap = RenderRed(
+            new ClipCustomPath
+            {
+                Clipper = new LeftHalfPath(),
+                ClipBehavior = Clip.None,
+                Child = Red(),
+            }
+        );
 
         Assert.Equal(SKColors.Red, bitmap.GetPixel(75, 50));
     }
@@ -173,9 +183,16 @@ public class ClipTest
 
     private static Widget Red() => new ColoredBox { Color = new Color(255, 0, 0) };
 
-    private static SKBitmap RenderRed(Widget clip) => new WidgetBitmapRenderer().Render(
-        new SizedBox { Width = 100, Height = 100, Child = clip },
-        new SKSizeI(100, 100));
+    private static SKBitmap RenderRed(Widget clip) =>
+        new WidgetBitmapRenderer().Render(
+            new SizedBox
+            {
+                Width = 100,
+                Height = 100,
+                Child = clip,
+            },
+            new SKSizeI(100, 100)
+        );
 
     private sealed class CountingLeftHalf : CustomClipper<SKRect>
     {
@@ -211,24 +228,33 @@ public class ClipTest
 
     private sealed class RoundedFull : CustomClipper<SKRoundRect>
     {
-        public override SKRoundRect GetClip(SKSize size) => new(new SKRect(0, 0, size.Width, size.Height), 40);
+        public override SKRoundRect GetClip(SKSize size) =>
+            new(new SKRect(0, 0, size.Width, size.Height), 40);
 
         public override bool ShouldReclip(CustomClipper<SKRoundRect> oldClipper) => false;
     }
 
-    private static Widget Tappable(List<string> log) => new GestureDetector
-    {
-        Behaviour = HitTestBehaviour.Opaque,
-        OnTap = () => log.Add("tap"),
-        Child = new SizedBox { Width = 100, Height = 100 },
-    };
+    private static Widget Tappable(List<string> log) =>
+        new GestureDetector
+        {
+            Behaviour = HitTestBehaviour.Opaque,
+            OnTap = () => log.Add("tap"),
+            Child = new SizedBox { Width = 100, Height = 100 },
+        };
 
     private static void Tap(Widget root, double x, double y)
     {
         var binding = new WidgetBinding(new RenderView());
         binding.AttachRootWidget(root);
         binding.FlushBuildAndLayout();
-        foreach (var phase in new[] { PointerEventPhase.Add, PointerEventPhase.Down, PointerEventPhase.Up })
+        foreach (
+            var phase in new[]
+            {
+                PointerEventPhase.Add,
+                PointerEventPhase.Down,
+                PointerEventPhase.Up,
+            }
+        )
         {
             binding.HandlePointerEvent(new PointerEvent(1, phase, new Offset(x, y)));
         }
