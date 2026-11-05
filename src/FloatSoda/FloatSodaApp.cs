@@ -91,6 +91,26 @@ public class FloatSodaApp : IDisposable
     /// </remarks>
     public void Post(Action action) => _pendingTasks.Enqueue(action);
 
+    /// <summary>
+    /// OpenVRテクスチャの提出など、レンダースレッドに所属する処理を投入します。
+    /// このAPIはウィジェットの描画先を変更せず、既存のGL/Skia描画と同一スレッドで
+    /// OpenVR APIへ提出する追加処理を直列化するために利用できます。
+    /// </summary>
+    /// <remarks>
+    /// 処理はレンダースレッドの次の更新時に実行されます。実行時間の長い処理を
+    /// 渡さず、停止時に実行されない可能性があることを考慮してください。
+    /// </remarks>
+    public void PostRender(Action action)
+    {
+        ArgumentNullException.ThrowIfNull(action);
+        ObjectDisposedException.ThrowIf(_disposed, this);
+        _renderPostTaskRunner.PostTask(() =>
+        {
+            if (!_disposed && _renderPostTaskRunner.IsRunning)
+                action();
+        });
+    }
+
     private void Reassemble()
     {
         foreach (var (_, binding) in _bindings)
