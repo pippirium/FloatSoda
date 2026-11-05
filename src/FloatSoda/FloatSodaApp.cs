@@ -43,6 +43,7 @@ public class FloatSodaApp : IDisposable
 
     private bool _disposed;
     private readonly ConcurrentQueue<Action> _pendingTasks = new();
+    private readonly ConcurrentQueue<Action> _renderShutdownCallbacks = new();
 
     private static readonly ConcurrentDictionary<FloatSodaApp, byte> ActiveApps = new();
 
@@ -100,6 +101,18 @@ public class FloatSodaApp : IDisposable
     /// 処理はレンダースレッドの次の更新時に実行されます。実行時間の長い処理を
     /// 渡さず、停止時に実行されない可能性があることを考慮してください。
     /// </remarks>
+
+    /// <summary>
+    /// OpenVRが終了する前に、レンダースレッドで実行する解放処理を登録します。
+    /// 他の外部GPU資源もGLFW終了前に安全に解放できます。
+    /// </summary>
+    public void RegisterRenderShutdown(Action action)
+    {
+        ArgumentNullException.ThrowIfNull(action);
+        ObjectDisposedException.ThrowIf(_disposed, this);
+        _renderShutdownCallbacks.Enqueue(action);
+    }
+
     public void PostRender(Action action)
     {
         ArgumentNullException.ThrowIfNull(action);
@@ -357,6 +370,18 @@ public class FloatSodaApp : IDisposable
     /// </remarks>
     private void ReleaseBindingsOnRenderThread()
     {
+        while (_renderShutdownCallbacks.TryDequeue(out var cleanup))
+        {
+            try
+            {
+                cleanup();
+            }
+            catch (Exception exception)
+            {
+                _logger?.LogError(exception, "外部GPUリソースの解放に失敗しました");
+            }
+        }
+
         foreach (var (title, binding) in _bindings)
         {
             try
