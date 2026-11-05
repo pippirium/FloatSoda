@@ -96,7 +96,7 @@ app.CreateWindow(new DashboardWindow
 });
 ```
 
-`AppKey`の設定、ホスト初期化、デスクトップ切替方法は`samples/FloatSoda.Samples.Settings/Program.cs`を参照してください。
+`AppKey`の設定、ホスト初期化、デスクトップ切替方法は`samples/Showcase/FloatSoda.Samples.Settings/Program.cs`を参照してください。
 
 ## 範囲と入力
 

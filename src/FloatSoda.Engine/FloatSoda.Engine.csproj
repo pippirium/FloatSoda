@@ -10,6 +10,8 @@
 
     <ItemGroup>
         <InternalsVisibleTo Include="FloatSoda" />
+        <InternalsVisibleTo Include="FloatSoda.Engine.Desktop" />
+        <InternalsVisibleTo Include="FloatSoda.Engine.Test" />
         <InternalsVisibleTo Include="FloatSoda.Test" />
     </ItemGroup>
 
@@ -21,7 +23,8 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\FloatSoda.Abstractions\FloatSoda.Abstractions.csproj" />
+        <ProjectReference Include="..\FloatSoda.Geometry\FloatSoda.Geometry.csproj" />
+        <ProjectReference Include="..\FloatSoda.Engine.Abstractions\FloatSoda.Engine.Abstractions.csproj" />
         <ProjectReference Include="..\FloatSoda.OVR\FloatSoda.OVR.csproj" />
         <ProjectReference Include="..\FloatSoda.Rendering\FloatSoda.Rendering.csproj" />
     </ItemGroup>

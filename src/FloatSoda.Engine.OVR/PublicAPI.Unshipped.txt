@@ -1,0 +1,15 @@
+#nullable enable
+FloatSoda.Engine.OVR.OverlayMouseRawPointerSource
+FloatSoda.Engine.OVR.OverlayMouseRawPointerSource.Dispose() -> void
+FloatSoda.Engine.OVR.OverlayMouseRawPointerSource.OnPointerEvent -> System.Action<FloatSoda.Engine.Abstractions.Input.RawPointerEvent>?
+FloatSoda.Engine.OVR.OverlayMouseRawPointerSource.OverlayMouseRawPointerSource(FloatSoda.OVR.VREventDispatcher! dispatcher) -> void
+FloatSoda.Engine.OVR.OverlayWindow
+FloatSoda.Engine.OVR.OverlayWindow.AbandonOverlay() -> void
+FloatSoda.Engine.OVR.OverlayWindow.Dispose() -> void
+FloatSoda.Engine.OVR.OverlayWindow.Overlay.get -> FloatSoda.OVR.Overlay.IOverlay!
+FloatSoda.Engine.OVR.OverlayWindow.OverlayWindow(FloatSoda.OVR.Overlay.IOverlay! overlay, FloatSoda.Engine.Renderer! renderer, FloatSoda.Geometry.Dpm dpm) -> void
+FloatSoda.Engine.OVR.OverlayWindow.OverlayWindow(FloatSoda.OVR.Overlay.IOverlay! overlay, FloatSoda.Engine.Renderer! renderer, FloatSoda.Geometry.Dpm dpm, System.Collections.Generic.IReadOnlyList<FloatSoda.OVR.Overlay.TrackedDevice>? pointerDevices = null) -> void
+FloatSoda.Engine.OVR.OverlayWindow.PointerSource.get -> FloatSoda.Engine.Abstractions.Input.IRawPointerSource?
+FloatSoda.Engine.OVR.OverlayWindow.PollInputEvents() -> void
+FloatSoda.Engine.OVR.OverlayWindow.Present(FloatSoda.Rendering.Layers.ILayer! layer) -> void
+FloatSoda.Engine.OVR.OverlayWindow.Resize(SkiaSharp.SKSizeI size) -> void

@@ -4,7 +4,7 @@ param(
 )
 
 $ErrorActionPreference = 'Stop'
-$project = Join-Path $PSScriptRoot '../samples/FloatSoda.Samples.Settings/FloatSoda.Samples.Settings.csproj'
+$project = Join-Path $PSScriptRoot '../samples/Showcase/FloatSoda.Samples.Settings/FloatSoda.Samples.Settings.csproj'
 $destination = [System.IO.Path]::GetFullPath($OutputDirectory)
 
 dotnet publish $project --configuration Release --self-contained false --output $destination
