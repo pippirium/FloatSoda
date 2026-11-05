@@ -2,7 +2,6 @@
 
 [![NuGet](https://img.shields.io/nuget/v/FloatSoda.svg)](https://www.nuget.org/packages/FloatSoda/)
 [![NuGet Downloads](https://img.shields.io/nuget/dt/FloatSoda.svg)](https://www.nuget.org/packages/FloatSoda/)
-[![CI](https://github.com/sumx21t-3310/FloatSoda/actions/workflows/ci.yml/badge.svg)](https://github.com/sumx21t-3310/FloatSoda/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/github/license/sumx21t-3310/FloatSoda)](LICENSE)
 
 FloatSoda is a UI framework for building SteamVR overlays in C# / .NET with a Flutter-like declarative API, and it is currently in alpha. The rest of this README and the [documentation site](https://floatsoda.sumx21t.com/) are written in Japanese; coding agents can read [llms.txt](https://floatsoda.sumx21t.com/llms.txt) instead.
