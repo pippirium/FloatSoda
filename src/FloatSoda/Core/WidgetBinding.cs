@@ -1,16 +1,16 @@
 using System.Diagnostics;
-using FloatSoda.Abstractions.Engine;
-using FloatSoda.Abstractions.Geometries;
-using FloatSoda.Abstractions.Input;
 using FloatSoda.Elements;
 using FloatSoda.Engine;
+using FloatSoda.Engine.Abstractions;
+using FloatSoda.Engine.Abstractions.Input;
+using FloatSoda.Geometry;
 using FloatSoda.Gesture;
 using FloatSoda.OVR.Overlay;
 using FloatSoda.Rendering.Layers;
 using FloatSoda.RenderObjects;
 using FloatSoda.Widgets;
 using SkiaSharp;
-using OverlayWindow = FloatSoda.Engine.OverlayWindow;
+using OverlayWindow = FloatSoda.Engine.OVR.OverlayWindow;
 
 namespace FloatSoda.Core;
 
@@ -239,7 +239,11 @@ public class WidgetBinding : IFrameScheduler, IHitTestTarget, IGestureBinding
         RenderViewElement = new RenderObjectToWidgetAdapter
         {
             Child = rootWidget,
-            Container = Pipeline.RenderView,
+            Container =
+                Pipeline?.RenderView
+                ?? throw new InvalidOperationException(
+                    "EnsureInitialized が呼ばれる前に AttachRootWidget が呼ばれました。"
+                ),
         }.AttachToRenderTree(
             BuildOwner,
             RenderViewElement as RenderObjectToWidgetElement<RenderView>

@@ -217,7 +217,7 @@ public class WindowWidgetTest
         // この時点では依存 Element の再構築が予約されるだけで、レイアウトは走らない。
         var windowElement = resizer.WindowElement!;
         windowElement.Update(
-            (WindowWidget)windowElement.Widget with
+            (WindowWidget)windowElement.Widget! with
             {
                 Size = new SKSize(640, 360),
             }

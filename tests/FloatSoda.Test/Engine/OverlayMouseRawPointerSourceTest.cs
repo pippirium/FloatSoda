@@ -1,6 +1,6 @@
-using FloatSoda.Abstractions.Geometries;
-using FloatSoda.Abstractions.Input;
-using FloatSoda.Engine;
+using FloatSoda.Geometry;
+using FloatSoda.Engine.Abstractions.Input;
+using FloatSoda.Engine.OVR;
 using FloatSoda.OVR;
 using SkiaSharp;
 
