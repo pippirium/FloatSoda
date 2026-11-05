@@ -12,6 +12,8 @@ FloatSoda.Core.WidgetBinding.HandleEvent(FloatSoda.Engine.Abstractions.Input.Poi
 FloatSoda.Core.WidgetBinding.RootWidget.get -> FloatSoda.Widgets.Widget?
 FloatSoda.Elements.RenderObjectToWidgetElement<T>.ChildWidget.get -> FloatSoda.Widgets.Widget?
 FloatSoda.FloatSodaApp.Post(System.Action! action) -> void
+FloatSoda.FloatSodaApp.PostRender(System.Action! action) -> void
+FloatSoda.FloatSodaApp.RegisterRenderShutdown(System.Action! action) -> void
 FloatSoda.Geometrics.Alignment.ComputeOffset(SkiaSharp.SKSize parent, SkiaSharp.SKSize child) -> FloatSoda.Geometry.Offset
 FloatSoda.Geometrics.Alignment.Pivot(SkiaSharp.SKSize size) -> FloatSoda.Geometry.Offset
 FloatSoda.Geometrics.EdgeInsets.BottomLeft.get -> FloatSoda.Geometry.Offset
