@@ -121,12 +121,34 @@ public class WidgetBinding : IFrameScheduler, IHitTestTarget, IGestureBinding
 
         RenderThreadRunner = renderPostTaskRunner;
 
+        // 先にパイプラインを用意してからタスクを投稿する。
+        // Size は Pipeline.RenderView を読むため、投稿後に作るとタスクが
+        // 空のサイズ(0x0)を読んで CreateWindow が InvalidValue で失敗し得る。
+        Pipeline = new RenderPipeline
+        {
+            OnNeedVisualUpdate = EnsureVisualUpdate,
+            RenderView = new RenderView(),
+        };
+
+        Pipeline.RenderView.PrepareInitialFrame();
+
         RenderThreadRunner.PostTask(() =>
         {
             Renderer? renderer = null;
             try
             {
-                renderer = new Renderer { GLView = new GLView(Size, visible, windowName) };
+                // 初回レイアウト前は Size が未確定(既定1000x1000、または子未接続で空)
+                // になり得るため、非正なら既定サイズで作成しレイアウト確定後の
+                // Resize に委ねる。
+                var initialSize = Size;
+                renderer = new Renderer
+                {
+                    GLView = new GLView(
+                        initialSize is { Width: > 0, Height: > 0 } ? initialSize : null,
+                        visible,
+                        windowName
+                    ),
+                };
 
                 Window = windowFactory(renderer);
                 _pendingOverlay = null;
@@ -147,14 +169,6 @@ public class WidgetBinding : IFrameScheduler, IHitTestTarget, IGestureBinding
                 throw;
             }
         });
-
-        Pipeline = new RenderPipeline
-        {
-            OnNeedVisualUpdate = EnsureVisualUpdate,
-            RenderView = new RenderView(),
-        };
-
-        Pipeline.RenderView.PrepareInitialFrame();
     }
 
     internal void SetPendingOverlay(IOverlay overlay) => _pendingOverlay = overlay;
