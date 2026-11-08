@@ -636,7 +636,10 @@ public class RenderPostTaskRunner(string threadName, IFramePacer pacer, ILogger?
     {
         ct.ThrowIfCancellationRequested();
         if (!GLFW.Init())
-            throw new Exception("GLFWの初期化に失敗しました。");
+        {
+            var errorCode = GLFW.GetError(out var description);
+            throw new Exception($"GLFWの初期化に失敗しました。({errorCode}: {description})");
+        }
     }
 
     /// <summary>

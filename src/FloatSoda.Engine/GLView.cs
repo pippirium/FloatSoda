@@ -69,9 +69,23 @@ public class GLView : IDisposable
         {
             GLFW.WindowHint(WindowHintBool.Visible, visible);
 
-            _window = GLFW.CreateWindow(Size.Width, Size.Height, title, null, null);
-            if (_window is null)
-                throw new InvalidOperationException("GLFWウィンドウの作成に失敗しました。");
+            // ドライバや他プロセスのGPU初期化と競合して失敗することがあるため、
+            // エラーコードを取り込みつつ短い間隔で再試行する。
+            const int maxAttempts = 3;
+            for (var attempt = 1; ; attempt++)
+            {
+                _window = GLFW.CreateWindow(Size.Width, Size.Height, title, null, null);
+                if (_window is not null)
+                    break;
+
+                var errorCode = GLFW.GetError(out var description);
+                if (attempt == maxAttempts)
+                    throw new InvalidOperationException(
+                        $"GLFWウィンドウの作成に失敗しました。({errorCode}: {description})"
+                    );
+
+                Thread.Sleep(250);
+            }
         }
 
         GRContext? grContext = null;
