@@ -81,6 +81,60 @@ public class GestureRecognizerTest
     }
 
     [Fact]
+    public void Tap_TouchSlopOverride設定時_既定スロップ超過の移動でもOnTapを呼ぶ()
+    {
+        var harness = new Harness();
+        var tapped = 0;
+        var canceled = 0;
+        harness.Add(
+            new TapGestureRecognizer { OnTap = () => tapped++, OnTapCancel = () => canceled++ }
+        );
+
+        var prev = GestureConstants.TouchSlopOverride;
+        try
+        {
+            // VR レーザーの照準ブレを想定したオーバーライド。実機では down→up で 20-60px 動く。
+            GestureConstants.TouchSlopOverride = 80.0;
+
+            harness.Down(new Offset(10, 10));
+            harness.Move(new Offset(10, 60)); // 50px — 既定18ではキャンセル、override80では継続
+            harness.Up(new Offset(10, 60));
+
+            Assert.Equal(1, tapped);
+            Assert.Equal(0, canceled);
+        }
+        finally
+        {
+            GestureConstants.TouchSlopOverride = prev;
+        }
+    }
+
+    [Fact]
+    public void Tap_TouchSlopOverride解除時_既定スロップへ戻る()
+    {
+        var harness = new Harness();
+        var tapped = 0;
+        harness.Add(new TapGestureRecognizer { OnTap = () => tapped++ });
+
+        var prev = GestureConstants.TouchSlopOverride;
+        try
+        {
+            GestureConstants.TouchSlopOverride = 80.0;
+            GestureConstants.TouchSlopOverride = null;
+
+            harness.Down(new Offset(10, 10));
+            harness.Move(new Offset(10, 40)); // 30px > 既定18 → キャンセル
+            harness.Up(new Offset(10, 40));
+
+            Assert.Equal(0, tapped);
+        }
+        finally
+        {
+            GestureConstants.TouchSlopOverride = prev;
+        }
+    }
+
+    [Fact]
     public void Pan_WinsOverTap_WhenDragged()
     {
         var harness = new Harness();

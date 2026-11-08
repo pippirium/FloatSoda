@@ -53,7 +53,7 @@ public sealed class TapGestureRecognizer : GestureRecognizer
         switch (pointerEvent.Phase)
         {
             case PointerEventPhase.Move:
-                if (Distance(pointerEvent.Position, _initialPosition) > GestureConstants.TouchSlop)
+                if (Distance(pointerEvent.Position, _initialPosition) > GestureConstants.Slop)
                 {
                     // スロップ超過はタップではない。アリーナへ辞退しつつ、既に単独勝利済みでも
                     // 自前でキャンセルして Up での発火を抑止する。

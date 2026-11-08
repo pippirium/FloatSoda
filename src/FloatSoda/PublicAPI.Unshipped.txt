@@ -224,6 +224,8 @@ override sealed FloatSoda.Widgets.Settings.SettingsSection.Equals(FloatSoda.Widg
 override sealed FloatSoda.Widgets.Settings.SettingsSlider.Equals(FloatSoda.Widgets.StatefulWidget<FloatSoda.Widgets.Settings.SettingsSlider!>? other) -> bool
 override sealed FloatSoda.Widgets.Settings.SettingsSwitch.Equals(FloatSoda.Widgets.StatelessWidget? other) -> bool
 override sealed FloatSoda.Widgets.Settings.SettingsTile.Equals(FloatSoda.Widgets.StatelessWidget? other) -> bool
+static FloatSoda.Gesture.GestureConstants.TouchSlopOverride.get -> double?
+static FloatSoda.Gesture.GestureConstants.TouchSlopOverride.set -> void
 static FloatSoda.Geometrics.BoxConstraints.Expand(double? width = null, double? height = null) -> FloatSoda.Geometrics.BoxConstraints
 static FloatSoda.Widgets.Settings.SettingsDropdown.operator !=(FloatSoda.Widgets.Settings.SettingsDropdown? left, FloatSoda.Widgets.Settings.SettingsDropdown? right) -> bool
 static FloatSoda.Widgets.Settings.SettingsDropdown.operator ==(FloatSoda.Widgets.Settings.SettingsDropdown? left, FloatSoda.Widgets.Settings.SettingsDropdown? right) -> bool
