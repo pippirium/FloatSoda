@@ -53,15 +53,9 @@ public class OverlayWindow : IEngineWindow
         if (overlay is IDashboardOverlay)
         {
             overlay.Input.Method = VROverlayInputMethod.Mouse;
-            // 物理的なパネル倍率とUIのピクセル座標を分離する。
-            overlay.Input.SetMouseScale(1, 1);
-            PointerSource = new OverlayMouseRawPointerSource(
-                overlay.EventDispatcher,
-                position => new FloatSoda.Geometry.Offset(
-                    position.X * _renderer.GLView.Size.Width,
-                    position.Y * _renderer.GLView.Size.Height
-                )
-            );
+            // マウススケールは Resize で実テクスチャサイズに合わせる。
+            // 座標はテクスチャピクセル単位で届くため、そのままUI座標として使う。
+            PointerSource = new OverlayMouseRawPointerSource(overlay.EventDispatcher);
         }
         // デバイス追従・ワールド固定はコントローラーレイを毎フレーム交差させて届く。
         // MakeOverlaysInteractiveIfVisible を使わないため入力横取りは発生しない。
@@ -98,7 +92,10 @@ public class OverlayWindow : IEngineWindow
     /// <summary>
     /// 描画先テクスチャをリサイズし、ピクセル幅と物理密度（dots per meter）から
     /// オーバーレイの物理幅（WidthInMeters = width / dpm）を更新します。
-    /// ダッシュボードのマウススケールは0〜1を維持し、入力時に描画先サイズへ変換します。
+    /// ダッシュボードのマウススケールにはテクスチャのピクセルサイズを渡します。
+    /// SteamVRはこの縦横比からダッシュボードパネルの高さを決めるため、(1,1) のような
+    /// 正規化値を渡すとパネルが正方形になり、テクスチャが上下の帯つきで表示されて
+    /// マウス座標も中央へ圧縮されます。
     /// </summary>
     public void Resize(SkiaSharp.SKSizeI size)
     {
@@ -107,7 +104,7 @@ public class OverlayWindow : IEngineWindow
 
         if (PointerSource is OverlayMouseRawPointerSource)
         {
-            Overlay.Input.SetMouseScale(1, 1);
+            Overlay.Input.SetMouseScale(size.Width, size.Height);
         }
     }
 
