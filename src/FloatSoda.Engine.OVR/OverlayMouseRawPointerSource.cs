@@ -9,10 +9,11 @@ namespace FloatSoda.Engine.OVR;
 /// <see cref="RawPointerEvent"/> に変換する入力源。
 /// 事前に <c>SetOverlayInputMethod(Mouse)</c> と <c>SetOverlayMouseScale</c> が
 /// 設定されている前提です。公開コンストラクターは入力座標をそのまま渡します。
-/// エンジンのダッシュボード経路は0〜1の入力範囲をUI座標へ変換します。
+/// エンジンのダッシュボード経路はマウススケールをテクスチャのピクセルサイズへ
+/// 設定するため、座標はテクスチャピクセル単位で届きます。
 /// OpenVR の仕様上マウス座標は原点左下だが、本プロジェクトの OpenGL テクスチャ
 /// （ボトムアップ格納）では SteamVR の表示時 v 軸反転と相殺され原点左上で届くことを
-/// 実測で確認済みのため、座標はそのまま使用します（y 反転すると上下鏡映になる）。
+/// 実機で確認済みのため、座標はそのまま使用します（y 反転すると上下鏡映になる）。
 /// イベントは <see cref="VREventDispatcher.PollEvents"/> を呼んだスレッドで発火します。
 /// </summary>
 public sealed class OverlayMouseRawPointerSource : IRawPointerSource
