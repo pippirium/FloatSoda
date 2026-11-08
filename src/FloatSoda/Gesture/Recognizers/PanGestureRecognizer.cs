@@ -49,7 +49,7 @@ public sealed class PanGestureRecognizer : GestureRecognizer
                 if (
                     !_started
                     && Distance(pointerEvent.Position, _initialPosition)
-                        > GestureConstants.TouchSlop
+                        > GestureConstants.Slop
                 )
                 {
                     if (!_acceptedByArena)
