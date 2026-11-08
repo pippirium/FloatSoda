@@ -312,12 +312,14 @@ public class WidgetBinding : IFrameScheduler, IHitTestTarget, IGestureBinding
         if (newSize == _lastPostedSize || newSize is not { Width: > 0, Height: > 0 })
             return;
 
-        _lastPostedSize = newSize;
-
+        // Window 未生成で投稿しない場合はラッチしない。
+        // 先に代入すると、ウィンドウ作成前の初回レイアウト時にサイズだけ記録されて
+        // その後同サイズでは再投稿されず、GLView が初期サイズのまま残る。
         var window = Window;
         if (window is null)
             return;
 
+        _lastPostedSize = newSize;
         RenderThreadRunner?.PostTask(() => window.Resize(newSize));
     }
 
