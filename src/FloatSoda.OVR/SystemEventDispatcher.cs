@@ -42,12 +42,11 @@ public abstract class VREventDispatcher
     /// ダッシュボードのレーザークリックがどのイベント型・どのキューで届くかを
     /// 実機で確認するためのもので、既定では無効です。
     /// </summary>
-    private static readonly bool EventLogEnabled =
-        string.Equals(
-            Environment.GetEnvironmentVariable("FLOATSODA_OVR_EVENT_LOG"),
-            "1",
-            StringComparison.Ordinal
-        );
+    private static readonly bool EventLogEnabled = string.Equals(
+        Environment.GetEnvironmentVariable("FLOATSODA_OVR_EVENT_LOG"),
+        "1",
+        StringComparison.Ordinal
+    );
 
     /// <summary>Dispatches an event to a snapshot of the matching handler list.</summary>
     /// <param name="vrEvent">The event to dispatch.</param>
@@ -56,17 +55,19 @@ public abstract class VREventDispatcher
         if (
             EventLogEnabled
             && vrEvent.eventType
-                is not ((uint)EVREventType.VREvent_MouseMove
-                    or (uint)EVREventType.VREvent_TouchPadMove)
+                is not (
+                    (uint)EVREventType.VREvent_MouseMove
+                    or (uint)EVREventType.VREvent_TouchPadMove
+                )
         )
         {
             Console.WriteLine(
-                $"[ovr-event] {GetType().Name} " +
-                $"type={vrEvent.eventType}({(EVREventType)vrEvent.eventType}) " +
-                $"dev={vrEvent.trackedDeviceIndex} " +
-                $"mouse=({vrEvent.data.mouse.x:0.0},{vrEvent.data.mouse.y:0.0}) " +
-                $"btn={vrEvent.data.mouse.button} " +
-                $"ctrl={vrEvent.data.controller.button}"
+                $"[ovr-event] {GetType().Name} "
+                    + $"type={vrEvent.eventType}({(EVREventType)vrEvent.eventType}) "
+                    + $"dev={vrEvent.trackedDeviceIndex} "
+                    + $"mouse=({vrEvent.data.mouse.x:0.0},{vrEvent.data.mouse.y:0.0}) "
+                    + $"btn={vrEvent.data.mouse.button} "
+                    + $"ctrl={vrEvent.data.controller.button}"
             );
         }
 
