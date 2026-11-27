@@ -64,7 +64,10 @@ public class OverlayWindow : IEngineWindow
             PointerSource = new ControllerRayPointerSource(
                 movable.Intersection,
                 () =>
-                    new SKSizeI((int)_renderer.GLView.Size.Width, (int)_renderer.GLView.Size.Height),
+                    new SKSizeI(
+                        (int)_renderer.GLView.Size.Width,
+                        (int)_renderer.GLView.Size.Height
+                    ),
                 pointerDevices
             );
         }
